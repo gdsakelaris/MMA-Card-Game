@@ -593,46 +593,61 @@
 
         /* Mobile Responsive Design */
         @media screen and (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
             body {
                 padding: 5px;
             }
 
             .game-container {
                 max-width: 100%;
+                width: 100%;
+                overflow-x: hidden;
+            }
+
+            .game-header {
+                padding: 8px;
             }
 
             .game-header h1 {
-                font-size: 1.3em;
+                font-size: 1.2em;
                 letter-spacing: 1px;
             }
 
             .game-stats {
                 flex-wrap: wrap;
-                gap: 8px;
+                gap: 6px;
             }
 
             .stat-box {
-                padding: 4px 10px;
-                font-size: 0.85em;
+                padding: 3px 8px;
+                font-size: 0.8em;
             }
 
             .game-board {
                 min-height: auto;
                 gap: 8px;
+                width: 100%;
+                overflow-x: hidden;
             }
 
             .opponent-area, .player-area {
-                padding: 8px;
+                padding: 6px;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .area-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 6px;
+                gap: 5px;
             }
 
             .player-name {
-                font-size: 1em;
+                font-size: 0.95em;
             }
 
             .health-bar {
@@ -642,11 +657,11 @@
             }
 
             .health-bar-bg {
-                height: 18px;
+                height: 16px;
             }
 
             .health-bar-fill {
-                font-size: 0.75em;
+                font-size: 0.7em;
             }
 
             .inline-action-feed {
@@ -656,31 +671,39 @@
             .fighter-zone {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
+                width: 100%;
             }
 
             .bench-zone {
-                gap: 6px;
+                gap: 5px;
                 justify-content: center;
+                width: 100%;
             }
 
             .bench-card {
-                width: 100px;
-                padding: 6px;
+                width: 28%;
+                min-width: 75px;
+                max-width: 90px;
+                padding: 5px;
             }
 
             .card {
-                width: 140px;
-                padding: 8px;
+                width: 45%;
+                min-width: 130px;
+                max-width: 150px;
+                padding: 6px;
             }
 
             .card.fighter-card {
-                width: 150px;
+                width: 85%;
+                max-width: 200px;
+                min-width: 140px;
             }
 
             .card-header {
-                font-size: 0.85em;
-                margin-bottom: 5px;
+                font-size: 0.8em;
+                margin-bottom: 4px;
             }
 
             .card-type {
@@ -688,28 +711,31 @@
             }
 
             .card-stat {
-                font-size: 0.75em;
-            }
-
-            .card-energy {
-                width: 22px;
-                height: 22px;
-                font-size: 0.85em;
-            }
-
-            .card-ability {
                 font-size: 0.7em;
             }
 
+            .card-energy {
+                width: 20px;
+                height: 20px;
+                font-size: 0.75em;
+            }
+
+            .card-ability {
+                font-size: 0.65em;
+            }
+
             .hand-area {
-                gap: 6px;
-                padding: 6px;
-                min-height: 180px;
+                gap: 5px;
+                padding: 5px;
+                min-height: 160px;
+                overflow-x: auto;
+                width: 100%;
             }
 
             .center-area {
                 padding: 8px;
                 max-width: 100%;
+                width: 100%;
             }
 
             #turnIndicator {
@@ -723,36 +749,48 @@
             .action-buttons {
                 flex-direction: column;
                 gap: 8px;
+                width: 100%;
             }
 
             .btn {
                 padding: 10px 16px;
-                font-size: 0.9em;
+                font-size: 0.85em;
                 width: 100%;
+                box-sizing: border-box;
+            }
+
+            .modal {
+                padding: 10px;
             }
 
             .modal-content {
-                padding: 20px;
-                max-width: 90%;
-                margin: 10px;
+                padding: 15px;
+                max-width: 95%;
+                width: 95%;
+                margin: 0 auto;
+                box-sizing: border-box;
             }
 
             .modal-content h2 {
-                font-size: 1.5em;
-                margin-bottom: 12px;
+                font-size: 1.4em;
+                margin-bottom: 10px;
             }
 
             .selection-modal .modal-content {
-                max-width: 95%;
+                max-width: 98%;
+                width: 98%;
             }
 
             .select-grid {
-                gap: 8px;
+                gap: 6px;
+                max-width: 100%;
             }
 
             .select-card {
-                width: 140px;
-                padding: 6px;
+                width: 28%;
+                min-width: 100px;
+                max-width: 130px;
+                padding: 5px;
             }
 
             .game-log {
@@ -760,10 +798,11 @@
                 grid-row: auto;
                 max-height: 300px;
                 margin-top: 8px;
+                width: 100%;
             }
 
             .log-entry {
-                font-size: 0.8em;
+                font-size: 0.75em;
                 padding: 3px;
                 padding-left: 6px;
             }
@@ -771,18 +810,23 @@
             .action-feed {
                 top: 10px;
                 left: 50%;
+                width: 90%;
+                max-width: 90%;
             }
 
             .action-item {
-                min-width: 200px;
-                padding: 5px 10px;
-                font-size: 0.85em;
+                min-width: auto;
+                width: 100%;
+                padding: 5px 8px;
+                font-size: 0.8em;
             }
 
             .empty-slot {
-                width: 150px;
-                height: 200px;
-                font-size: 0.8em;
+                width: 85%;
+                max-width: 200px;
+                min-width: 140px;
+                height: 180px;
+                font-size: 0.75em;
             }
         }
 
@@ -793,166 +837,177 @@
             }
 
             .game-header {
-                padding: 8px;
+                padding: 6px;
             }
 
             .game-header h1 {
-                font-size: 1.1em;
-            }
-
-            .stat-box {
-                padding: 3px 8px;
-                font-size: 0.8em;
-            }
-
-            .stat-label {
-                font-size: 0.75em;
-            }
-
-            .stat-value {
                 font-size: 1em;
             }
 
-            .opponent-area, .player-area {
-                padding: 6px;
+            .stat-box {
+                padding: 3px 6px;
+                font-size: 0.75em;
             }
 
-            .player-name {
-                font-size: 0.9em;
-            }
-
-            .health-bar-bg {
-                height: 16px;
-            }
-
-            .health-bar-fill {
+            .stat-label {
                 font-size: 0.7em;
             }
 
-            .bench-card {
-                width: 85px;
+            .stat-value {
+                font-size: 0.95em;
+            }
+
+            .opponent-area, .player-area {
                 padding: 5px;
             }
 
+            .player-name {
+                font-size: 0.85em;
+            }
+
+            .health-bar-bg {
+                height: 14px;
+            }
+
+            .health-bar-fill {
+                font-size: 0.65em;
+            }
+
+            .bench-card {
+                width: 30%;
+                min-width: 70px;
+                max-width: 85px;
+                padding: 4px;
+            }
+
             .card {
-                width: 120px;
-                padding: 6px;
+                width: 45%;
+                min-width: 110px;
+                max-width: 130px;
+                padding: 5px;
             }
 
             .card.fighter-card {
-                width: 130px;
+                width: 90%;
+                max-width: 180px;
+                min-width: 120px;
             }
 
             .card-header {
-                font-size: 0.8em;
-                margin-bottom: 4px;
+                font-size: 0.75em;
+                margin-bottom: 3px;
             }
 
             .card-type {
                 font-size: 0.6em;
-                margin-bottom: 4px;
+                margin-bottom: 3px;
             }
 
             .card-stat {
-                font-size: 0.7em;
+                font-size: 0.65em;
                 margin: 2px 0;
             }
 
             .card-energy {
-                width: 20px;
-                height: 20px;
-                font-size: 0.75em;
-                top: 6px;
-                right: 6px;
+                width: 18px;
+                height: 18px;
+                font-size: 0.7em;
+                top: 5px;
+                right: 5px;
             }
 
             .card-ability {
-                font-size: 0.65em;
-                margin-top: 5px;
-                padding-top: 5px;
+                font-size: 0.6em;
+                margin-top: 4px;
+                padding-top: 4px;
             }
 
             .hand-area {
-                gap: 5px;
-                padding: 5px;
-                min-height: 160px;
+                gap: 4px;
+                padding: 4px;
+                min-height: 140px;
             }
 
             .hand-label {
-                font-size: 0.85em;
-            }
-
-            .hand-counter {
                 font-size: 0.8em;
             }
 
-            .center-area {
-                padding: 6px;
-            }
-
-            #turnIndicator {
-                font-size: 0.9em;
-            }
-
-            #actionPrompt {
+            .hand-counter {
                 font-size: 0.75em;
             }
 
-            .btn {
-                padding: 8px 14px;
+            .center-area {
+                padding: 5px;
+            }
+
+            #turnIndicator {
                 font-size: 0.85em;
             }
 
+            #actionPrompt {
+                font-size: 0.7em;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.8em;
+            }
+
             .modal-content {
-                padding: 15px;
+                padding: 12px;
             }
 
             .modal-content h2 {
-                font-size: 1.3em;
+                font-size: 1.2em;
             }
 
             .modal-content p {
-                font-size: 0.9em;
+                font-size: 0.85em;
             }
 
             .select-card {
-                width: 120px;
-                padding: 5px;
+                width: 30%;
+                min-width: 95px;
+                max-width: 115px;
+                padding: 4px;
             }
 
             .game-log {
                 max-height: 250px;
-                padding: 8px;
+                padding: 6px;
             }
 
             .game-log h3 {
-                font-size: 0.9em;
+                font-size: 0.85em;
             }
 
             .log-entry {
-                font-size: 0.75em;
+                font-size: 0.7em;
             }
 
             .action-item {
-                min-width: 180px;
-                padding: 4px 8px;
-                font-size: 0.8em;
-            }
-
-            .empty-slot {
-                width: 130px;
-                height: 180px;
+                min-width: auto;
+                width: 100%;
+                padding: 4px 6px;
                 font-size: 0.75em;
             }
 
+            .empty-slot {
+                width: 90%;
+                max-width: 180px;
+                min-width: 120px;
+                height: 160px;
+                font-size: 0.7em;
+            }
+
             .positional-advantage {
-                font-size: 0.65em;
-                padding: 1px 4px;
+                font-size: 0.6em;
+                padding: 1px 3px;
             }
 
             .stamina-bar-bg {
                 height: 6px;
-                margin-top: 5px;
+                margin-top: 4px;
             }
         }
     </style>
