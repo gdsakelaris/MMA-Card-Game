@@ -1,8 +1,8 @@
-# OCTAGON WARRIORS - MMA Card Game Rules
+# MMA WARRIORS - MMA Card Game Rules
 
 ## Game Overview
 
-Octagon Warriors is a 1v1 MMA-themed card game where players build decks of fighters and techniques to defeat their opponent. Players manage energy, deploy fighters, and use striking, grappling, and submission techniques in strategic combat.
+MMA Warriors is a 1v1 MMA-themed card game where players build decks of fighters and techniques to defeat their opponent. Players manage energy, deploy fighters, and use striking, grappling, and submission techniques in strategic combat.
 
 ---
 

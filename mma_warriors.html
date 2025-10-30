@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Octagon Warriors - MMA Card Game</title>
+    <title>MMA Warriors - MMA Card Game</title>
     <style>
         * {
             margin: 0;
@@ -595,7 +595,7 @@
 <body>
     <div class="game-container">
         <div class="game-header">
-            <h1>OCTAGON WARRIORS</h1>
+            <h1>MMA WARRIORS</h1>
             <div class="game-stats">
                 <div class="stat-box">
                     <div class="stat-label">Turn</div>
@@ -689,7 +689,7 @@
     <div class="modal selection-modal" id="selectFighterModal">
         <div class="modal-content">
             <h2>Choose Your Opening Fighter</h2>
-            <p>Select one fighter to enter the Octagon.</p>
+            <p>Select one fighter to enter the arena.</p>
             <div class="select-grid" id="selectFighterGrid"></div>
             <div style="margin-top:12px;">
                 <button class="btn btn-primary" onclick="closeFighterSelect()">Cancel</button>
@@ -1170,7 +1170,7 @@
                 if (!opponentFighter.strikingBonus) opponentFighter.strikingBonus = 0;
                 gameState.opponent.activeFighter = opponentFighter;
                 gameState.opponent.hand = gameState.opponent.hand.filter(c => c.uniqueId !== opponentFighter.uniqueId);
-                addLog(`Opponent deploys ${opponentFighter.name} to the Octagon!`, 'opponent');
+                addLog(`Opponent deploys ${opponentFighter.name} to the arena!`, 'opponent');
                 // Show opponent's starting energy (6) upfront to avoid displaying 0 at game start
                 gameState.opponent.energy = 6;
                 updateUI();
@@ -1219,7 +1219,7 @@
                 if (!f.strikingBonus) f.strikingBonus = 0;
                 gameState.player.activeFighter = f;
                 gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== f.uniqueId);
-                addLog(`You deploy ${f.name} to the Octagon!`);
+                addLog(`You deploy ${f.name} to the arena!`);
                 startAfterOpeningSelection();
                 return;
             }
@@ -1256,7 +1256,7 @@
             if (!f.strikingBonus) f.strikingBonus = 0;
             gameState.player.activeFighter = f;
             gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
-            addLog(`You deploy ${f.name} to the Octagon!`);
+            addLog(`You deploy ${f.name} to the arena!`);
             closeFighterSelect();
             startAfterOpeningSelection();
         }
@@ -1481,7 +1481,7 @@
                 }
                 gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== card.uniqueId);
 
-                addLog(`${card.name} enters the Octagon!`);
+                addLog(`${card.name} enters the arena!`);
 
                 updateUI();
             } else if (card.type === 'technique') {
