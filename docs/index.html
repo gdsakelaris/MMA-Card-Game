@@ -590,6 +590,371 @@
             color: #999;
             margin-bottom: 8px;
         }
+
+        /* Mobile Responsive Design */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+
+            .game-container {
+                max-width: 100%;
+            }
+
+            .game-header h1 {
+                font-size: 1.3em;
+                letter-spacing: 1px;
+            }
+
+            .game-stats {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .stat-box {
+                padding: 4px 10px;
+                font-size: 0.85em;
+            }
+
+            .game-board {
+                min-height: auto;
+                gap: 8px;
+            }
+
+            .opponent-area, .player-area {
+                padding: 8px;
+            }
+
+            .area-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .player-name {
+                font-size: 1em;
+            }
+
+            .health-bar {
+                max-width: 100%;
+                width: 100%;
+                margin: 0;
+            }
+
+            .health-bar-bg {
+                height: 18px;
+            }
+
+            .health-bar-fill {
+                font-size: 0.75em;
+            }
+
+            .inline-action-feed {
+                min-height: 20px;
+            }
+
+            .fighter-zone {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .bench-zone {
+                gap: 6px;
+                justify-content: center;
+            }
+
+            .bench-card {
+                width: 100px;
+                padding: 6px;
+            }
+
+            .card {
+                width: 140px;
+                padding: 8px;
+            }
+
+            .card.fighter-card {
+                width: 150px;
+            }
+
+            .card-header {
+                font-size: 0.85em;
+                margin-bottom: 5px;
+            }
+
+            .card-type {
+                font-size: 0.65em;
+            }
+
+            .card-stat {
+                font-size: 0.75em;
+            }
+
+            .card-energy {
+                width: 22px;
+                height: 22px;
+                font-size: 0.85em;
+            }
+
+            .card-ability {
+                font-size: 0.7em;
+            }
+
+            .hand-area {
+                gap: 6px;
+                padding: 6px;
+                min-height: 180px;
+            }
+
+            .center-area {
+                padding: 8px;
+                max-width: 100%;
+            }
+
+            #turnIndicator {
+                font-size: 1em;
+            }
+
+            #actionPrompt {
+                font-size: 0.8em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9em;
+                width: 100%;
+            }
+
+            .modal-content {
+                padding: 20px;
+                max-width: 90%;
+                margin: 10px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.5em;
+                margin-bottom: 12px;
+            }
+
+            .selection-modal .modal-content {
+                max-width: 95%;
+            }
+
+            .select-grid {
+                gap: 8px;
+            }
+
+            .select-card {
+                width: 140px;
+                padding: 6px;
+            }
+
+            .game-log {
+                grid-column: 1;
+                grid-row: auto;
+                max-height: 300px;
+                margin-top: 8px;
+            }
+
+            .log-entry {
+                font-size: 0.8em;
+                padding: 3px;
+                padding-left: 6px;
+            }
+
+            .action-feed {
+                top: 10px;
+                left: 50%;
+            }
+
+            .action-item {
+                min-width: 200px;
+                padding: 5px 10px;
+                font-size: 0.85em;
+            }
+
+            .empty-slot {
+                width: 150px;
+                height: 200px;
+                font-size: 0.8em;
+            }
+        }
+
+        /* Extra small mobile devices */
+        @media screen and (max-width: 480px) {
+            body {
+                padding: 3px;
+            }
+
+            .game-header {
+                padding: 8px;
+            }
+
+            .game-header h1 {
+                font-size: 1.1em;
+            }
+
+            .stat-box {
+                padding: 3px 8px;
+                font-size: 0.8em;
+            }
+
+            .stat-label {
+                font-size: 0.75em;
+            }
+
+            .stat-value {
+                font-size: 1em;
+            }
+
+            .opponent-area, .player-area {
+                padding: 6px;
+            }
+
+            .player-name {
+                font-size: 0.9em;
+            }
+
+            .health-bar-bg {
+                height: 16px;
+            }
+
+            .health-bar-fill {
+                font-size: 0.7em;
+            }
+
+            .bench-card {
+                width: 85px;
+                padding: 5px;
+            }
+
+            .card {
+                width: 120px;
+                padding: 6px;
+            }
+
+            .card.fighter-card {
+                width: 130px;
+            }
+
+            .card-header {
+                font-size: 0.8em;
+                margin-bottom: 4px;
+            }
+
+            .card-type {
+                font-size: 0.6em;
+                margin-bottom: 4px;
+            }
+
+            .card-stat {
+                font-size: 0.7em;
+                margin: 2px 0;
+            }
+
+            .card-energy {
+                width: 20px;
+                height: 20px;
+                font-size: 0.75em;
+                top: 6px;
+                right: 6px;
+            }
+
+            .card-ability {
+                font-size: 0.65em;
+                margin-top: 5px;
+                padding-top: 5px;
+            }
+
+            .hand-area {
+                gap: 5px;
+                padding: 5px;
+                min-height: 160px;
+            }
+
+            .hand-label {
+                font-size: 0.85em;
+            }
+
+            .hand-counter {
+                font-size: 0.8em;
+            }
+
+            .center-area {
+                padding: 6px;
+            }
+
+            #turnIndicator {
+                font-size: 0.9em;
+            }
+
+            #actionPrompt {
+                font-size: 0.75em;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.85em;
+            }
+
+            .modal-content {
+                padding: 15px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.3em;
+            }
+
+            .modal-content p {
+                font-size: 0.9em;
+            }
+
+            .select-card {
+                width: 120px;
+                padding: 5px;
+            }
+
+            .game-log {
+                max-height: 250px;
+                padding: 8px;
+            }
+
+            .game-log h3 {
+                font-size: 0.9em;
+            }
+
+            .log-entry {
+                font-size: 0.75em;
+            }
+
+            .action-item {
+                min-width: 180px;
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+
+            .empty-slot {
+                width: 130px;
+                height: 180px;
+                font-size: 0.75em;
+            }
+
+            .positional-advantage {
+                font-size: 0.65em;
+                padding: 1px 4px;
+            }
+
+            .stamina-bar-bg {
+                height: 6px;
+                margin-top: 5px;
+            }
+        }
     </style>
 </head>
 <body>
