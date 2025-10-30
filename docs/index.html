@@ -2101,12 +2101,12 @@
                     showAction(`${attacker.activeFighter.name} gains Advantage!`, player, 'advantage');
                     if (card.damage) {
                         defender.activeFighter.stamina -= card.damage;
-                        showAction(`Takedown impact: ${card.damage} damage!`, player, 'damage');
+                        showAction(`${card.name} impact: ${card.damage} damage!`, player, 'damage');
                         floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${card.damage}`, 'damage');
                         checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
                     }
                 } else {
-                    showAction(`Takedown stuffed!`, player);
+                    showAction(`${card.name} defended!`, player);
                 }
                 
             } else if (card.subtype === 'submission') {
@@ -2223,6 +2223,22 @@
                     }, 800);
                 } else {
                     // Opponent auto-selects (AI behavior)
+                    // First check if opponent has ANY fighters left anywhere
+                    const benchFighters = [...(defender.bench || [])];
+                    const handFighters = defender.hand.filter(c => c.type === 'fighter');
+                    const deckFighters = defender.deck.filter(c => c.type === 'fighter');
+                    const totalFighters = benchFighters.length + handFighters.length + deckFighters.length;
+
+                    if (totalFighters === 0) {
+                        // No fighters anywhere - opponent loses
+                        addLog('Opponent has no fighters left!', defenderName);
+                        updateUI();
+                        setTimeout(() => {
+                            endGame('player', 'Opponent has no fighters remaining');
+                        }, 1000);
+                        return;
+                    }
+
                     // Promote from bench first
                     if ((defender.bench || []).length > 0) {
                         const newFighter = defender.bench.shift();
@@ -2244,16 +2260,8 @@
                                 updateUI();
                             }, 800);
                         } else {
-                            // Draw until fighter found or deck empty
+                            // Draw until fighter found (we know one exists from the check above)
                             const drawUntilFighter = () => {
-                                if (defender.deck.length === 0) {
-                                    addLog(`Opponent has no fighters left!`, defenderName);
-                                    updateUI();
-                                    setTimeout(() => {
-                                        endGame('player', 'No fighters remaining');
-                                    }, 1000);
-                                    return;
-                                }
                                 const card = defender.deck.pop();
                                 if (card.type === 'fighter') {
                                     if (!card.strikingBonus) card.strikingBonus = 0;
@@ -2750,29 +2758,42 @@
 
         function renderFighter(player) {
             const zone = document.getElementById(player === 'player' ? 'playerFighterZone' : 'opponentFighterZone');
+            const feedId = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
+
+            // Preserve existing action feed if it exists
+            let existingFeed = document.getElementById(feedId);
+
             zone.innerHTML = '';
-            
+
             if (!gameState[player].activeFighter) {
                 const emptySlot = document.createElement('div');
                 emptySlot.className = 'empty-slot';
                 emptySlot.textContent = 'No Active Fighter';
                 zone.appendChild(emptySlot);
-                // Ensure action feed container exists beside where fighter would be
-                const feed = document.createElement('div');
-                feed.id = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
-                feed.className = 'inline-action-feed';
-                zone.appendChild(feed);
+                // Restore or create action feed container
+                if (existingFeed) {
+                    zone.appendChild(existingFeed);
+                } else {
+                    const feed = document.createElement('div');
+                    feed.id = feedId;
+                    feed.className = 'inline-action-feed';
+                    zone.appendChild(feed);
+                }
                 return;
             }
-            
+
             const fighter = gameState[player].activeFighter;
             const card = createFighterCard(fighter, player);
             zone.appendChild(card);
-            // Add/ensure inline action feed next to fighter
-            const feed = document.createElement('div');
-            feed.id = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
-            feed.className = 'inline-action-feed';
-            zone.appendChild(feed);
+            // Restore or create action feed next to fighter
+            if (existingFeed) {
+                zone.appendChild(existingFeed);
+            } else {
+                const feed = document.createElement('div');
+                feed.id = feedId;
+                feed.className = 'inline-action-feed';
+                zone.appendChild(feed);
+            }
         }
 
         function renderBench(owner) {
