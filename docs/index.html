@@ -594,8 +594,8 @@
         /* Mobile Responsive Design */
         @media screen and (max-width: 768px) {
             html, body {
-                overflow-x: hidden;
                 max-width: 100vw;
+                overflow-x: clip;
             }
 
             body {
@@ -605,7 +605,6 @@
             .game-container {
                 max-width: 100%;
                 width: 100%;
-                overflow-x: hidden;
             }
 
             .game-header {
@@ -631,13 +630,13 @@
                 min-height: auto;
                 gap: 8px;
                 width: 100%;
-                overflow-x: hidden;
             }
 
             .opponent-area, .player-area {
                 padding: 6px;
                 width: 100%;
                 box-sizing: border-box;
+                overflow-x: clip;
             }
 
             .area-header {
@@ -693,6 +692,7 @@
                 min-width: 130px;
                 max-width: 150px;
                 padding: 6px;
+                flex-shrink: 0;
             }
 
             .card.fighter-card {
@@ -729,7 +729,10 @@
                 padding: 5px;
                 min-height: 160px;
                 overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
                 width: 100%;
+                display: flex;
+                flex-wrap: nowrap;
             }
 
             .center-area {
@@ -885,6 +888,7 @@
                 min-width: 110px;
                 max-width: 130px;
                 padding: 5px;
+                flex-shrink: 0;
             }
 
             .card.fighter-card {
