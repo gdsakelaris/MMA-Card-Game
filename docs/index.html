@@ -2029,7 +2029,8 @@
                     damage += 3;
                 }
 
-                damage = Math.max(1, damage);
+                // Ensure damage is never less than the card's displayed damage
+                damage = Math.max(card.damage, damage);
                 defender.activeFighter.stamina -= damage;
 
                 showAction(`${card.name}: ${damage} damage!`, player, 'damage');
@@ -2126,8 +2127,8 @@
                     damage -= 2;
                 }
 
-                // Ensure minimum damage
-                damage = Math.max(1, damage);
+                // Ensure damage is never less than the card's displayed damage
+                damage = Math.max(card.damage, damage);
 
                 // Show message with ACTUAL damage that will be dealt
                 if (attacker.positionalAdvantage) {
