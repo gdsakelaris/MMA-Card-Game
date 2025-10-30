@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Octagon Warriors - MMA Card Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: radial-gradient(1200px 600px at 20% 0%, #111 0%, #000 60%, #020202 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .game-container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .game-header {
+            text-align: left;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: linear-gradient(135deg, rgba(25,25,25,0.9), rgba(10,10,10,0.9));
+            border-radius: 5px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.35), inset 0 0 10px rgba(255,255,255,0.12);
+        }
+
+        .game-header h1 {
+            font-size: 1.8em;
+            color: #d20a0a;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 5px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 5px;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: #1a1a1a;
+            padding: 5px 15px;
+            border-radius: 3px;
+            font-size: 0.95em;
+            border: 1px solid #333;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.8em;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #fff;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 10px;
+            min-height: 500px;
+        }
+
+        .opponent-area, .player-area {
+            background: linear-gradient(160deg, rgba(26,26,26,0.95), rgba(15,15,15,0.95));
+            border-radius: 5px;
+            padding: 10px;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 0 20px rgba(255,255,255,0.04) inset;
+        }
+
+        .opponent-area {
+            border: 2px solid #d20a0a;
+            box-shadow: 0 0 18px rgba(210,10,10,0.15);
+        }
+
+        .player-area {
+            border: 2px solid #00e1ff;
+            box-shadow: 0 0 18px rgba(0,225,255,0.15);
+        }
+
+        .area-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .player-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            min-width: 80px;
+        }
+
+        .health-bar {
+            flex: 1;
+            max-width: 250px;
+            margin: 0 10px;
+        }
+
+        .health-bar-bg {
+            background: #333;
+            height: 20px;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #555;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            background: #d20a0a;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .player-area .health-bar-fill {
+            background: #fff;
+            color: #000;
+        }
+
+        .fighter-zone {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .bench-zone {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .bench-card {
+            width: 120px;
+            padding: 8px;
+        }
+
+        .hand-counter {
+            margin-top: 4px;
+            font-size: 0.85em;
+            color: #aaa;
+        }
+
+        .card {
+            background: linear-gradient(180deg, #0f0f12 0%, #121216 60%, #0a0a0d 100%);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            padding: 10px;
+            width: 160px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 24px rgba(0, 225, 255, 0.2);
+            border-color: #00e1ff;
+        }
+
+        .card.fighter-card {
+            width: 180px;
+        }
+
+        .card.opponent-card {
+            border-color: #d20a0a;
+        }
+
+        .card.opponent-card:hover {
+            box-shadow: 0 10px 24px rgba(210, 10, 10, 0.35);
+            border-color: #d20a0a;
+        }
+
+        .card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .card-header {
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 6px;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .opponent-card .card-header {
+            color: #d20a0a;
+        }
+
+        .card-type {
+            font-size: 0.7em;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .card-stats {
+            margin: 6px 0;
+        }
+
+        .card-stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 3px 0;
+            font-size: 0.8em;
+        }
+
+        .card-stat-label {
+            color: #999;
+        }
+
+        .card-stat-value {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .card-energy {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #00e1ff, #007a8a);
+            color: #fff;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.95em;
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 0 8px rgba(0,225,255,0.5);
+        }
+
+        .card-ability {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #333;
+            font-size: 0.75em;
+            font-style: italic;
+            color: #d20a0a;
+        }
+
+        .hand-area {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px;
+            background: #0a0a0a;
+            border-radius: 5px;
+            min-height: 220px;
+            border: 1px solid #333;
+        }
+
+        .hand-label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+        .center-area {
+            background: linear-gradient(135deg, rgba(26,26,32,0.95), rgba(12,12,16,0.95));
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 0 16px rgba(0,225,255,0.1);
+            max-width: 560px;
+            justify-self: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            font-size: 0.95em;
+            font-weight: bold;
+            border: 2px solid #fff;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: scale(1.03);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00e1ff, #007a8a);
+            color: #fff;
+            border-color: #00e1ff;
+            box-shadow: 0 0 10px rgba(0,225,255,0.2);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .btn-danger {
+            background: #d20a0a;
+            color: #fff;
+            border-color: #d20a0a;
+        }
+
+        .btn-danger:hover {
+            background: #fff;
+            color: #d20a0a;
+            border-color: #fff;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .game-log {
+            background: linear-gradient(160deg, rgba(26,26,26,0.95), rgba(15,15,15,0.95));
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #333;
+            grid-column: 2;
+            grid-row: 1 / span 3;
+            max-height: none;
+            height: 100%;
+            overflow-y: auto;
+            box-shadow: 0 0 18px rgba(255,255,255,0.05) inset;
+        }
+
+        .game-log h3 {
+            margin-bottom: 6px;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        .log-entry {
+            padding: 4px;
+            margin: 3px 0;
+            border-left: 2px solid #fff;
+            padding-left: 8px;
+            font-size: 0.85em;
+        }
+
+        .log-entry.opponent {
+            border-left-color: #d20a0a;
+        }
+
+        .log-entry.damage {
+            color: #d20a0a;
+        }
+
+        .log-entry.heal {
+            color: #4ecca3;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(160deg, rgba(26,26,26,0.98), rgba(15,15,15,0.98));
+            padding: 30px;
+            border-radius: 5px;
+            text-align: center;
+            max-width: 400px;
+            border: 3px solid #00e1ff;
+            box-shadow: 0 0 30px rgba(0,225,255,0.2);
+        }
+
+        /* Opening fighter selection */
+        .selection-modal .modal-content {
+            max-width: 760px;
+        }
+        .select-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .select-card {
+            border: 2px solid rgba(255,255,255,0.25);
+            border-radius: 6px;
+            padding: 8px;
+            width: 180px;
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+        }
+        .select-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: #00e1ff;
+            box-shadow: 0 12px 20px rgba(0,225,255,0.15);
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .modal-content.defeat h2 {
+            color: #d20a0a;
+        }
+
+        .positional-advantage {
+            display: inline-block;
+            background: #d20a0a;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-left: 4px;
+        }
+
+        /* Fighter stamina bar */
+        .stamina-bar-bg {
+            background: #333;
+            height: 8px;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #555;
+            margin-top: 6px;
+        }
+
+        .stamina-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecca3, #ffd700, #e94560);
+            transition: width 0.3s ease;
+        }
+
+        .empty-slot {
+            width: 180px;
+            height: 250px;
+            border: 2px dashed #333;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-style: italic;
+            font-size: 0.85em;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(210, 10, 10, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(210, 10, 10, 0.8); }
+        }
+
+        .glow {
+            animation: glow 1s ease-in-out infinite;
+        }
+
+        /* Action feed and floating combat text */
+        .action-feed { /* global (legacy) */
+            position: fixed;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            pointer-events: none;
+        }
+        .inline-action-feed { /* per-side inline feed */
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 24px;
+            flex: 1;
+            pointer-events: none;
+        }
+        .action-item {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-left-width: 4px;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            min-width: 260px;
+            text-align: center;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            animation: feedIn 0.25s ease-out, feedOut 0.3s ease-in 8s forwards;
+        }
+        .action-item.player { border-left-color: #00e1ff; }
+        .action-item.opponent { border-left-color: #d20a0a; }
+        .action-item.damage { background: rgba(210,10,10,0.18); }
+        .action-item.heal { background: rgba(78,204,163,0.18); }
+        .action-item.advantage { background: rgba(210,210,10,0.18); }
+        .action-item.ko { background: rgba(210,10,10,0.28); font-weight: bold; }
+
+        @keyframes feedIn {
+            from { opacity: 0; transform: translate(-50%, -8px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        @keyframes feedOut {
+            to { opacity: 0; transform: translate(-50%, -8px); }
+        }
+
+        .float-text {
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+            animation: rise 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+        .float-text.damage { color: #ff5b5b; }
+        .float-text.heal { color: #4ecca3; }
+        .float-text.info { color: #ffd700; }
+        @keyframes rise {
+            from { opacity: 0; transform: translate(-50%, 12px) scale(0.95); }
+            30% { opacity: 1; }
+            to { opacity: 0; transform: translate(-50%, -22px) scale(1.05); }
+        }
+
+        #turnIndicator {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        #actionPrompt {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>OCTAGON WARRIORS</h1>
+            <div class="game-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Turn</div>
+                    <div class="stat-value" id="turnCounter">1</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Phase</div>
+                    <div class="stat-value" id="currentPhase">Energy</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-board">
+            <!-- Opponent Area -->
+            <div class="opponent-area">
+                <div class="area-header">
+                    <span class="player-name">OPPONENT</span>
+                    <div class="health-bar">
+                        <div class="health-bar-bg">
+                            <div class="health-bar-fill" id="opponentHealthBar" style="width: 100%;">
+                                <span id="opponentHealth">100/100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Energy</div>
+                        <div class="stat-value" id="opponentEnergy">0/10</div>
+                    </div>
+                </div>
+                
+                <div class="fighter-zone" id="opponentFighterZone">
+                    <div class="empty-slot">No Active Fighter</div>
+                </div>
+                <div class="hand-counter">Hand: <span id="opponentHandCount">5</span></div>
+                <!-- per-side inline action feed will render inside fighter zone -->
+                <div class="bench-zone" id="opponentBench"></div>
+                
+            </div>
+
+            <!-- Center Action Area -->
+            <div class="center-area">
+                <h2 id="turnIndicator">YOUR TURN</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="drawCardBtn" onclick="drawCard()">Draw Card</button>
+                    <button class="btn btn-primary" id="endTurnBtn" onclick="endTurn()" disabled>End Turn</button>
+                </div>
+            </div>
+
+            <!-- Player Area -->
+            <div class="player-area">
+                <div class="area-header">
+                    <span class="player-name">YOU</span>
+                    <div class="health-bar">
+                        <div class="health-bar-bg">
+                            <div class="health-bar-fill" id="playerHealthBar" style="width: 100%;">
+                                <span id="playerHealth">100/100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Energy</div>
+                        <div class="stat-value" id="playerEnergy">0/10</div>
+                    </div>
+                </div>
+                <div class="fighter-zone" id="playerFighterZone">
+                    <div class="empty-slot">No Active Fighter</div>
+                </div>
+                <!-- per-side inline action feed will render inside fighter zone -->
+                <div class="bench-zone" id="playerBench"></div>
+                <div class="hand-area" id="playerHand">
+                    <!-- Player's hand cards will be inserted here -->
+                </div>
+                <div class="hand-label">Deck: <span id="playerDeckCount">40</span></div>
+            </div>
+
+            
+        </div>
+    </div>
+    <div id="actionFeed" class="action-feed" style="display:none"></div>
+
+    <!-- Victory/Defeat Modal -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2 id="gameOverTitle">Victory!</h2>
+            <p id="gameOverMessage">You have defeated your opponent!</p>
+            <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Opening Fighter Selection Modal -->
+    <div class="modal selection-modal" id="selectFighterModal">
+        <div class="modal-content">
+            <h2>Choose Your Opening Fighter</h2>
+            <p>Select one fighter to enter the Octagon.</p>
+            <div class="select-grid" id="selectFighterGrid"></div>
+            <div style="margin-top:12px;">
+                <button class="btn btn-primary" onclick="closeFighterSelect()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const HAND_LIMIT = 10;
+        const gameState = {
+            turn: 1,
+            currentPlayer: 'player',
+            phase: 'setup',
+            player: {
+                health: 100,
+                maxHealth: 100,
+                energy: 0,
+                maxEnergy: 12,
+                deck: [],
+                hand: [],
+                bench: [],
+                activeFighter: null,
+                positionalAdvantage: false
+            },
+            opponent: {
+                health: 100,
+                maxHealth: 100,
+                energy: 0,
+                maxEnergy: 12,
+                deck: [],
+                hand: [],
+                bench: [],
+                activeFighter: null,
+                positionalAdvantage: false
+            }
+        };
+
+        // Card Database
+        const cardDatabase = {
+            fighters: [
+                {
+                    id: 'fighter_1',
+                    name: 'Ilia Topuria',
+                    type: 'fighter',
+                    striking: 9,
+                    grappling: 7,
+                    defense: 7,
+                    stamina: 38,
+                    maxStamina: 38,
+                    style: 'Balanced'
+                },
+                {
+                    id: 'fighter_2',
+                    name: 'Islam Makhachev',
+                    type: 'fighter',
+                    striking: 6,
+                    grappling: 10,
+                    defense: 8,
+                    stamina: 40,
+                    maxStamina: 40,
+                    style: 'Grappler'
+                },
+                {
+                    id: 'fighter_3',
+                    name: 'Merab Dvalishvili',
+                    type: 'fighter',
+                    striking: 6,
+                    grappling: 9,
+                    defense: 7,
+                    stamina: 45,
+                    maxStamina: 45,
+                    style: 'Grappler'
+                },
+                {
+                    id: 'fighter_4',
+                    name: 'Khamzat Chimaev',
+                    type: 'fighter',
+                    striking: 8,
+                    grappling: 9,
+                    defense: 7,
+                    stamina: 38,
+                    maxStamina: 38,
+                    style: 'Grappler'
+                },
+                {
+                    id: 'fighter_5',
+                    name: 'Alexandre Pantoja',
+                    type: 'fighter',
+                    striking: 6,
+                    grappling: 9,
+                    defense: 7,
+                    stamina: 38,
+                    maxStamina: 38,
+                    style: 'Grappler'
+                },
+                {
+                    id: 'fighter_6',
+                    name: 'Alex Pereira',
+                    type: 'fighter',
+                    striking: 10,
+                    grappling: 4,
+                    defense: 6,
+                    stamina: 34,
+                    maxStamina: 34,
+                    style: 'Striker'
+                },
+                {
+                    id: 'fighter_7',
+                    name: 'Alexander Volkanovski',
+                    type: 'fighter',
+                    striking: 8,
+                    grappling: 8,
+                    defense: 9,
+                    stamina: 42,
+                    maxStamina: 42,
+                    style: 'Balanced'
+                },
+                {
+                    id: 'fighter_8',
+                    name: 'Jack Della Maddalena',
+                    type: 'fighter',
+                    striking: 9,
+                    grappling: 5,
+                    defense: 6,
+                    stamina: 35,
+                    maxStamina: 35,
+                    style: 'Striker'
+                },
+                {
+                    id: 'fighter_9',
+                    name: 'Tom Aspinall',
+                    type: 'fighter',
+                    striking: 9,
+                    grappling: 7,
+                    defense: 7,
+                    stamina: 38,
+                    maxStamina: 38,
+                    style: 'Balanced'
+                },
+                {
+                    id: 'fighter_10',
+                    name: 'Dricus Du Plessis',
+                    type: 'fighter',
+                    striking: 8,
+                    grappling: 7,
+                    defense: 7,
+                    stamina: 40,
+                    maxStamina: 40,
+                    style: 'Balanced'
+                },
+                {
+                    id: 'fighter_11',
+                    name: 'Magomed Ankalaev',
+                    type: 'fighter',
+                    striking: 7,
+                    grappling: 8,
+                    defense: 8,
+                    stamina: 40,
+                    maxStamina: 40,
+                    style: 'Balanced'
+                },
+                {
+                    id: 'fighter_12',
+                    name: 'Max Holloway',
+                    type: 'fighter',
+                    striking: 9,
+                    grappling: 6,
+                    defense: 7,
+                    stamina: 45,
+                    maxStamina: 45,
+                    style: 'Striker'
+                },
+                {
+                    id: 'fighter_13',
+                    name: 'Belal Muhammad',
+                    type: 'fighter',
+                    striking: 6,
+                    grappling: 9,
+                    defense: 8,
+                    stamina: 42,
+                    maxStamina: 42,
+                    style: 'Grappler'
+                },
+                {
+                    id: 'fighter_14',
+                    name: 'Arman Tsarukyan',
+                    type: 'fighter',
+                    striking: 7,
+                    grappling: 8,
+                    defense: 7,
+                    stamina: 38,
+                    maxStamina: 38,
+                    style: 'Balanced'
+                },
+                {
+                    id: 'fighter_15',
+                    name: 'Charles Oliveira',
+                    type: 'fighter',
+                    striking: 7,
+                    grappling: 10,
+                    defense: 6,
+                    stamina: 36,
+                    maxStamina: 36,
+                    style: 'Grappler'
+                }
+            ],
+            techniques: [
+                // === STRIKES (Low Cost) ===
+                {
+                    id: 'tech_jab',
+                    name: 'Quick Jab',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 1,
+                    damage: 3,
+                    effect: 'Basic strike - resets to standing'
+                },
+                {
+                    id: 'tech_legkick',
+                    name: 'Leg Kick',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 2,
+                    damage: 4,
+                    effect: 'Low kick - resets to standing'
+                },
+                {
+                    id: 'tech_bodyshot',
+                    name: 'Body Shot',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 2,
+                    damage: 4,
+                    effect: 'Body punch - resets to standing'
+                },
+                {
+                    id: 'tech_teep',
+                    name: 'Teep Kick',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 2,
+                    damage: 3,
+                    effect: 'Push kick - resets to standing'
+                },
+                // === STRIKES (Medium Cost) ===
+                {
+                    id: 'tech_cross',
+                    name: 'Power Cross',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 3,
+                    damage: 6,
+                    effect: 'Strong straight punch - resets to standing'
+                },
+                {
+                    id: 'tech_elbow',
+                    name: 'Cutting Elbow',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 3,
+                    damage: 5,
+                    onHitStatus: { type: 'bleed', amount: 2, turns: 2 },
+                    effect: 'Inflict Bleed (2 for 2 turns) - resets to standing'
+                },
+                {
+                    id: 'tech_uppercut',
+                    name: 'Uppercut',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 3,
+                    damage: 6,
+                    effect: 'Rising punch - resets to standing'
+                },
+                // === STRIKES (High Cost) ===
+                {
+                    id: 'tech_hook',
+                    name: 'Heavy Hook',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 4,
+                    damage: 8,
+                    effect: 'Powerful hook - resets to standing'
+                },
+                {
+                    id: 'tech_spinning',
+                    name: 'Spinning Back Fist',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 4,
+                    damage: 7,
+                    effect: 'If lands, opponent skips next turn - resets to standing'
+                },
+                {
+                    id: 'tech_kick',
+                    name: 'Head Kick',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 5,
+                    damage: 10,
+                    effect: 'Devastating high kick - resets to standing'
+                },
+                // === GROUND STRIKE (Keeps Position) ===
+                {
+                    id: 'tech_gnp',
+                    name: 'Ground and Pound',
+                    type: 'technique',
+                    subtype: 'strike',
+                    energy: 3,
+                    damage: 6,
+                    effect: 'Requires advantage. +3 bonus. Stays on ground'
+                },
+                // === GRAPPLING ===
+                {
+                    id: 'tech_clinch',
+                    name: 'Clinch',
+                    type: 'technique',
+                    subtype: 'grappling',
+                    energy: 2,
+                    bonus: 2,
+                    damage: 1,
+                    effect: 'Control position - gain advantage if successful'
+                },
+                {
+                    id: 'tech_singleleg',
+                    name: 'Single Leg Takedown',
+                    type: 'technique',
+                    subtype: 'grappling',
+                    energy: 3,
+                    bonus: 2,
+                    damage: 2,
+                    effect: 'Fast takedown - gain advantage if successful'
+                },
+                {
+                    id: 'tech_takedown',
+                    name: 'Double Leg Takedown',
+                    type: 'technique',
+                    subtype: 'grappling',
+                    energy: 4,
+                    bonus: 3,
+                    damage: 3,
+                    effect: 'Powerful takedown - gain advantage if successful'
+                },
+                {
+                    id: 'tech_suplex',
+                    name: 'Suplex',
+                    type: 'technique',
+                    subtype: 'grappling',
+                    energy: 5,
+                    bonus: 4,
+                    damage: 5,
+                    effect: 'Devastating slam - gain advantage if successful'
+                },
+                // === SUBMISSIONS ===
+                {
+                    id: 'tech_guillotine',
+                    name: 'Guillotine Choke',
+                    type: 'technique',
+                    subtype: 'submission',
+                    energy: 3,
+                    damage: 10,
+                    effect: 'Requires ground. Quick choke. Stays on ground'
+                },
+                {
+                    id: 'tech_armbar',
+                    name: 'Armbar',
+                    type: 'technique',
+                    subtype: 'submission',
+                    energy: 4,
+                    damage: 12,
+                    effect: 'Requires ground. Arm lock. Stays on ground'
+                },
+                {
+                    id: 'tech_kimura',
+                    name: 'Kimura',
+                    type: 'technique',
+                    subtype: 'submission',
+                    energy: 4,
+                    damage: 11,
+                    effect: 'Requires ground. Shoulder lock. Stays on ground'
+                },
+                {
+                    id: 'tech_triangle',
+                    name: 'Triangle Choke',
+                    type: 'technique',
+                    subtype: 'submission',
+                    energy: 4,
+                    damage: 13,
+                    effect: 'Requires ground. Leg choke. Stays on ground'
+                },
+                {
+                    id: 'tech_choke',
+                    name: 'Rear Naked Choke',
+                    type: 'technique',
+                    subtype: 'submission',
+                    energy: 5,
+                    damage: 15,
+                    effect: 'Requires ground. Back control. Stays on ground'
+                },
+                {
+                    id: 'tech_darce',
+                    name: 'D\'Arce Choke',
+                    type: 'technique',
+                    subtype: 'submission',
+                    energy: 5,
+                    damage: 14,
+                    effect: 'Requires ground. Advanced choke. Stays on ground'
+                },
+                // === DEFENSE ===
+                {
+                    id: 'tech_block',
+                    name: 'Block',
+                    type: 'technique',
+                    subtype: 'defense',
+                    energy: 1,
+                    reduction: 5,
+                    effect: 'Reduce next incoming strike damage by 5'
+                },
+                {
+                    id: 'tech_parry',
+                    name: 'Parry',
+                    type: 'technique',
+                    subtype: 'defense',
+                    energy: 2,
+                    reduction: 3,
+                    effect: 'Reduce damage by 3 and counter for 3'
+                },
+                {
+                    id: 'tech_slip',
+                    name: 'Slip Counter',
+                    type: 'technique',
+                    subtype: 'defense',
+                    energy: 3,
+                    reduction: 8,
+                    effect: 'Evade and reduce damage by 8'
+                }
+            ],
+            corners: [
+                {
+                    id: 'corner_coach',
+                    name: 'Master Coach',
+                    type: 'corner',
+                    energy: 3,
+                    effect: 'Active fighter gains +1 to all stats. Draw 1 card.'
+                },
+                {
+                    id: 'corner_training',
+                    name: 'Intense Training',
+                    type: 'corner',
+                    energy: 2,
+                    effect: 'Fighter gains +3 Striking this round'
+                },
+                {
+                    id: 'corner_medic',
+                    name: 'Ringside Medic',
+                    type: 'corner',
+                    energy: 3,
+                    effect: 'Restore 10 Stamina to active fighter'
+                }
+            ]
+        };
+
+        // Initialize game
+        function initGame() {
+            buildDeck('player');
+            buildDeck('opponent');
+
+            shuffleDeck('player');
+            shuffleDeck('opponent');
+
+            // Draw opening hands - ensure at least one fighter
+            drawOpeningHand('player');
+            drawOpeningHand('opponent');
+
+            // Opponent auto-picks best fighter
+            const opponentFighter = pickBestFighter(gameState.opponent.hand);
+            if (opponentFighter) {
+                if (!opponentFighter.strikingBonus) opponentFighter.strikingBonus = 0;
+                gameState.opponent.activeFighter = opponentFighter;
+                gameState.opponent.hand = gameState.opponent.hand.filter(c => c.uniqueId !== opponentFighter.uniqueId);
+                addLog(`Opponent deploys ${opponentFighter.name} to the Octagon!`, 'opponent');
+                // Show opponent's starting energy (6) upfront to avoid displaying 0 at game start
+                gameState.opponent.energy = 6;
+                updateUI();
+            }
+
+            // Player chooses opening fighter if multiple
+            promptOpeningFighterSelection();
+        }
+        
+        function drawOpeningHand(player) {
+            // Deterministic: draw 4 cards, then guarantee 1 fighter from deck
+            gameState[player].hand = [];
+            for (let i = 0; i < 4; i++) {
+                drawCardToHand(player, true);
+            }
+            const deck = gameState[player].deck;
+            const fighterIdx = deck.findIndex(c => c.type === 'fighter');
+            if (fighterIdx !== -1) {
+                const fighter = deck.splice(fighterIdx, 1)[0];
+                gameState[player].hand.push(fighter);
+            } else {
+                // Fallback: draw 1 more if somehow no fighter remains
+                drawCardToHand(player, true);
+            }
+        }
+
+        function pickBestFighter(hand) {
+            const fighters = hand.filter(c => c.type === 'fighter');
+            if (fighters.length === 0) return null;
+            return fighters.reduce((best, cur) => {
+                const score = cur.striking + cur.grappling + cur.defense + cur.stamina / 10;
+                const bestScore = best.striking + best.grappling + best.defense + best.stamina / 10;
+                return score > bestScore ? cur : best;
+            }, fighters[0]);
+        }
+
+        function promptOpeningFighterSelection() {
+            const fighters = gameState.player.hand.filter(c => c.type === 'fighter');
+            if (fighters.length === 0) {
+                // Fallback safety: pick any if somehow missing
+                startAfterOpeningSelection();
+                return;
+            }
+            if (fighters.length === 1) {
+                const f = fighters[0];
+                if (!f.strikingBonus) f.strikingBonus = 0;
+                gameState.player.activeFighter = f;
+                gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== f.uniqueId);
+                addLog(`You deploy ${f.name} to the Octagon!`);
+                startAfterOpeningSelection();
+                return;
+            }
+
+            const modal = document.getElementById('selectFighterModal');
+            const grid = document.getElementById('selectFighterGrid');
+            grid.innerHTML = '';
+            fighters.forEach(f => {
+                const el = document.createElement('div');
+                el.className = 'select-card';
+                el.innerHTML = `
+                    <div class="card-header">${f.name}</div>
+                    <div class="card-type">${f.style}</div>
+                    <div class="card-stats">
+                        <div class="card-stat"><span class="card-stat-label">Striking:</span><span class="card-stat-value">${f.striking}</span></div>
+                        <div class="card-stat"><span class="card-stat-label">Grappling:</span><span class="card-stat-value">${f.grappling}</span></div>
+                        <div class="card-stat"><span class="card-stat-label">Defense:</span><span class="card-stat-value">${f.defense}</span></div>
+                        <div class="card-stat"><span class="card-stat-label">Stamina:</span><span class="card-stat-value">${f.stamina}/${f.maxStamina}</span></div>
+                    </div>
+                `;
+                el.onclick = () => selectOpeningFighter(f.uniqueId);
+                grid.appendChild(el);
+            });
+            modal.classList.add('active');
+        }
+
+        function closeFighterSelect() {
+            document.getElementById('selectFighterModal').classList.remove('active');
+        }
+
+        function selectOpeningFighter(uniqueId) {
+            const f = gameState.player.hand.find(c => c.uniqueId === uniqueId);
+            if (!f) return;
+            if (!f.strikingBonus) f.strikingBonus = 0;
+            gameState.player.activeFighter = f;
+            gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
+            addLog(`You deploy ${f.name} to the Octagon!`);
+            closeFighterSelect();
+            startAfterOpeningSelection();
+        }
+
+        function promptReplacementFighterSelection() {
+            // Collect all available fighters from bench, hand, and deck
+            const benchFighters = [...(gameState.player.bench || [])];
+            const handFighters = gameState.player.hand.filter(c => c.type === 'fighter');
+            const deckFighters = gameState.player.deck.filter(c => c.type === 'fighter');
+
+            const availableFighters = [
+                ...benchFighters,
+                ...handFighters,
+                ...deckFighters
+            ];
+
+            if (availableFighters.length === 0) {
+                // No fighters anywhere - player loses
+                addLog('You have no fighters left!', 'player');
+                updateUI();
+                setTimeout(() => {
+                    endGame('opponent', 'No fighters remaining');
+                }, 1000);
+                return;
+            }
+
+            // Show selection modal
+            const modal = document.getElementById('selectFighterModal');
+            const grid = document.getElementById('selectFighterGrid');
+            grid.innerHTML = '';
+
+            availableFighters.forEach(f => {
+                const el = document.createElement('div');
+                el.className = 'select-card';
+
+                // Determine location
+                let location = 'Deck';
+                if (benchFighters.some(b => b.uniqueId === f.uniqueId)) {
+                    location = 'Bench';
+                } else if (handFighters.some(h => h.uniqueId === f.uniqueId)) {
+                    location = 'Hand';
+                }
+
+                el.innerHTML = `
+                    <div class="card-header">${f.name}</div>
+                    <div class="card-type">${f.style} (${location})</div>
+                    <div class="card-stats">
+                        <div class="card-stat"><span class="card-stat-label">Striking:</span><span class="card-stat-value">${f.striking}</span></div>
+                        <div class="card-stat"><span class="card-stat-label">Grappling:</span><span class="card-stat-value">${f.grappling}</span></div>
+                        <div class="card-stat"><span class="card-stat-label">Defense:</span><span class="card-stat-value">${f.defense}</span></div>
+                        <div class="card-stat"><span class="card-stat-label">Stamina:</span><span class="card-stat-value">${f.stamina}/${f.maxStamina}</span></div>
+                    </div>
+                `;
+                el.onclick = () => selectReplacementFighter(f.uniqueId);
+                grid.appendChild(el);
+            });
+
+            updateUI();
+            modal.classList.add('active');
+        }
+
+        function selectReplacementFighter(uniqueId) {
+            // Find fighter in bench, hand, or deck
+            let fighter = (gameState.player.bench || []).find(c => c.uniqueId === uniqueId);
+            let location = 'bench';
+
+            if (!fighter) {
+                fighter = gameState.player.hand.find(c => c.uniqueId === uniqueId);
+                location = 'hand';
+            }
+
+            if (!fighter) {
+                fighter = gameState.player.deck.find(c => c.uniqueId === uniqueId);
+                location = 'deck';
+            }
+
+            if (!fighter) return;
+
+            // Initialize striking bonus
+            if (!fighter.strikingBonus) fighter.strikingBonus = 0;
+
+            // Deploy fighter
+            gameState.player.activeFighter = fighter;
+
+            // Remove from original location
+            if (location === 'bench') {
+                gameState.player.bench = gameState.player.bench.filter(c => c.uniqueId !== uniqueId);
+                addLog(`You promote ${fighter.name} from bench!`, 'player');
+            } else if (location === 'hand') {
+                gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
+                addLog(`You deploy ${fighter.name} from hand!`, 'player');
+            } else if (location === 'deck') {
+                gameState.player.deck = gameState.player.deck.filter(c => c.uniqueId !== uniqueId);
+                addLog(`You select ${fighter.name} from deck!`, 'player');
+            }
+
+            closeFighterSelect();
+            updateUI();
+        }
+
+        function startAfterOpeningSelection() {
+            // Start game after opening selection
+            gameState.phase = 'energy';
+            gameState.currentPlayer = 'player';
+            startPlayerTurn();
+        }
+
+        function buildDeck(player) {
+            const deck = [];
+
+            // Randomly select 8 fighters from the pool of 15
+            const availableFighters = [...cardDatabase.fighters];
+            const selectedFighters = [];
+            for (let i = 0; i < 8; i++) {
+                const randomIndex = Math.floor(Math.random() * availableFighters.length);
+                const selectedFighter = availableFighters.splice(randomIndex, 1)[0];
+                selectedFighters.push(selectedFighter);
+            }
+
+            // Add the 8 selected fighters to deck
+            for (let i = 0; i < selectedFighters.length; i++) {
+                const fighter = JSON.parse(JSON.stringify(selectedFighters[i]));
+                fighter.uniqueId = `${player}_${fighter.id}_${Date.now()}_${i}`;
+                deck.push(fighter);
+            }
+
+            // Add 32 technique cards
+            for (let i = 0; i < 32; i++) {
+                const tech = JSON.parse(JSON.stringify(cardDatabase.techniques[i % cardDatabase.techniques.length]));
+                tech.uniqueId = `${player}_${tech.id}_${Date.now()}_${i}`;
+                deck.push(tech);
+            }
+
+            // Add 10 corner cards
+            for (let i = 0; i < 10; i++) {
+                const corner = JSON.parse(JSON.stringify(cardDatabase.corners[i % cardDatabase.corners.length]));
+                corner.uniqueId = `${player}_${corner.id}_${Date.now()}_${i}`;
+                deck.push(corner);
+            }
+
+            gameState[player].deck = deck;
+        }
+
+        function shuffleDeck(player) {
+            const deck = gameState[player].deck;
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function drawCardToHand(player, silent = false) {
+            if (gameState[player].deck.length === 0) {
+                if (!silent) {
+                    addLog(`${player === 'player' ? 'You' : 'Opponent'} cannot draw - deck is empty!`, player);
+                    endGame(player === 'player' ? 'opponent' : 'player', 'Deck Out');
+                }
+                return null;
+            }
+
+            const card = gameState[player].deck.pop();
+
+            // If hand is full, discard oldest card (first in hand) to make room
+            if (gameState[player].hand.length >= HAND_LIMIT) {
+                const discarded = gameState[player].hand.shift(); // Remove oldest card
+                if (!silent) {
+                    addLog(`${player === 'player' ? 'Your' : 'Opponent\'s'} hand is full. Discarded ${discarded.name} to draw ${card.name}.`, player === 'player' ? null : 'opponent');
+                }
+            }
+
+            gameState[player].hand.push(card);
+
+            if (!silent && player === 'player') {
+                addLog(`You drew: ${card.name}`);
+            }
+
+            return card;
+        }
+
+        function drawCard() {
+            if (gameState.phase !== 'draw') {
+                addLog('You can only draw during the Draw Phase!');
+                return;
+            }
+
+            const drawn = drawCardToHand('player');
+            gameState.phase = 'main';
+
+            document.getElementById('drawCardBtn').disabled = true;
+            document.getElementById('endTurnBtn').disabled = false;
+
+            updateUI();
+            if (!drawn) {
+                addLog(`Hand is full (${HAND_LIMIT}). You must play a card.`);
+            }
+
+            // If no actions are available, end the turn automatically
+            maybeAutoEndTurn();
+        }
+
+        function playCard(card, player) {
+            if (player !== 'player' || gameState.currentPlayer !== 'player') return;
+            if (gameState.phase !== 'main') {
+                addLog('You can only play cards during your Main Phase!');
+                return;
+            }
+
+            if (card.type === 'fighter') {
+                // Initialize fighter stats
+                if (!card.strikingBonus) card.strikingBonus = 0;
+
+                // If no active fighter, set as active; otherwise place on bench (max 5)
+                if (!gameState.player.activeFighter) {
+                    gameState.player.activeFighter = card;
+                } else {
+                    if ((gameState.player.bench || []).length >= 5) {
+                        addLog('Your bench is full (max 5)!');
+                        return;
+                    }
+                    gameState.player.bench.push(card);
+                    addLog(`${card.name} moved to your bench.`);
+                }
+                gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== card.uniqueId);
+
+                addLog(`${card.name} enters the Octagon!`);
+
+                updateUI();
+            } else if (card.type === 'technique') {
+                if (!gameState.player.activeFighter) {
+                    addLog('You need an active fighter to use techniques!');
+                    return;
+                }
+
+                if (card.energy > gameState.player.energy) {
+                    addLog(`Not enough energy! Need ${card.energy}, have ${gameState.player.energy}`);
+                    return;
+                }
+
+                // Ground and Pound requires positional advantage; block early without announcing
+                if (card.id === 'tech_gnp' && !gameState.player.positionalAdvantage) {
+                    addLog('You need positional advantage for Ground and Pound!');
+                    return;
+                }
+
+                // Submissions require either player to have positional advantage (fight on ground)
+                if (card.subtype === 'submission' && !gameState.player.positionalAdvantage && !gameState.opponent.positionalAdvantage) {
+                    addLog('Fight must be on the ground to use submissions!');
+                    return;
+                }
+
+                // Pre-announce technique to ensure a banner always appears (except for gnp and submissions blocked above)
+                if (gameState.player.activeFighter) {
+                    showAction(`${gameState.player.activeFighter.name} uses ${card.name}!`, 'player');
+                }
+                executeTechnique(card, 'player');
+            } else if (card.type === 'corner') {
+                if (!gameState.player.activeFighter) {
+                    addLog('You need an active fighter to use corner cards!');
+                    return;
+                }
+
+                if (card.energy > gameState.player.energy) {
+                    addLog(`Not enough energy! Need ${card.energy}, have ${gameState.player.energy}`);
+                    return;
+                }
+
+                executeCornerCard(card, 'player');
+            }
+
+            // After any play, if it's still your main phase and nothing else can be done, auto-end
+            maybeAutoEndTurn();
+        }
+
+        function executeTechnique(card, player) {
+            const attacker = gameState[player];
+            const defender = player === 'player' ? gameState.opponent : gameState.player;
+
+            // Check if both players have active fighters for strikes, grappling and submissions
+            if ((card.subtype === 'strike' || card.subtype === 'submission' || card.subtype === 'grappling') && !defender.activeFighter) {
+                addLog('Opponent needs an active fighter to attack!');
+                return;
+            }
+
+            if (!attacker.activeFighter) {
+                addLog('You need an active fighter to use techniques!');
+                return;
+            }
+
+            attacker.energy -= card.energy;
+            attacker.hand = attacker.hand.filter(c => c.uniqueId !== card.uniqueId);
+
+            if (card.subtype === 'strike') {
+                // Ground and Pound requires positional advantage on both sides
+                if (card.id === 'tech_gnp' && !attacker.positionalAdvantage) {
+                    addLog('You need positional advantage for Ground and Pound!', player);
+                    attacker.energy += card.energy;
+                    attacker.hand.push(card);
+                    return;
+                }
+                // Pre-announce already done, don't duplicate
+                const strikingBonus = attacker.activeFighter.strikingBonus || 0;
+                let damage = card.damage + attacker.activeFighter.striking + strikingBonus - defender.activeFighter.defense;
+
+                // Apply style bonuses
+                if (attacker.activeFighter.style === 'Striker') {
+                    damage += 2;
+                }
+                
+                // Apply defender's temporary defense if any
+                if (defender.defenseBuff && defender.defenseBuff.amount) {
+                    const reduction = defender.defenseBuff.amount;
+                    damage -= reduction;
+                    showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage');
+                    if (defender.defenseBuff.type === 'parry') {
+                        const counter = 3;
+                        attacker.activeFighter.stamina -= counter;
+                        showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        checkFighterKO(attacker, player);
+                    }
+                    defender.defenseBuff = null;
+                }
+
+                // Ground and Pound bonus with positional advantage (add before showing damage)
+                if (card.id === 'tech_gnp' && attacker.positionalAdvantage) {
+                    damage += 3;
+                }
+
+                damage = Math.max(1, damage);
+                defender.activeFighter.stamina -= damage;
+
+                showAction(`${card.name}: ${damage} damage!`, player, 'damage');
+                floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
+
+                // On-hit status effects (e.g., Bleed)
+                if (card.onHitStatus && card.onHitStatus.type === 'bleed') {
+                    defender.activeFighter.status = defender.activeFighter.status || {};
+                    defender.activeFighter.status.bleed = { amount: card.onHitStatus.amount, turns: card.onHitStatus.turns };
+                    showAction(`Bleed applied (${card.onHitStatus.amount} dmg for ${card.onHitStatus.turns} turns)`, player, 'advantage');
+                }
+
+                // Spinning Back Fist effect: if not blocked (no defense buff applied), skip next turn
+                if (card.id === 'tech_spinning') {
+                    defender.skipNextTurn = true;
+                    showAction(`Opponent staggered! Skip next turn.`, player, 'advantage');
+                    floatTextOverFighter(player === 'player' ? 'opponent' : 'player', 'STAGGERED', 'info');
+                }
+
+                // Regular strikes (not Ground and Pound) reset the fight to standing - both lose advantage
+                if (card.id !== 'tech_gnp') {
+                    if (attacker.positionalAdvantage || defender.positionalAdvantage) {
+                        attacker.positionalAdvantage = false;
+                        defender.positionalAdvantage = false;
+                        showAction('Fight returns to standing!', player, 'advantage');
+                    }
+                }
+
+                checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
+                
+            } else if (card.subtype === 'grappling') {
+                // Pre-announce already done, don't duplicate
+                let attackerGrappling = attacker.activeFighter.grappling + card.bonus;
+
+                if (attacker.activeFighter.style === 'Grappler') {
+                    attackerGrappling += 2;
+                }
+
+                // Calculate defender's grappling defense (defense stat, adjusted by stamina)
+                let grapplingDefense = defender.activeFighter.defense;
+
+                // Stamina affects takedown defense - tired fighters are easier to take down
+                const staminaPercent = defender.activeFighter.stamina / defender.activeFighter.maxStamina;
+                if (staminaPercent < 0.3) {
+                    grapplingDefense -= 3; // Very tired
+                } else if (staminaPercent < 0.5) {
+                    grapplingDefense -= 2; // Tired
+                } else if (staminaPercent < 0.7) {
+                    grapplingDefense -= 1; // Somewhat tired
+                }
+
+                // Calculate takedown success probability
+                // Base 50% + 10% for each point of advantage
+                const difference = attackerGrappling - grapplingDefense;
+                let successChance = 0.5 + (difference * 0.1);
+
+                // Clamp between 10% and 90% (always some chance of success/failure)
+                successChance = Math.max(0.1, Math.min(0.9, successChance));
+
+                // Roll for success
+                const roll = Math.random();
+                if (roll < successChance) {
+                    attacker.positionalAdvantage = true;
+                    showAction(`${attacker.activeFighter.name} gains Advantage!`, player, 'advantage');
+                    if (card.damage) {
+                        defender.activeFighter.stamina -= card.damage;
+                        showAction(`Takedown impact: ${card.damage} damage!`, player, 'damage');
+                        floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${card.damage}`, 'damage');
+                        checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
+                    }
+                } else {
+                    showAction(`Takedown stuffed!`, player);
+                }
+                
+            } else if (card.subtype === 'submission') {
+                // Pre-announce already done, don't duplicate
+
+                let damage = card.damage;
+
+                // Add half grappling stat to submission damage (attacker's submission skill)
+                const grapplingBonus = Math.floor(attacker.activeFighter.grappling / 2);
+                damage += grapplingBonus;
+
+                // Subtract defender's grappling (submission defense comes from grappling knowledge, not defense)
+                const submissionDefense = Math.floor(defender.activeFighter.grappling / 2);
+                damage -= submissionDefense;
+
+                // Check who has positional advantage
+                if (attacker.positionalAdvantage) {
+                    // Bonus damage when you have advantage (better control)
+                    damage += 2;
+                } else if (defender.positionalAdvantage) {
+                    // Penalty when opponent has advantage (you're attempting from bottom)
+                    damage -= 2;
+                }
+
+                // Ensure minimum damage
+                damage = Math.max(1, damage);
+
+                // Show message with ACTUAL damage that will be dealt
+                if (attacker.positionalAdvantage) {
+                    showAction(`${card.name} locked in: ${damage} damage!`, player, 'damage');
+                } else if (defender.positionalAdvantage) {
+                    showAction(`${card.name} from bottom: ${damage} damage!`, player, 'damage');
+                } else {
+                    showAction(`${card.name}: ${damage} damage!`, player, 'damage');
+                }
+
+                defender.activeFighter.stamina -= damage;
+                floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
+                checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
+            } else if (card.subtype === 'defense') {
+                // Set a one-time defense buff applied to defender on next incoming strike
+                const target = attacker; // playing defense for yourself
+                const amount = card.reduction || 0;
+                const type = card.id === 'tech_parry' ? 'parry' : 'block';
+                target.defenseBuff = { amount, type };
+                showAction(`${card.name} ready (-${amount} next dmg${type === 'parry' ? ', counter 3' : ''})`, player, 'advantage');
+            }
+            
+            updateUI();
+        }
+
+        function executeCornerCard(card, player) {
+            const p = gameState[player];
+
+            if (!p.activeFighter) {
+                addLog(`${player === 'player' ? 'You need' : 'Opponent needs'} an active fighter to use corner cards!`, player);
+                return;
+            }
+
+            p.energy -= card.energy;
+            p.hand = p.hand.filter(c => c.uniqueId !== card.uniqueId);
+            showAction(`${card.name} played!`, player);
+
+            if (card.effect.includes('+1 to all stats')) {
+                p.activeFighter.striking += 1;
+                p.activeFighter.grappling += 1;
+                p.activeFighter.defense += 1;
+                const drawnCard = drawCardToHand(player);
+                if (drawnCard) {
+                    showAction(`Effect: +1 all stats, drew ${drawnCard.name}`, player, 'advantage');
+                } else {
+                    showAction('Effect: +1 all stats (hand full, no draw)', player, 'advantage');
+                }
+            } else if (card.effect.includes('+3 Striking')) {
+                // Initialize strikingBonus if it doesn't exist
+                if (typeof p.activeFighter.strikingBonus === 'undefined') {
+                    p.activeFighter.strikingBonus = 0;
+                }
+                p.activeFighter.strikingBonus += 3;
+                showAction(`Effect: +3 Striking this round (next strike will deal +${p.activeFighter.strikingBonus} bonus damage)`, player, 'advantage');
+            } else if (card.effect.includes('Restore 10 Stamina')) {
+                const oldStamina = p.activeFighter.stamina;
+                p.activeFighter.stamina = Math.min(p.activeFighter.maxStamina, p.activeFighter.stamina + 10);
+                const actualHeal = p.activeFighter.stamina - oldStamina;
+                floatTextOverFighter(player, `+${actualHeal}`, 'heal');
+                showAction(`Effect: Restored ${actualHeal} stamina`, player, 'heal');
+            }
+
+            updateUI();
+        }
+
+        function checkFighterKO(defender, defenderName) {
+            if (defender.activeFighter.stamina <= 0) {
+                showAction(`${defender.activeFighter.name} KO'd!`, defenderName, 'ko');
+                defender.activeFighter = null;
+                defender.health -= 20;
+
+                // Reset positional advantages when fighter is KO'd (new fight scenario)
+                gameState.player.positionalAdvantage = false;
+                gameState.opponent.positionalAdvantage = false;
+
+                showAction(`${defenderName === 'player' ? 'You lose' : 'Opponent loses'} 20 health!`, defenderName, 'damage');
+                floatTextOverFighter(defenderName, `-20`, 'damage');
+
+                if (defender.health <= 0) {
+                    endGame(defenderName === 'player' ? 'opponent' : 'player', 'Health depleted');
+                    return;
+                }
+
+                // Player gets to choose replacement fighter
+                if (defenderName === 'player') {
+                    setTimeout(() => {
+                        promptReplacementFighterSelection();
+                    }, 800);
+                } else {
+                    // Opponent auto-selects (AI behavior)
+                    // Promote from bench first
+                    if ((defender.bench || []).length > 0) {
+                        const newFighter = defender.bench.shift();
+                        setTimeout(() => {
+                            if (!newFighter.strikingBonus) newFighter.strikingBonus = 0;
+                            defender.activeFighter = newFighter;
+                            addLog(`Opponent promotes ${newFighter.name} from bench!`, defenderName);
+                            updateUI();
+                        }, 800);
+                    } else {
+                        // Try from hand
+                        let newFighter = defender.hand.find(c => c.type === 'fighter');
+                        if (newFighter) {
+                            setTimeout(() => {
+                                if (!newFighter.strikingBonus) newFighter.strikingBonus = 0;
+                                defender.activeFighter = newFighter;
+                                defender.hand = defender.hand.filter(c => c.uniqueId !== newFighter.uniqueId);
+                                addLog(`Opponent deploys ${newFighter.name}!`, defenderName);
+                                updateUI();
+                            }, 800);
+                        } else {
+                            // Draw until fighter found or deck empty
+                            const drawUntilFighter = () => {
+                                if (defender.deck.length === 0) {
+                                    addLog(`Opponent has no fighters left!`, defenderName);
+                                    updateUI();
+                                    setTimeout(() => {
+                                        endGame('player', 'No fighters remaining');
+                                    }, 1000);
+                                    return;
+                                }
+                                const card = defender.deck.pop();
+                                if (card.type === 'fighter') {
+                                    if (!card.strikingBonus) card.strikingBonus = 0;
+                                    defender.activeFighter = card;
+                                    addLog(`Opponent top-decks ${card.name}!`, defenderName);
+                                    updateUI();
+                                } else {
+                                    defender.hand.push(card);
+                                    drawUntilFighter();
+                                }
+                            };
+                            setTimeout(drawUntilFighter, 800);
+                        }
+                    }
+                }
+
+                updateUI();
+            }
+        }
+
+        function startPlayerTurn() {
+            gameState.currentPlayer = 'player';
+            gameState.phase = 'energy';
+
+            // Energy phase
+            if (gameState.turn === 1) {
+                gameState.player.energy = 7; // fixed first-turn energy
+            } else {
+                gameState.player.energy = Math.min(gameState.player.maxEnergy, gameState.player.energy + 2);
+            }
+
+            // Reset per-round bonuses
+            if (gameState.player.activeFighter) {
+                gameState.player.activeFighter.strikingBonus = 0;
+            }
+
+            // Start-of-turn status effects (e.g., Bleed)
+            if (gameState.player.activeFighter && gameState.player.activeFighter.status && gameState.player.activeFighter.status.bleed) {
+                const b = gameState.player.activeFighter.status.bleed;
+                gameState.player.activeFighter.stamina -= b.amount;
+                b.turns -= 1;
+                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'player', 'damage');
+                floatTextOverFighter('player', `-${b.amount}`, 'damage');
+                if (b.turns <= 0) {
+                    delete gameState.player.activeFighter.status.bleed;
+                }
+                checkFighterKO(gameState.player, 'player');
+            }
+
+            // Handle skip-next-turn effect (after energy is applied)
+            if (gameState.player.skipNextTurn) {
+                gameState.player.skipNextTurn = false;
+                addLog('You are staggered and skip this turn!');
+                updateUI();
+                setTimeout(() => opponentTurn(), 500);
+                return;
+            }
+            
+            // Always allow draw phase, even if hand is full (will auto-discard oldest)
+            gameState.phase = 'draw';
+            document.getElementById('drawCardBtn').disabled = false;
+            document.getElementById('endTurnBtn').disabled = false; // Can skip draw and end turn
+
+            if (gameState.player.hand.length >= HAND_LIMIT) {
+                addLog(`Your hand is full (${HAND_LIMIT}). Draw to replace oldest card, or skip to Main Phase.`);
+            }
+            
+            addLog(`--- Turn ${gameState.turn}: Your Turn ---`);
+            addLog(`You gained energy! Current: ${gameState.player.energy}`);
+            
+            updateUI();
+            if (gameState.phase === 'main') {
+                maybeAutoEndTurn();
+            }
+        }
+
+        function endTurn(isAuto = false) {
+            if (gameState.currentPlayer !== 'player') return;
+
+            // If in draw phase, "End Turn" button skips draw and goes to main phase
+            if (gameState.phase === 'draw') {
+                gameState.phase = 'main';
+                document.getElementById('drawCardBtn').disabled = true;
+                document.getElementById('endTurnBtn').disabled = false;
+                addLog('Skipped draw. Main Phase: Play cards from your hand.');
+                updateUI();
+                maybeAutoEndTurn();
+                return;
+            }
+
+            gameState.phase = 'end';
+
+            // Discard down to HAND_LIMIT cards
+            while (gameState.player.hand.length > HAND_LIMIT) {
+                gameState.player.hand.pop();
+            }
+
+            document.getElementById('endTurnBtn').disabled = true;
+
+            if (!isAuto) {
+                addLog('Your turn ended.');
+            }
+            updateUI();
+
+            setTimeout(() => {
+                opponentTurn();
+            }, 1000);
+        }
+
+        function opponentTurn() {
+            gameState.currentPlayer = 'opponent';
+            gameState.phase = 'energy';
+            gameState.turn++;
+            
+            addLog(`--- Turn ${gameState.turn}: Opponent's Turn ---`, 'opponent');
+            
+            // Energy phase
+            if (gameState.turn === 2) {
+                gameState.opponent.energy = 7; // fixed first opponent turn energy
+            } else {
+                gameState.opponent.energy = Math.min(gameState.opponent.maxEnergy, gameState.opponent.energy + 2);
+            }
+
+            // Reset per-round bonuses
+            if (gameState.opponent.activeFighter) {
+                gameState.opponent.activeFighter.strikingBonus = 0;
+            }
+
+            // Start-of-turn status effects for opponent
+            if (gameState.opponent.activeFighter && gameState.opponent.activeFighter.status && gameState.opponent.activeFighter.status.bleed) {
+                const b = gameState.opponent.activeFighter.status.bleed;
+                gameState.opponent.activeFighter.stamina -= b.amount;
+                b.turns -= 1;
+                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'opponent', 'damage');
+                floatTextOverFighter('opponent', `-${b.amount}`, 'damage');
+                if (b.turns <= 0) {
+                    delete gameState.opponent.activeFighter.status.bleed;
+                }
+                checkFighterKO(gameState.opponent, 'opponent');
+            }
+
+            // Handle skip-next-turn effect (after energy is applied)
+            if (gameState.opponent.skipNextTurn) {
+                gameState.opponent.skipNextTurn = false;
+                addLog('Opponent is staggered and skips their turn!', 'opponent');
+                updateUI();
+                setTimeout(() => { startPlayerTurn(); }, 500);
+                return;
+            }
+            
+            // Opponent draw phase (skip draw if hand full)
+            gameState.phase = 'draw';
+            updateUI();
+            
+            setTimeout(() => {
+                // Draw card if hand not full
+                if (gameState.opponent.hand.length < HAND_LIMIT) {
+                    drawCardToHand('opponent');
+                    addLog('Opponent draws a card', 'opponent');
+                } else {
+                    addLog(`Opponent hand is full (${HAND_LIMIT}).`, 'opponent');
+                }
+                
+                gameState.phase = 'main';
+                updateUI();
+                
+                setTimeout(() => {
+                    executeOpponentAI();
+                }, 1500);
+            }, 1000);
+        }
+
+        function executeOpponentAI() {
+            // MUST play fighter if needed - this is critical
+            if (!gameState.opponent.activeFighter) {
+                const fighter = gameState.opponent.hand.find(c => c.type === 'fighter');
+                if (fighter) {
+                    // Initialize fighter stats
+                    if (!fighter.strikingBonus) fighter.strikingBonus = 0;
+
+                    gameState.opponent.activeFighter = fighter;
+                    gameState.opponent.hand = gameState.opponent.hand.filter(c => c.uniqueId !== fighter.uniqueId);
+                    addLog(`Opponent plays ${fighter.name}!`, 'opponent');
+                    updateUI();
+
+                    setTimeout(() => continueOpponentAI(), 1000);
+                    return;
+                } else {
+                    // No fighter available - end turn immediately
+                    addLog('Opponent has no fighter to play!', 'opponent');
+                    endOpponentTurn();
+                    return;
+                }
+            }
+
+            continueOpponentAI();
+        }
+
+        function continueOpponentAI() {
+            // Can only play techniques if both players have fighters
+            if (!gameState.opponent.activeFighter || !gameState.player.activeFighter) {
+                endOpponentTurn();
+                return;
+            }
+
+            // Check if low stamina - prioritize healing with corner cards
+            const needsHealing = gameState.opponent.activeFighter.stamina < (gameState.opponent.activeFighter.maxStamina * 0.4);
+            if (needsHealing) {
+                const healCard = gameState.opponent.hand.find(c => c.type === 'corner' && c.effect.includes('Restore') && c.energy <= gameState.opponent.energy);
+                if (healCard) {
+                    executeCornerCard(healCard, 'opponent');
+                    setTimeout(() => {
+                        if (gameState.opponent.energy > 0 && Math.random() > 0.4) {
+                            continueOpponentAI();
+                        } else {
+                            endOpponentTurn();
+                        }
+                    }, 1500);
+                    return;
+                }
+            }
+
+            // Sometimes play corner cards strategically
+            if (Math.random() > 0.7 && gameState.opponent.energy >= 3) {
+                const cornerCard = gameState.opponent.hand.find(c => c.type === 'corner' && c.energy <= gameState.opponent.energy);
+                if (cornerCard) {
+                    executeCornerCard(cornerCard, 'opponent');
+                    setTimeout(() => {
+                        if (gameState.opponent.energy > 0 && Math.random() > 0.4) {
+                            continueOpponentAI();
+                        } else {
+                            endOpponentTurn();
+                        }
+                    }, 1500);
+                    return;
+                }
+            }
+
+            // Simple AI: Play techniques if truly playable
+            const playableTechs = gameState.opponent.hand.filter(c => {
+                if (c.type !== 'technique') return false;
+                if (c.energy > gameState.opponent.energy) return false;
+                // Ground and Pound requires positional advantage
+                if (c.id === 'tech_gnp' && !gameState.opponent.positionalAdvantage) {
+                    return false;
+                }
+                // Submissions require fight to be on ground (either player has advantage)
+                if (c.subtype === 'submission') {
+                    return gameState.opponent.positionalAdvantage === true || gameState.player.positionalAdvantage === true;
+                }
+                // strikes and grappling are playable with both fighters active
+                return true;
+            });
+
+            if (playableTechs.length > 0) {
+                const tech = playableTechs[Math.floor(Math.random() * playableTechs.length)];
+                // Execute directly; executeTechnique will display the action and results
+                executeTechnique(tech, 'opponent');
+
+                setTimeout(() => {
+                    const stillHasPlayable = gameState.opponent.hand.some(c => {
+                        if (c.type !== 'technique') return false;
+                        if (c.energy > gameState.opponent.energy) return false;
+                        // Ground and Pound requires positional advantage
+                        if (c.id === 'tech_gnp' && !gameState.opponent.positionalAdvantage) {
+                            return false;
+                        }
+                        // Submissions require fight to be on ground (either player has advantage)
+                        if (c.subtype === 'submission') {
+                            return gameState.opponent.positionalAdvantage === true || gameState.player.positionalAdvantage === true;
+                        }
+                        return true;
+                    });
+                    if (stillHasPlayable && Math.random() > 0.3) {
+                        continueOpponentAI();
+                    } else {
+                        endOpponentTurn();
+                    }
+                }, 1500);
+            } else {
+                endOpponentTurn();
+            }
+        }
+
+        function endOpponentTurn() {
+            gameState.phase = 'end';
+            
+            while (gameState.opponent.hand.length > HAND_LIMIT) {
+                gameState.opponent.hand.pop();
+            }
+            
+            addLog('Opponent ends their turn', 'opponent');
+            updateUI();
+            
+            setTimeout(() => {
+                startPlayerTurn();
+            }, 1000);
+        }
+
+        // Attack button removed; clicking cards triggers plays directly
+
+
+        function endGame(winner, reason) {
+            const modal = document.getElementById('gameOverModal');
+            const title = document.getElementById('gameOverTitle');
+            const message = document.getElementById('gameOverMessage');
+            const content = modal.querySelector('.modal-content');
+            
+            if (winner === 'player') {
+                title.textContent = 'VICTORY!';
+                message.textContent = `You defeated the opponent! ${reason}`;
+                content.classList.remove('defeat');
+            } else {
+                title.textContent = 'DEFEAT';
+                message.textContent = `You were defeated! ${reason}`;
+                content.classList.add('defeat');
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function addLog(message, player = null, type = '') {
+            // Suppress non-critical and redundant messages
+            const suppressList = [
+                'You drew:',
+                'Opponent draws a card',
+                '--- Turn',
+                'No available actions. Ending turn automatically.',
+                'You gained energy!',
+                'Main Phase: Play cards from your hand.',
+                'Opponent ends their turn',
+                'Your turn ended.'
+            ];
+            for (const marker of suppressList) {
+                if (message.startsWith(marker)) return;
+            }
+            // Route to action banners only (log UI removed)
+            showAction(message, player, type);
+        }
+
+        function showAction(message, player = null, type = '') {
+            // Resolve owner: if not provided, infer from current turn
+            let owner = player;
+            if (owner !== 'player' && owner !== 'opponent') {
+                owner = (gameState.currentPlayer === 'opponent') ? 'opponent' : 'player';
+            }
+
+            function attemptAppend(retries = 10) {
+                const feedId = owner === 'opponent' ? 'opponentActionFeed' : 'playerActionFeed';
+                let feed = document.getElementById(feedId);
+                if (!feed) {
+                    const zoneId = owner === 'opponent' ? 'opponentFighterZone' : 'playerFighterZone';
+                    const zone = document.getElementById(zoneId);
+                    if (zone) {
+                        // If zone exists but feed not yet rendered (e.g., mid-update), retry shortly
+                        if (retries > 0) {
+                            return setTimeout(() => attemptAppend(retries - 1), 80);
+                        }
+                        // As a fallback, create the feed now
+                        feed = document.createElement('div');
+                        feed.id = feedId;
+                        feed.className = 'inline-action-feed';
+                        zone.appendChild(feed);
+                    }
+                }
+                if (!feed) {
+                    feed = document.getElementById('actionFeed');
+                }
+                if (!feed) return;
+
+                // De-dupe: Only prevent identical consecutive messages (for UI spam prevention)
+                // But ALWAYS show effect messages (damage, heal, advantage, ko) as they represent actual game events
+                const isEffectMessage = type && (type === 'damage' || type === 'heal' || type === 'advantage' || type === 'ko');
+
+                if (!isEffectMessage) {
+                    // Only apply de-duplication to non-effect messages
+                    const normMsg = (message || '').trim().toLowerCase();
+                    const last = feed.lastElementChild;
+                    if (last && last.textContent && last.textContent.trim().toLowerCase() === normMsg) return;
+
+                    // De-dupe window: prevent duplicate messages within a short interval per side
+                    window.recentActionMessages = window.recentActionMessages || [];
+                    const now = Date.now();
+                    // purge old
+                    window.recentActionMessages = window.recentActionMessages.filter(m => now - m.t < 2000);
+                    const key = owner + '|' + normMsg;
+                    if (window.recentActionMessages.some(m => m.k === key)) return;
+                    window.recentActionMessages.push({ k: key, t: now });
+                }
+
+                const item = document.createElement('div');
+                item.className = 'action-item';
+                if (owner === 'opponent') item.classList.add('opponent');
+                if (owner === 'player') item.classList.add('player');
+                if (type) item.classList.add(type);
+                item.textContent = message;
+                feed.appendChild(item);
+                // Cap to 5
+                while (feed.children.length > 5) feed.removeChild(feed.firstChild);
+                setTimeout(() => {
+                    if (item.parentNode === feed) feed.removeChild(item);
+                }, 8500);
+            }
+
+            // Try to append now (will retry if feed not yet available due to UI updating)
+            attemptAppend();
+            // Also queue a microtask to re-attempt after UI update cycles
+            setTimeout(() => attemptAppend(3), 0);
+        }
+
+        function floatTextOverFighter(owner, text, cls = 'info') {
+            const zoneId = owner === 'player' ? 'playerFighterZone' : 'opponentFighterZone';
+            const zone = document.getElementById(zoneId);
+            if (!zone) return;
+            const ft = document.createElement('div');
+            ft.className = `float-text ${cls}`;
+            ft.textContent = text;
+            // attach to first child (card) if present for better positioning
+            const target = zone.firstChild && zone.firstChild.classList ? zone.firstChild : zone;
+            target.style.position = target.style.position || 'relative';
+            target.appendChild(ft);
+            setTimeout(() => ft.remove(), 900);
+        }
+
+        function updateUI() {
+            // Update turn counter
+            document.getElementById('turnCounter').textContent = gameState.turn;
+            document.getElementById('currentPhase').textContent = gameState.phase.charAt(0).toUpperCase() + gameState.phase.slice(1);
+            
+            // Update player stats
+            document.getElementById('playerEnergy').textContent = `${gameState.player.energy}/${gameState.player.maxEnergy}`;
+            document.getElementById('playerHealth').textContent = `${gameState.player.health}/${gameState.player.maxHealth}`;
+            document.getElementById('playerHealthBar').style.width = `${(gameState.player.health / gameState.player.maxHealth) * 100}%`;
+            document.getElementById('playerDeckCount').textContent = gameState.player.deck.length;
+            
+            // Update opponent stats
+            document.getElementById('opponentEnergy').textContent = `${gameState.opponent.energy}/${gameState.opponent.maxEnergy}`;
+            document.getElementById('opponentHealth').textContent = `${gameState.opponent.health}/${gameState.opponent.maxHealth}`;
+            document.getElementById('opponentHealthBar').style.width = `${(gameState.opponent.health / gameState.opponent.maxHealth) * 100}%`;
+            document.getElementById('opponentHandCount').textContent = gameState.opponent.hand.length;
+            
+            // Update turn indicator
+            const turnIndicator = document.getElementById('turnIndicator');
+            turnIndicator.textContent = gameState.currentPlayer === 'player' ? 'YOUR TURN' : 'OPPONENT\'S TURN';
+            
+            // Render fighters
+            renderFighter('player');
+            renderFighter('opponent');
+            renderBench('player');
+            renderBench('opponent');
+            
+            // Render player hand
+            renderHand();
+        }
+
+        // Determine if the player has any valid action to perform in Main Phase
+        function hasPlayableAction() {
+            if (gameState.currentPlayer !== 'player' || gameState.phase !== 'main') return false;
+            const p = gameState.player;
+            const o = gameState.opponent;
+
+            // Play a fighter if none active
+            if (!p.activeFighter && p.hand.some(c => c.type === 'fighter')) return true;
+
+            // Play a corner card (requires energy and an active fighter to avoid errors)
+            if (p.activeFighter && p.hand.some(c => c.type === 'corner' && c.energy <= p.energy)) return true;
+
+            // Techniques
+            const hasTechnique = p.hand.some(c => {
+                if (c.type !== 'technique') return false;
+                if (c.energy > p.energy) return false;
+                if (!p.activeFighter) return false;
+                if (!o.activeFighter) return false; // strikes/grappling/submission all reference defender's fighter
+
+                if (c.subtype === 'submission') {
+                    // Submissions require either player to have advantage (fight on ground)
+                    return p.positionalAdvantage === true || o.positionalAdvantage === true;
+                }
+                // strikes and grappling are allowed with both fighters active
+                return true;
+            });
+            if (hasTechnique) return true;
+
+            return false;
+        }
+
+        // End the player's turn automatically if no actions are left
+        function maybeAutoEndTurn() {
+            if (gameState.currentPlayer === 'player' && gameState.phase === 'main' && !hasPlayableAction()) {
+                addLog('No available actions. Ending turn automatically.');
+                endTurn(true);
+            }
+        }
+
+        function renderFighter(player) {
+            const zone = document.getElementById(player === 'player' ? 'playerFighterZone' : 'opponentFighterZone');
+            zone.innerHTML = '';
+            
+            if (!gameState[player].activeFighter) {
+                const emptySlot = document.createElement('div');
+                emptySlot.className = 'empty-slot';
+                emptySlot.textContent = 'No Active Fighter';
+                zone.appendChild(emptySlot);
+                // Ensure action feed container exists beside where fighter would be
+                const feed = document.createElement('div');
+                feed.id = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
+                feed.className = 'inline-action-feed';
+                zone.appendChild(feed);
+                return;
+            }
+            
+            const fighter = gameState[player].activeFighter;
+            const card = createFighterCard(fighter, player);
+            zone.appendChild(card);
+            // Add/ensure inline action feed next to fighter
+            const feed = document.createElement('div');
+            feed.id = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
+            feed.className = 'inline-action-feed';
+            zone.appendChild(feed);
+        }
+
+        function renderBench(owner) {
+            const benchEl = document.getElementById(owner === 'player' ? 'playerBench' : 'opponentBench');
+            benchEl.innerHTML = '';
+            const bench = gameState[owner].bench || [];
+            bench.forEach(f => {
+                const card = createFighterCard(f, owner);
+                card.classList.add('bench-card');
+                benchEl.appendChild(card);
+            });
+        }
+
+        function createFighterCard(fighter, owner) {
+            const card = document.createElement('div');
+            card.className = `card fighter-card ${owner === 'opponent' ? 'opponent-card' : ''}`;
+            
+            const staminaPercent = (fighter.stamina / fighter.maxStamina) * 100;
+            const staminaColor = staminaPercent > 50 ? '#4ecca3' : staminaPercent > 25 ? '#ffd700' : '#e94560';
+
+            // Show striking with bonus if active
+            const strikingBonus = fighter.strikingBonus || 0;
+            const strikingDisplay = strikingBonus > 0
+                ? `${fighter.striking} <span style="color: #ffd700;">+${strikingBonus}</span>`
+                : fighter.striking;
+
+            card.innerHTML = `
+                <div class="card-header">${fighter.name}</div>
+                <div class="card-type">${fighter.style}</div>
+                <div class="card-stats">
+                    <div class="card-stat">
+                        <span class="card-stat-label">Striking:</span>
+                        <span class="card-stat-value">${strikingDisplay}</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Grappling:</span>
+                        <span class="card-stat-value">${fighter.grappling}</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Defense:</span>
+                        <span class="card-stat-value">${fighter.defense}</span>
+                    </div>
+                    <div class="card-stat">
+                        <span class="card-stat-label">Stamina:</span>
+                        <span class="card-stat-value" style="color: ${staminaColor}">${fighter.stamina}/${fighter.maxStamina}</span>
+                    </div>
+                </div>
+                <div class="stamina-bar-bg">
+                    <div class="stamina-bar-fill" style="width: ${staminaPercent}%"></div>
+                </div>
+                ${gameState[owner].positionalAdvantage ? '<span class="positional-advantage">⭐ ADVANTAGE</span>' : ''}
+            `;
+            
+            return card;
+        }
+
+        function renderHand() {
+            const handArea = document.getElementById('playerHand');
+            handArea.innerHTML = '';
+            
+            gameState.player.hand.forEach(card => {
+                const cardElement = createHandCard(card);
+                handArea.appendChild(cardElement);
+            });
+        }
+
+        function createHandCard(card) {
+            const cardElement = document.createElement('div');
+            cardElement.className = 'card';
+
+            if (card.type === 'fighter') {
+                cardElement.className += ' fighter-card';
+            }
+
+            let canPlay = false;
+            if (card.type === 'fighter') {
+                // Can play fighter if no active fighter
+                canPlay = !gameState.player.activeFighter;
+            } else if (card.type === 'technique') {
+                // Can play technique if have enough energy AND have active fighter
+                canPlay = card.energy <= gameState.player.energy && gameState.player.activeFighter;
+            } else if (card.type === 'corner') {
+                // Can play corner if have enough energy AND have active fighter
+                canPlay = card.energy <= gameState.player.energy && gameState.player.activeFighter;
+            }
+
+            if (!canPlay || gameState.currentPlayer !== 'player' || gameState.phase !== 'main') {
+                cardElement.classList.add('disabled');
+            } else {
+                // Highlight playable cards
+                cardElement.classList.add('glow');
+            }
+            
+            if (card.type === 'fighter') {
+                cardElement.innerHTML = `
+                    <div class="card-header">${card.name}</div>
+                    <div class="card-type">${card.style}</div>
+                    <div class="card-stats">
+                        <div class="card-stat">
+                            <span class="card-stat-label">Striking:</span>
+                            <span class="card-stat-value">${card.striking}</span>
+                        </div>
+                        <div class="card-stat">
+                            <span class="card-stat-label">Grappling:</span>
+                            <span class="card-stat-value">${card.grappling}</span>
+                        </div>
+                        <div class="card-stat">
+                            <span class="card-stat-label">Defense:</span>
+                            <span class="card-stat-value">${card.defense}</span>
+                        </div>
+                        <div class="card-stat">
+                            <span class="card-stat-label">Stamina:</span>
+                            <span class="card-stat-value">${card.stamina}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (card.type === 'technique') {
+                cardElement.innerHTML = `
+                    <div class="card-energy">${card.energy}</div>
+                    <div class="card-header">${card.name}</div>
+                    <div class="card-type">${card.subtype.charAt(0).toUpperCase() + card.subtype.slice(1)}</div>
+                    ${card.damage ? `<div class="card-stat"><span class="card-stat-label">Damage:</span><span class="card-stat-value">${card.damage}</span></div>` : ''}
+                    ${card.bonus ? `<div class="card-stat"><span class="card-stat-label">Bonus:</span><span class="card-stat-value">+${card.bonus}</span></div>` : ''}
+                    <div class="card-ability">${card.effect}</div>
+                `;
+            } else if (card.type === 'corner') {
+                cardElement.innerHTML = `
+                    <div class="card-energy">${card.energy}</div>
+                    <div class="card-header">${card.name}</div>
+                    <div class="card-type">Corner Card</div>
+                    <div class="card-ability">${card.effect}</div>
+                `;
+            }
+            
+            cardElement.onclick = () => playCard(card, 'player');
+            
+            return cardElement;
+        }
+
+        // Start the game when page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>
