@@ -2270,27 +2270,35 @@
                     defender.defenseBuff = null;
                 }
 
-                // Ensure minimum damage of 1 (can't block all damage)
-                damage = Math.max(1, damage);
-                defender.activeFighter.stamina -= damage;
+                // Defensive cards can reduce damage to 0
+                damage = Math.max(0, damage);
 
-                // Track damage for round stats
-                gameState.roundStats[player].damageDealt += damage;
+                // Only deal damage and track stats if damage > 0
+                if (damage > 0) {
+                    defender.activeFighter.stamina -= damage;
 
-                // Build momentum on successful attack
-                if (attacker.momentum < MAX_MOMENTUM) {
-                    attacker.momentum++;
-                    floatTextOverFighter(player, `⚡ ${attacker.momentum}`, 'info');
+                    // Track damage for round stats
+                    gameState.roundStats[player].damageDealt += damage;
+
+                    // Build momentum on successful attack
+                    if (attacker.momentum < MAX_MOMENTUM) {
+                        attacker.momentum++;
+                        floatTextOverFighter(player, `⚡ ${attacker.momentum}`, 'info');
+                    }
+
+                    // Build fatigue on defender when taking damage
+                    const defenderPlayer = player === 'player' ? 'opponent' : 'player';
+                    if (damage >= 5) {
+                        gameState[defenderPlayer].fatigue = Math.min(3, gameState[defenderPlayer].fatigue + 1);
+                    }
+
+                    showAction(`${card.name}: ${damage} damage!`, player, 'damage');
+                    floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
+                } else {
+                    // Attack completely blocked
+                    showAction(`${card.name} completely blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage');
+                    floatTextOverFighter(player === 'player' ? 'opponent' : 'player', 'BLOCKED', 'info');
                 }
-
-                // Build fatigue on defender when taking damage (every 10 damage = 1 fatigue)
-                const defenderPlayer = player === 'player' ? 'opponent' : 'player';
-                if (damage >= 5) {
-                    gameState[defenderPlayer].fatigue = Math.min(3, gameState[defenderPlayer].fatigue + 1);
-                }
-
-                showAction(`${card.name}: ${damage} damage!`, player, 'damage');
-                floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
 
                 // On-hit status effects (e.g., Bleed) - only applies if not blocked
                 if (card.onHitStatus && card.onHitStatus.type === 'bleed' && !wasBlocked) {
@@ -2466,23 +2474,8 @@
                     defender.defenseBuff = null;
                 }
 
-                // Ensure minimum damage of 1 (can't block all damage)
-                damage = Math.max(1, damage);
-
-                // Track damage for round stats
-                gameState.roundStats[player].damageDealt += damage;
-
-                // Build momentum on successful attack
-                if (attacker.momentum < MAX_MOMENTUM) {
-                    attacker.momentum++;
-                    floatTextOverFighter(player, `⚡ ${attacker.momentum}`, 'info');
-                }
-
-                // Build fatigue on defender when taking damage
-                const defenderPlayer = player === 'player' ? 'opponent' : 'player';
-                if (damage >= 5) {
-                    gameState[defenderPlayer].fatigue = Math.min(3, gameState[defenderPlayer].fatigue + 1);
-                }
+                // Defensive cards can reduce damage to 0
+                damage = Math.max(0, damage);
 
                 // Track submission combo (submissions while on ground)
                 if (attacker.lastActionType === 'submission' || attacker.lastActionType === 'grappling') {
@@ -2490,18 +2483,40 @@
                 }
                 attacker.lastActionType = 'submission';
 
-                // Show message with ACTUAL damage that will be dealt
-                if (attacker.positionalAdvantage) {
-                    showAction(`${card.name} locked in: ${damage} damage!`, player, 'damage');
-                } else if (defender.positionalAdvantage) {
-                    showAction(`${card.name} from bottom: ${damage} damage!`, player, 'damage');
-                } else {
-                    showAction(`${card.name}: ${damage} damage!`, player, 'damage');
-                }
+                // Only deal damage and track stats if damage > 0
+                if (damage > 0) {
+                    // Track damage for round stats
+                    gameState.roundStats[player].damageDealt += damage;
 
-                defender.activeFighter.stamina -= damage;
-                floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
-                checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
+                    // Build momentum on successful attack
+                    if (attacker.momentum < MAX_MOMENTUM) {
+                        attacker.momentum++;
+                        floatTextOverFighter(player, `⚡ ${attacker.momentum}`, 'info');
+                    }
+
+                    // Build fatigue on defender when taking damage
+                    const defenderPlayer = player === 'player' ? 'opponent' : 'player';
+                    if (damage >= 5) {
+                        gameState[defenderPlayer].fatigue = Math.min(3, gameState[defenderPlayer].fatigue + 1);
+                    }
+
+                    // Show message with ACTUAL damage that will be dealt
+                    if (attacker.positionalAdvantage) {
+                        showAction(`${card.name} locked in: ${damage} damage!`, player, 'damage');
+                    } else if (defender.positionalAdvantage) {
+                        showAction(`${card.name} from bottom: ${damage} damage!`, player, 'damage');
+                    } else {
+                        showAction(`${card.name}: ${damage} damage!`, player, 'damage');
+                    }
+
+                    defender.activeFighter.stamina -= damage;
+                    floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
+                    checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
+                } else {
+                    // Submission completely blocked/defended
+                    showAction(`${card.name} completely defended!`, player === 'player' ? 'opponent' : 'player', 'advantage');
+                    floatTextOverFighter(player === 'player' ? 'opponent' : 'player', 'DEFENDED', 'info');
+                }
             } else if (card.subtype === 'defense') {
                 // Set a one-time defense buff applied to defender on next incoming attack (strike or submission)
                 const target = attacker; // playing defense for yourself
