@@ -2520,7 +2520,7 @@
 
         function checkFighterKO(defender, defenderName) {
             if (defender.activeFighter.stamina <= 0) {
-                showAction(`${defender.activeFighter.name} KO'd!`, defenderName, 'ko');
+                showAction(`${defender.activeFighter.name} KO'd!`, defenderName, 'ko', 'card-technique');
                 defender.activeFighter = null;
                 defender.health -= 20;
 
@@ -2528,7 +2528,7 @@
                 gameState.player.positionalAdvantage = false;
                 gameState.opponent.positionalAdvantage = false;
 
-                showAction(`${defenderName === 'player' ? 'You lose' : 'Opponent loses'} 20 health!`, defenderName, 'damage');
+                showAction(`${defenderName === 'player' ? 'You lose' : 'Opponent loses'} 20 health!`, defenderName, 'damage', 'card-technique');
                 floatTextOverFighter(defenderName, `-20`, 'damage');
 
                 if (defender.health <= 0) {
