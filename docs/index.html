@@ -2111,7 +2111,9 @@
                 damage = Math.max(card.damage, damage);
 
                 // Apply defender's temporary defense if any (AFTER minimum damage floor)
+                let wasBlocked = false;
                 if (defender.defenseBuff && defender.defenseBuff.amount) {
+                    wasBlocked = true;
                     const reduction = defender.defenseBuff.amount;
                     damage -= reduction;
                     showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage');
@@ -2140,8 +2142,8 @@
                     showAction(`Bleed applied (${card.onHitStatus.amount} dmg for ${card.onHitStatus.turns} turns)`, player, 'advantage');
                 }
 
-                // Spinning Back Fist effect: if not blocked (no defense buff applied), skip next turn
-                if (card.id === 'tech_spinning') {
+                // Spinning Back Fist effect: only applies stagger if not blocked/parried
+                if (card.id === 'tech_spinning' && !wasBlocked) {
                     defender.skipNextTurn = true;
                     showAction(`Opponent staggered! Skip next turn.`, player, 'advantage');
                     floatTextOverFighter(player === 'player' ? 'opponent' : 'player', 'STAGGERED', 'info');
