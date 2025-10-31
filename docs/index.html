@@ -1635,30 +1635,36 @@
         }
         
         function drawOpeningHand(player) {
-            // Always draw 4 random cards + 1 guaranteed fighter (5 cards total)
+            // Always draw exactly 4 non-fighter cards + 1 fighter (5 cards total)
             gameState[player].hand = [];
+            const deck = gameState[player].deck;
 
-            // First, draw 4 random cards
-            for (let i = 0; i < 4; i++) {
-                drawCardToHand(player, true);
-            }
+            // Draw 4 non-fighter cards
+            let nonFightersDrawn = 0;
+            let deckIndex = deck.length - 1;
 
-            // Then ALWAYS add 1 fighter from deck (respecting 3 fighter limit)
-            const fightersInHand = gameState[player].hand.filter(c => c.type === 'fighter');
-
-            if (fightersInHand.length < 3) {
-                // Only add if we have less than 3 fighters
-                const deck = gameState[player].deck;
-                const fighterIdx = deck.findIndex(c => c.type === 'fighter');
-                if (fighterIdx !== -1) {
-                    const fighter = deck.splice(fighterIdx, 1)[0];
-                    gameState[player].hand.push(fighter);
-                } else {
-                    // No fighters in deck
-                    console.error('No fighters found in deck during opening hand!');
+            while (nonFightersDrawn < 4 && deckIndex >= 0) {
+                if (deck[deckIndex].type !== 'fighter') {
+                    gameState[player].hand.push(deck.splice(deckIndex, 1)[0]);
+                    nonFightersDrawn++;
                 }
+                deckIndex--;
             }
-            // If we already have 3 fighters from random draws, we're at the limit
+
+            // If couldn't find 4 non-fighters (shouldn't happen with 42 non-fighter cards), fill with any cards
+            while (gameState[player].hand.length < 4 && deck.length > 0) {
+                gameState[player].hand.push(deck.pop());
+            }
+
+            // Add exactly 1 fighter from deck
+            const fighterIdx = deck.findIndex(c => c.type === 'fighter');
+            if (fighterIdx !== -1) {
+                const fighter = deck.splice(fighterIdx, 1)[0];
+                gameState[player].hand.push(fighter);
+            } else {
+                // No fighters in deck (shouldn't happen)
+                console.error('No fighters found in deck during opening hand!');
+            }
         }
 
         function pickBestFighter(hand) {
