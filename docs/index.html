@@ -2305,7 +2305,7 @@
                 }
                 target.defenseBuff = { amount, type };
                 const counterText = type === 'parry' ? ', counter 3+' : (type === 'slip' ? ', counter 4' : '');
-                showAction(`${card.name} ready (-${amount} next dmg${counterText})`, player, 'advantage');
+                showAction(`${card.name} ready (-${amount} next DMG${counterText})`, player, 'advantage');
             }
             
             updateUI();
