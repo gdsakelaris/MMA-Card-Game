@@ -1585,7 +1585,7 @@
                     name: 'Intense Training',
                     type: 'corner',
                     energy: 2,
-                    effect: 'Fighter gains +3 Striking this round'
+                    effect: 'Fighter gains +3 Striking until next strike'
                 },
                 {
                     id: 'corner_medic',
@@ -2062,6 +2062,9 @@
                     floatTextOverFighter(player === 'player' ? 'opponent' : 'player', 'STAGGERED', 'info');
                 }
 
+                // Reset striking bonus after strike is used
+                attacker.activeFighter.strikingBonus = 0;
+
                 // Regular strikes (not Ground and Pound) reset the fight to standing - both lose advantage
                 if (card.id !== 'tech_gnp') {
                     if (attacker.positionalAdvantage || defender.positionalAdvantage) {
@@ -2201,7 +2204,7 @@
                     p.activeFighter.strikingBonus = 0;
                 }
                 p.activeFighter.strikingBonus += 3;
-                showAction(`Effect: +3 Striking this round (next strike will deal +${p.activeFighter.strikingBonus} bonus damage)`, player, 'advantage');
+                showAction(`Effect: +3 Striking (next strike will deal +${p.activeFighter.strikingBonus} bonus damage)`, player, 'advantage');
             } else if (card.effect.includes('Restore 10 Stamina')) {
                 const oldStamina = p.activeFighter.stamina;
                 p.activeFighter.stamina = Math.min(p.activeFighter.maxStamina, p.activeFighter.stamina + 10);
@@ -2284,11 +2287,6 @@
                 gameState.player.energy = 7; // fixed first-turn energy
             } else {
                 gameState.player.energy = Math.min(gameState.player.maxEnergy, gameState.player.energy + 2);
-            }
-
-            // Reset per-round bonuses
-            if (gameState.player.activeFighter) {
-                gameState.player.activeFighter.strikingBonus = 0;
             }
 
             // Start-of-turn status effects (e.g., Bleed)
@@ -2376,11 +2374,6 @@
                 gameState.opponent.energy = 7; // fixed first opponent turn energy
             } else {
                 gameState.opponent.energy = Math.min(gameState.opponent.maxEnergy, gameState.opponent.energy + 2);
-            }
-
-            // Reset per-round bonuses
-            if (gameState.opponent.activeFighter) {
-                gameState.opponent.activeFighter.strikingBonus = 0;
             }
 
             // Start-of-turn status effects for opponent

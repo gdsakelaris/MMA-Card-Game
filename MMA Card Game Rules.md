@@ -180,7 +180,7 @@ Step 3: Calculate final damage
 ## Corner Cards
 
 - **Master Coach** - 3 Energy: **Permanently** increase all stats by +1 (Striking, Grappling, Defense). Draw 1 card.
-- **Intense Training** - 2 Energy: **Temporarily** gain +3 Striking bonus for this round only (resets next turn)
+- **Intense Training** - 2 Energy: Gain +3 Striking bonus until next strike is thrown (resets after strike is used)
 - **Ringside Medic** - 3 Energy: Restore 10 Stamina (capped at maxStamina)
 
 ---
@@ -308,7 +308,7 @@ A player wins when:
 
 ### Temporary vs Permanent Bonuses
 
-- **Intense Training**: Temporary +3 striking bonus (shown in gold on fighter card, resets each turn)
+- **Intense Training**: Temporary +3 striking bonus (shown in gold on fighter card, resets after next strike is thrown)
 - **Master Coach**: Permanent +1 to all stats (visible on fighter card forever)
 
 ### Fighter Card Display
@@ -346,7 +346,7 @@ A player wins when:
 6. **Fighter Card Management**: Keep 2 fighters in hand as backup - running out of fighters in hand = instant loss
 7. **Corner Card Timing**:
    - Master Coach for permanent stat boosts (expensive but valuable)
-   - Intense Training before big strike combos
+   - Intense Training right before your next strike (bonus persists across turns until strike is used)
    - Ringside Medic for critical heals
 8. **Positional Control**: Ground and Pound keeps advantage for submission setups
 9. **Bottom Position Risk**: Submissions from bottom do only 60% damage - try to gain top position first
@@ -462,4 +462,4 @@ To play this without a computer:
 ---
 
 *Document updated to match current digital implementation*
-*Last Updated: Version 2.1 - Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters*
+*Last Updated: Version 2.2 - Intense Training bonus now persists until next strike is thrown (not just until end of turn). Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters*
