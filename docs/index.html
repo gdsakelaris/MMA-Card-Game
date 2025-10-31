@@ -2142,8 +2142,8 @@
                 showAction(`${card.name}: ${damage} damage!`, player, 'damage');
                 floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
 
-                // On-hit status effects (e.g., Bleed)
-                if (card.onHitStatus && card.onHitStatus.type === 'bleed') {
+                // On-hit status effects (e.g., Bleed) - only applies if not blocked
+                if (card.onHitStatus && card.onHitStatus.type === 'bleed' && !wasBlocked) {
                     defender.activeFighter.status = defender.activeFighter.status || {};
                     defender.activeFighter.status.bleed = { amount: card.onHitStatus.amount, turns: card.onHitStatus.turns };
                     showAction(`Bleed applied (${card.onHitStatus.amount} dmg for ${card.onHitStatus.turns} turns)`, player, 'advantage');
