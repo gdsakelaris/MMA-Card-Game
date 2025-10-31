@@ -1569,7 +1569,7 @@
                     subtype: 'defense',
                     energy: 2,
                     reduction: 3,
-                    effect: 'Reduce damage by 3 and counter for 3'
+                    effect: 'Reduce damage by 3 and counter (3 + Striking/4)'
                 },
                 {
                     id: 'tech_slip',
@@ -1578,7 +1578,7 @@
                     subtype: 'defense',
                     energy: 2,
                     reduction: 8,
-                    effect: 'Evade and reduce damage by 8'
+                    effect: 'Evade and reduce damage by 8, counter for 4'
                 }
             ],
             corners: [
@@ -2124,6 +2124,13 @@
                         showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
                         floatTextOverFighter(player, `-${counter}`, 'damage');
                         checkFighterKO(attacker, player);
+                    } else if (defender.defenseBuff.type === 'slip') {
+                        // Slip counter deals fixed 4 damage
+                        const counter = 4;
+                        attacker.activeFighter.stamina -= counter;
+                        showAction(`Slip counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        floatTextOverFighter(player, `-${counter}`, 'damage');
+                        checkFighterKO(attacker, player);
                     }
                     defender.defenseBuff = null;
                 }
@@ -2258,9 +2265,15 @@
                 // Set a one-time defense buff applied to defender on next incoming strike
                 const target = attacker; // playing defense for yourself
                 const amount = card.reduction || 0;
-                const type = card.id === 'tech_parry' ? 'parry' : 'block';
+                let type = 'block';
+                if (card.id === 'tech_parry') {
+                    type = 'parry';
+                } else if (card.id === 'tech_slip') {
+                    type = 'slip';
+                }
                 target.defenseBuff = { amount, type };
-                showAction(`${card.name} ready (-${amount} next dmg${type === 'parry' ? ', counter 3' : ''})`, player, 'advantage');
+                const counterText = type === 'parry' ? ', counter 3+' : (type === 'slip' ? ', counter 4' : '');
+                showAction(`${card.name} ready (-${amount} next dmg${counterText})`, player, 'advantage');
             }
             
             updateUI();
