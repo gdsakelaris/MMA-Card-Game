@@ -1164,7 +1164,7 @@
                 health: 100,
                 maxHealth: 100,
                 energy: 0,
-                maxEnergy: 12,
+                maxEnergy: 16,
                 deck: [],
                 hand: [],
                 activeFighter: null,
@@ -1174,7 +1174,7 @@
                 health: 100,
                 maxHealth: 100,
                 energy: 0,
-                maxEnergy: 12,
+                maxEnergy: 16,
                 deck: [],
                 hand: [],
                 activeFighter: null,
@@ -1385,7 +1385,7 @@
                     name: 'Teep Kick',
                     type: 'technique',
                     subtype: 'strike',
-                    energy: 2,
+                    energy: 1,
                     damage: 3,
                     effect: 'Push kick - resets to standing'
                 },
@@ -1442,7 +1442,7 @@
                     name: 'Head Kick',
                     type: 'technique',
                     subtype: 'strike',
-                    energy: 5,
+                    energy: 4,
                     damage: 10,
                     effect: 'Devastating high kick - resets to standing'
                 },
@@ -1452,7 +1452,7 @@
                     name: 'Ground and Pound',
                     type: 'technique',
                     subtype: 'strike',
-                    energy: 3,
+                    energy: 2,
                     damage: 6,
                     effect: 'Requires advantage. Bonus damage scales with grappling. Stays on ground'
                 },
@@ -1472,7 +1472,7 @@
                     name: 'Single Leg Takedown',
                     type: 'technique',
                     subtype: 'grappling',
-                    energy: 3,
+                    energy: 2,
                     bonus: 2,
                     damage: 2,
                     effect: 'Fast takedown - gain advantage if successful'
@@ -1482,7 +1482,7 @@
                     name: 'Double Leg Takedown',
                     type: 'technique',
                     subtype: 'grappling',
-                    energy: 4,
+                    energy: 3,
                     bonus: 3,
                     damage: 3,
                     effect: 'Powerful takedown - gain advantage if successful'
@@ -1492,7 +1492,7 @@
                     name: 'Suplex',
                     type: 'technique',
                     subtype: 'grappling',
-                    energy: 5,
+                    energy: 4,
                     bonus: 4,
                     damage: 5,
                     effect: 'Devastating slam - gain advantage if successful'
@@ -1521,7 +1521,7 @@
                     name: 'Kimura',
                     type: 'technique',
                     subtype: 'submission',
-                    energy: 4,
+                    energy: 3,
                     damage: 11,
                     effect: 'Requires ground. Shoulder lock. Stays on ground'
                 },
@@ -1548,7 +1548,7 @@
                     name: 'D\'Arce Choke',
                     type: 'technique',
                     subtype: 'submission',
-                    energy: 5,
+                    energy: 4,
                     damage: 14,
                     effect: 'Requires ground. Advanced choke. Stays on ground'
                 },
@@ -1576,7 +1576,7 @@
                     name: 'Slip Counter',
                     type: 'technique',
                     subtype: 'defense',
-                    energy: 3,
+                    energy: 2,
                     reduction: 8,
                     effect: 'Evade and reduce damage by 8'
                 }
@@ -1600,7 +1600,7 @@
                     id: 'corner_medic',
                     name: 'Ringside Medic',
                     type: 'corner',
-                    energy: 3,
+                    energy: 2,
                     effect: 'Restore 10 Stamina to active fighter'
                 }
             ]
@@ -1625,8 +1625,8 @@
                 gameState.opponent.activeFighter = opponentFighter;
                 gameState.opponent.hand = gameState.opponent.hand.filter(c => c.uniqueId !== opponentFighter.uniqueId);
                 addLog(`Opponent deploys ${opponentFighter.name} to the arena!`, 'opponent');
-                // Show opponent's starting energy (6) upfront to avoid displaying 0 at game start
-                gameState.opponent.energy = 6;
+                // Show opponent's starting energy (8) upfront to avoid displaying 0 at game start
+                gameState.opponent.energy = 8;
                 updateUI();
             }
 
@@ -2374,7 +2374,7 @@
 
             // Energy phase
             if (gameState.turn === 1) {
-                gameState.player.energy = 7; // fixed first-turn energy
+                gameState.player.energy = 8; // fixed first-turn energy
             } else {
                 gameState.player.energy = Math.min(gameState.player.maxEnergy, gameState.player.energy + 2);
             }
@@ -2461,7 +2461,7 @@
             
             // Energy phase
             if (gameState.turn === 2) {
-                gameState.opponent.energy = 7; // fixed first opponent turn energy
+                gameState.opponent.energy = 8; // fixed first opponent turn energy
             } else {
                 gameState.opponent.energy = Math.min(gameState.opponent.maxEnergy, gameState.opponent.energy + 2);
             }

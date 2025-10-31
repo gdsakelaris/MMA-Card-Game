@@ -19,7 +19,7 @@ MMA Warriors is a 1v1 MMA-themed card game where players build decks of fighters
 ### Player Resources
 
 - **Health**: 100 (shared across all fighters)
-- **Energy**: Starts at 7, gains +2 per turn, max 12
+- **Energy**: Starts at 8, gains +2 per turn, max 16
 - **Hand Limit**: 10 cards maximum
 - **Fighter Card Limit**: Maximum 2 fighter cards in hand during gameplay (opening hand has exactly 1 fighter)
 
@@ -65,9 +65,9 @@ Fighters are labeled with one of three styles (shown as just the style name, not
 #### Low Cost Strikes (1-2 Energy)
 
 - **Quick Jab** - 1 Energy, 3 damage
+- **Teep Kick** - 1 Energy, 3 damage
 - **Leg Kick** - 2 Energy, 4 damage
 - **Body Shot** - 2 Energy, 4 damage
-- **Teep Kick** - 2 Energy, 3 damage
 
 #### Medium Cost Strikes (3 Energy)
 
@@ -75,15 +75,15 @@ Fighters are labeled with one of three styles (shown as just the style name, not
 - **Cutting Elbow** - 3 Energy, 5 damage + Bleed (2 damage for 2 turns)
 - **Uppercut** - 3 Energy, 6 damage
 
-#### High Cost Strikes (4-5 Energy)
+#### High Cost Strikes (4 Energy)
 
 - **Heavy Hook** - 4 Energy, 8 damage
 - **Spinning Back Fist** - 4 Energy, 7 damage (opponent skips next turn if lands)
-- **Head Kick** - 5 Energy, 10 damage
+- **Head Kick** - 4 Energy, 10 damage
 
 #### Special Strike
 
-- **Ground and Pound** - 3 Energy, 6 damage (requires positional advantage, keeps fight on ground, bonus damage scales with grappling)
+- **Ground and Pound** - 2 Energy, 6 damage (requires positional advantage, keeps fight on ground, bonus damage scales with grappling)
 
 **Strike Damage Formula:**
 
@@ -106,9 +106,9 @@ Minimum damage = Card Damage
 **Attempt to gain positional advantage**
 
 - **Clinch** - 2 Energy, +2 bonus, 1 damage on success
-- **Single Leg Takedown** - 3 Energy, +2 bonus, 2 damage on success
-- **Double Leg Takedown** - 4 Energy, +3 bonus, 3 damage on success
-- **Suplex** - 5 Energy, +4 bonus, 5 damage on success
+- **Single Leg Takedown** - 2 Energy, +2 bonus, 2 damage on success
+- **Double Leg Takedown** - 3 Energy, +3 bonus, 3 damage on success
+- **Suplex** - 4 Energy, +4 bonus, 5 damage on success
 
 **Takedown Success (Probabilistic):**
 
@@ -132,11 +132,11 @@ Minimum damage = Card Damage
 **Deal heavy damage while on the ground (requires ground position)**
 
 - **Guillotine Choke** - 3 Energy, 10 base damage
+- **Kimura** - 3 Energy, 11 base damage
 - **Armbar** - 4 Energy, 12 base damage
-- **Kimura** - 4 Energy, 11 base damage
 - **Triangle Choke** - 4 Energy, 13 base damage
+- **D'Arce Choke** - 4 Energy, 14 base damage
 - **Rear Naked Choke** - 5 Energy, 15 base damage
-- **D'Arce Choke** - 5 Energy, 14 base damage
 
 **Submission Requirements:**
 
@@ -173,7 +173,7 @@ Step 3: Calculate final damage
 
 - **Block** - 1 Energy, reduce next strike by 5 damage
 - **Parry** - 2 Energy, reduce next strike by 3 damage, counter damage = 3 + floor(Defender Striking / 4)
-- **Slip Counter** - 3 Energy, reduce next strike by 8 damage
+- **Slip Counter** - 2 Energy, reduce next strike by 8 damage
 
 **Note**: Parry counter damage scales with the defender's striking skill - better strikers counter more effectively.
 
@@ -183,7 +183,7 @@ Step 3: Calculate final damage
 
 - **Master Coach** - 3 Energy: **Permanently** increase all stats by +1 (Striking, Grappling, Defense). Draw 1 card.
 - **Intense Training** - 2 Energy: Gain +3 Striking bonus until next strike is thrown (resets after strike is used)
-- **Ringside Medic** - 3 Energy: Restore 10 Stamina (capped at maxStamina)
+- **Ringside Medic** - 2 Energy: Restore 10 Stamina (capped at maxStamina)
 
 ---
 
@@ -193,7 +193,7 @@ Step 3: Calculate final damage
 2. Each player draws an opening hand of 5 cards (exactly 1 fighter + 4 non-fighter cards)
 3. Opponent automatically deploys their fighter
 4. **Player chooses** to deploy their fighter
-5. Opponent starts with 6 energy (displayed from start)
+5. Both players start with 8 energy (displayed from start)
 6. Player starts first
 
 ---
@@ -202,8 +202,8 @@ Step 3: Calculate final damage
 
 ### Energy Phase
 
-- **Turn 1 (Player)**: Start with 7 energy
-- **Turn 2+ (Both players)**: Gain +2 energy per turn (max 12)
+- **Turn 1 (Player)**: Start with 8 energy
+- **Turn 2+ (Both players)**: Gain +2 energy per turn (max 16)
 - Per-round bonuses reset (Intense Training bonus goes to 0)
 - Status effects tick (Bleed damage applied)
 
@@ -299,13 +299,13 @@ A player wins when:
 ### Energy Management
 
 - Energy does NOT carry over between turns
-- Maximum energy cap is 12
-- First turn energy is fixed at 7 for player, 6 for opponent (shown immediately)
+- Maximum energy cap is 16
+- First turn energy is fixed at 8 for both players (shown immediately)
 
 ### Stat Caps
 
 - **Stamina**: Capped at maxStamina (cannot be healed above starting value)
-- **Energy**: Capped at 12
+- **Energy**: Capped at 16
 - **Striking, Grappling, Defense**: **NO CAPS** - can grow infinitely via Master Coach
 
 ### Temporary vs Permanent Bonuses
@@ -375,7 +375,7 @@ A player wins when:
 
 ## Game Flow Summary
 
-1. **Opening**: Both players deploy their opening fighter (exactly 1 in starting hand), player starts with 7 energy
+1. **Opening**: Both players deploy their opening fighter (exactly 1 in starting hand), both start with 8 energy
 2. **Draw Phase**: Draw 1 card (smart drawing prevents 3rd fighter), or skip if hand full
 3. **Main Phase**: Play cards until no valid actions remain
 4. **Combat**: Execute strikes, takedowns, submissions based on card types
@@ -456,7 +456,7 @@ To play this without a computer:
    - Tired fighters (below half stamina) roll 2d10 take lower
    - Higher total wins
 2. **Damage Tracking**: Use dice or counters for stamina and health
-3. **Energy Tracking**: Use tokens (start 7, gain +2 per turn, max 12)
+3. **Energy Tracking**: Use tokens (start 8, gain +2 per turn, max 16)
 4. **Status Effects**: Use status tokens/cards for Bleed and Stagger
 5. **Probability Alternative**: Use simple comparison (grappling vs grappling) with d6 tiebreaker
 6. **Fighter Deployment**: Only one active fighter at a time - cannot deploy fighters while one is active
@@ -464,4 +464,4 @@ To play this without a computer:
 ---
 
 *Document updated to match current digital implementation*
-*Last Updated: Version 2.4 - Deck size increased to 75 cards with consistent composition (15 fighters, 48 techniques as 2x copies, 12 corners as 4x copies). Every deck now has identical card composition for competitive consistency. Opening hand always exactly 1 fighter + 4 non-fighter cards. Manual card discard selection when hand is full. Intense Training bonus persists until next strike is thrown. Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters*
+*Last Updated: Version 2.7 - Major energy rebalancing pass: max energy increased to 16 (from 12), starting energy increased to 8 (from 7). Card costs adjusted for better balance: Teep Kick 2→1, Head Kick 5→4, Single Leg Takedown 3→2, Double Leg Takedown 4→3, Suplex 5→4, Kimura 4→3, D'Arce Choke 5→4, Slip Counter 3→2, Ground and Pound 3→2, Ringside Medic 3→2. Deck size increased to 75 cards with consistent composition (15 fighters, 48 techniques as 2x copies, 12 corners as 4x copies). Every deck now has identical card composition for competitive consistency. Opening hand always exactly 1 fighter + 4 non-fighter cards. Manual card discard selection when hand is full. Intense Training bonus persists until next strike is thrown. Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters. Defensive cards now work correctly. Takedown stuffed notifications improved.*
