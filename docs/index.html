@@ -2025,17 +2025,20 @@
                     damage -= reduction;
                     showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage');
                     if (defender.defenseBuff.type === 'parry') {
-                        const counter = 3;
+                        // Parry counter scales with defender's striking skill
+                        const counter = 3 + Math.floor(defender.activeFighter.striking / 4);
                         attacker.activeFighter.stamina -= counter;
                         showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        floatTextOverFighter(player, `-${counter}`, 'damage');
                         checkFighterKO(attacker, player);
                     }
                     defender.defenseBuff = null;
                 }
 
-                // Ground and Pound bonus with positional advantage (add before showing damage)
+                // Ground and Pound bonus with positional advantage (scales with grappling)
                 if (card.id === 'tech_gnp' && attacker.positionalAdvantage) {
-                    damage += 3;
+                    const gnpBonus = 3 + Math.floor(attacker.activeFighter.grappling / 4);
+                    damage += gnpBonus;
                 }
 
                 // Ensure damage is never less than the card's displayed damage
@@ -2078,22 +2081,22 @@
                     attackerGrappling += 2;
                 }
 
-                // Calculate defender's grappling defense (defense stat, adjusted by stamina)
-                let grapplingDefense = defender.activeFighter.defense;
+                // Calculate defender's grappling defense (GRAPPLING stat, adjusted by stamina)
+                let defenderGrappling = defender.activeFighter.grappling;
 
                 // Stamina affects takedown defense - tired fighters are easier to take down
                 const staminaPercent = defender.activeFighter.stamina / defender.activeFighter.maxStamina;
                 if (staminaPercent < 0.3) {
-                    grapplingDefense -= 3; // Very tired
+                    defenderGrappling -= 3; // Very tired
                 } else if (staminaPercent < 0.5) {
-                    grapplingDefense -= 2; // Tired
+                    defenderGrappling -= 2; // Tired
                 } else if (staminaPercent < 0.7) {
-                    grapplingDefense -= 1; // Somewhat tired
+                    defenderGrappling -= 1; // Somewhat tired
                 }
 
                 // Calculate takedown success probability
                 // Base 50% + 10% for each point of advantage
-                const difference = attackerGrappling - grapplingDefense;
+                const difference = attackerGrappling - defenderGrappling;
                 let successChance = 0.5 + (difference * 0.1);
 
                 // Clamp between 10% and 90% (always some chance of success/failure)
@@ -2108,8 +2111,8 @@
                         // Add grappling skill scaling to takedown impact damage
                         let takedownDamage = card.damage;
                         const grapplingImpact = Math.floor(attacker.activeFighter.grappling / 3);
-                        const defenseReduction = Math.floor(defender.activeFighter.defense / 3);
-                        takedownDamage += grapplingImpact - defenseReduction;
+                        const grapplingAbsorb = Math.floor(defender.activeFighter.grappling / 3);
+                        takedownDamage += grapplingImpact - grapplingAbsorb;
                         // Minimum is card base damage
                         takedownDamage = Math.max(card.damage, takedownDamage);
 
