@@ -2100,8 +2100,17 @@
                 if (attacker.activeFighter.style === 'Striker') {
                     damage += 2;
                 }
-                
-                // Apply defender's temporary defense if any
+
+                // Ground and Pound bonus with positional advantage (scales with grappling)
+                if (card.id === 'tech_gnp' && attacker.positionalAdvantage) {
+                    const gnpBonus = 3 + Math.floor(attacker.activeFighter.grappling / 4);
+                    damage += gnpBonus;
+                }
+
+                // Ensure damage is never less than the card's displayed damage (BEFORE defense buffs)
+                damage = Math.max(card.damage, damage);
+
+                // Apply defender's temporary defense if any (AFTER minimum damage floor)
                 if (defender.defenseBuff && defender.defenseBuff.amount) {
                     const reduction = defender.defenseBuff.amount;
                     damage -= reduction;
@@ -2117,14 +2126,8 @@
                     defender.defenseBuff = null;
                 }
 
-                // Ground and Pound bonus with positional advantage (scales with grappling)
-                if (card.id === 'tech_gnp' && attacker.positionalAdvantage) {
-                    const gnpBonus = 3 + Math.floor(attacker.activeFighter.grappling / 4);
-                    damage += gnpBonus;
-                }
-
-                // Ensure damage is never less than the card's displayed damage
-                damage = Math.max(card.damage, damage);
+                // Ensure minimum damage of 1 (can't block all damage)
+                damage = Math.max(1, damage);
                 defender.activeFighter.stamina -= damage;
 
                 showAction(`${card.name}: ${damage} damage!`, player, 'damage');
