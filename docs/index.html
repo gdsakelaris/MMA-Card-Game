@@ -2937,12 +2937,12 @@
                 item.classList.remove('new-message');
             }, 300);
 
-            // Prepend to top so newest is at top
-            feed.insertBefore(item, feed.firstChild);
+            // Append to bottom so newest is at bottom
+            feed.appendChild(item);
 
-            // Keep only the 5 most recent messages (remove from bottom)
+            // Keep only the 5 most recent messages (remove from top)
             while (feed.children.length > 5) {
-                feed.removeChild(feed.lastChild);
+                feed.removeChild(feed.firstChild);
             }
         }
 
