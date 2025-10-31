@@ -684,6 +684,24 @@
         .action-item.advantage { background: rgba(210,210,10,0.18); }
         .action-item.ko { background: rgba(210,10,10,0.28); font-weight: bold; }
 
+        /* Card type themed messages */
+        .action-item.card-fighter {
+            background: rgba(100, 150, 255, 0.15) !important;
+            border-left-color: #6c9eff !important;
+        }
+        .action-item.card-technique {
+            background: rgba(255, 80, 80, 0.15) !important;
+            border-left-color: #ff5050 !important;
+        }
+        .action-item.card-defense {
+            background: rgba(255, 215, 0, 0.15) !important;
+            border-left-color: #ffd700 !important;
+        }
+        .action-item.card-corner {
+            background: rgba(100, 255, 100, 0.15) !important;
+            border-left-color: #64ff64 !important;
+        }
+
         .action-item.new-message {
             animation: messageSlideIn 0.3s ease-out;
         }
@@ -1772,7 +1790,7 @@
                 if (!opponentFighter.strikingBonus) opponentFighter.strikingBonus = 0;
                 gameState.opponent.activeFighter = opponentFighter;
                 gameState.opponent.hand = gameState.opponent.hand.filter(c => c.uniqueId !== opponentFighter.uniqueId);
-                addLog(`Opponent deploys ${opponentFighter.name} to the arena!`, 'opponent');
+                addLog(`Opponent deploys ${opponentFighter.name} to the arena!`, 'opponent', '', 'card-fighter');
                 // Show opponent's starting energy (8) upfront to avoid displaying 0 at game start
                 gameState.opponent.energy = 8;
                 updateUI();
@@ -1837,7 +1855,7 @@
                 if (!f.strikingBonus) f.strikingBonus = 0;
                 gameState.player.activeFighter = f;
                 gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== f.uniqueId);
-                addLog(`You deploy ${f.name} to the arena!`, 'player');
+                addLog(`You deploy ${f.name} to the arena!`, 'player', '', 'card-fighter');
                 startAfterOpeningSelection();
                 return;
             }
@@ -1874,7 +1892,7 @@
             if (!f.strikingBonus) f.strikingBonus = 0;
             gameState.player.activeFighter = f;
             gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
-            addLog(`You deploy ${f.name} to the arena!`, 'player');
+            addLog(`You deploy ${f.name} to the arena!`, 'player', '', 'card-fighter');
             closeFighterSelect();
             startAfterOpeningSelection();
         }
@@ -1936,7 +1954,7 @@
 
             // Remove from hand
             gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
-            addLog(`You deploy ${fighter.name} to the arena!`, 'player');
+            addLog(`You deploy ${fighter.name} to the arena!`, 'player', '', 'card-fighter');
 
             closeFighterSelect();
             updateUI();
@@ -2158,7 +2176,7 @@
                 // Deploy fighter
                 gameState.player.activeFighter = card;
                 gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== card.uniqueId);
-                addLog(`You deploy ${card.name} to the arena!`, 'player');
+                addLog(`You deploy ${card.name} to the arena!`, 'player', '', 'card-fighter');
 
                 updateUI();
             } else if (card.type === 'technique') {
@@ -2192,7 +2210,8 @@
 
                 // Pre-announce technique to ensure a banner always appears (except for gnp and submissions blocked above)
                 if (gameState.player.activeFighter) {
-                    showAction(`${gameState.player.activeFighter.name} uses ${card.name}!`, 'player');
+                    const cardTypeClass = card.subtype === 'defense' ? 'card-defense' : 'card-technique';
+                    showAction(`${gameState.player.activeFighter.name} uses ${card.name}!`, 'player', '', cardTypeClass);
                 }
                 executeTechnique(card, 'player');
             } else if (card.type === 'corner') {
@@ -2216,6 +2235,7 @@
         function executeTechnique(card, player) {
             const attacker = gameState[player];
             const defender = player === 'player' ? gameState.opponent : gameState.player;
+            const cardTypeClass = card.subtype === 'defense' ? 'card-defense' : 'card-technique';
 
             // Safety check - this should have been caught earlier in playCard
             if (!attacker.activeFighter) {
@@ -2225,7 +2245,7 @@
 
             // Announce technique (for opponent, since player already announces in playCard)
             if (player === 'opponent' && attacker.activeFighter) {
-                showAction(`${attacker.activeFighter.name} uses ${card.name}!`, player);
+                showAction(`${attacker.activeFighter.name} uses ${card.name}!`, player, '', cardTypeClass);
             }
 
             attacker.energy -= card.energy;
@@ -2263,19 +2283,19 @@
                     wasBlocked = true;
                     const reduction = defender.defenseBuff.amount;
                     damage -= reduction;
-                    showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage');
+                    showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage', 'card-defense');
                     if (defender.defenseBuff.type === 'parry') {
                         // Parry counter scales with defender's striking skill
                         const counter = 3 + Math.floor(defender.activeFighter.striking / 4);
                         attacker.activeFighter.stamina -= counter;
-                        showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage', 'card-defense');
                         floatTextOverFighter(player, `-${counter}`, 'damage');
                         checkFighterKO(attacker, player);
                     } else if (defender.defenseBuff.type === 'slip') {
                         // Slip counter deals fixed 4 damage
                         const counter = 4;
                         attacker.activeFighter.stamina -= counter;
-                        showAction(`Slip counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        showAction(`Slip counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage', 'card-defense');
                         floatTextOverFighter(player, `-${counter}`, 'damage');
                         checkFighterKO(attacker, player);
                     }
@@ -2286,20 +2306,20 @@
                 damage = Math.max(1, damage);
                 defender.activeFighter.stamina -= damage;
 
-                showAction(`${card.name}: ${damage} damage!`, player, 'damage');
+                showAction(`${card.name}: ${damage} damage!`, player, 'damage', cardTypeClass);
                 floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
 
                 // On-hit status effects (e.g., Bleed) - only applies if not blocked
                 if (card.onHitStatus && card.onHitStatus.type === 'bleed' && !wasBlocked) {
                     defender.activeFighter.status = defender.activeFighter.status || {};
                     defender.activeFighter.status.bleed = { amount: card.onHitStatus.amount, turns: card.onHitStatus.turns };
-                    showAction(`Bleed applied (${card.onHitStatus.amount} dmg for ${card.onHitStatus.turns} turns)`, player, 'advantage');
+                    showAction(`Bleed applied (${card.onHitStatus.amount} dmg for ${card.onHitStatus.turns} turns)`, player, 'advantage', cardTypeClass);
                 }
 
                 // Spinning Back Fist effect: only applies stagger if not blocked/parried
                 if (card.id === 'tech_spinning' && !wasBlocked) {
                     defender.skipNextTurn = true;
-                    showAction(`Opponent staggered! Skip next turn.`, player, 'advantage');
+                    showAction(`Opponent staggered! Skip next turn.`, player, 'advantage', cardTypeClass);
                     floatTextOverFighter(player === 'player' ? 'opponent' : 'player', 'STAGGERED', 'info');
                 }
 
@@ -2311,7 +2331,7 @@
                     if (attacker.positionalAdvantage || defender.positionalAdvantage) {
                         attacker.positionalAdvantage = false;
                         defender.positionalAdvantage = false;
-                        showAction('Fight returns to standing!', player, 'advantage');
+                        showAction('Fight returns to standing!', player, 'advantage', cardTypeClass);
                     }
                 }
 
@@ -2352,7 +2372,7 @@
                     attacker.positionalAdvantage = true;
                     defender.positionalAdvantage = false;
                     defender.defenseBuff = null; // Clear any waiting defensive cards (block/parry/slip)
-                    showAction(`${attacker.activeFighter.name} gains Advantage!`, player, 'advantage');
+                    showAction(`${attacker.activeFighter.name} gains Advantage!`, player, 'advantage', cardTypeClass);
                     if (card.damage) {
                         // Add grappling skill scaling to takedown impact damage
                         let takedownDamage = card.damage;
@@ -2363,7 +2383,7 @@
                         takedownDamage = Math.max(card.damage, takedownDamage);
 
                         defender.activeFighter.stamina -= takedownDamage;
-                        showAction(`Takedown impact: ${takedownDamage} damage!`, player, 'damage');
+                        showAction(`Takedown impact: ${takedownDamage} damage!`, player, 'damage', cardTypeClass);
                         floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${takedownDamage}`, 'damage');
                         checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
                     }
@@ -2372,7 +2392,7 @@
                     defender.defenseBuff = null;
                     // Show stuffed message from defender's perspective for better visibility
                     const defenderName = player === 'player' ? 'opponent' : 'player';
-                    showAction(`${defender.activeFighter.name} stuffed the takedown!`, defenderName, 'advantage');
+                    showAction(`${defender.activeFighter.name} stuffed the takedown!`, defenderName, 'advantage', cardTypeClass);
                     floatTextOverFighter(defenderName, 'STUFFED', 'info');
                 }
                 
@@ -2406,19 +2426,19 @@
                     wasBlocked = true;
                     const reduction = defender.defenseBuff.amount;
                     damage -= reduction;
-                    showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage');
+                    showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage', 'card-defense');
                     if (defender.defenseBuff.type === 'parry') {
                         // Parry counter scales with defender's striking skill
                         const counter = 3 + Math.floor(defender.activeFighter.striking / 4);
                         attacker.activeFighter.stamina -= counter;
-                        showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage', 'card-defense');
                         floatTextOverFighter(player, `-${counter}`, 'damage');
                         checkFighterKO(attacker, player);
                     } else if (defender.defenseBuff.type === 'slip') {
                         // Slip counter deals fixed 4 damage
                         const counter = 4;
                         attacker.activeFighter.stamina -= counter;
-                        showAction(`Slip counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        showAction(`Slip counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage', 'card-defense');
                         floatTextOverFighter(player, `-${counter}`, 'damage');
                         checkFighterKO(attacker, player);
                     }
@@ -2430,11 +2450,11 @@
 
                 // Show message with ACTUAL damage that will be dealt
                 if (attacker.positionalAdvantage) {
-                    showAction(`${card.name} locked in: ${damage} damage!`, player, 'damage');
+                    showAction(`${card.name} locked in: ${damage} damage!`, player, 'damage', cardTypeClass);
                 } else if (defender.positionalAdvantage) {
-                    showAction(`${card.name} from bottom: ${damage} damage!`, player, 'damage');
+                    showAction(`${card.name} from bottom: ${damage} damage!`, player, 'damage', cardTypeClass);
                 } else {
-                    showAction(`${card.name}: ${damage} damage!`, player, 'damage');
+                    showAction(`${card.name}: ${damage} damage!`, player, 'damage', cardTypeClass);
                 }
 
                 defender.activeFighter.stamina -= damage;
@@ -2452,7 +2472,7 @@
                 }
                 target.defenseBuff = { amount, type };
                 const counterText = type === 'parry' ? ', counter 3+' : (type === 'slip' ? ', counter 4' : '');
-                showAction(`${card.name} ready (-${amount} next DMG${counterText})`, player, 'advantage');
+                showAction(`${card.name} ready (-${amount} next DMG${counterText})`, player, 'advantage', cardTypeClass);
             }
             
             updateUI();
@@ -2468,7 +2488,7 @@
 
             p.energy -= card.energy;
             p.hand = p.hand.filter(c => c.uniqueId !== card.uniqueId);
-            showAction(`${card.name} played!`, player);
+            showAction(`${card.name} played!`, player, '', 'card-corner');
 
             if (card.effect.includes('+1 to all stats')) {
                 p.activeFighter.striking += 1;
@@ -2476,9 +2496,9 @@
                 p.activeFighter.defense += 1;
                 const drawnCard = drawCardToHand(player);
                 if (drawnCard) {
-                    showAction(`Effect: +1 all stats, drew ${drawnCard.name}`, player, 'advantage');
+                    showAction(`Effect: +1 all stats, drew ${drawnCard.name}`, player, 'advantage', 'card-corner');
                 } else {
-                    showAction('Effect: +1 all stats (hand full, no draw)', player, 'advantage');
+                    showAction('Effect: +1 all stats (hand full, no draw)', player, 'advantage', 'card-corner');
                 }
             } else if (card.effect.includes('+3 Striking')) {
                 // Initialize strikingBonus if it doesn't exist
@@ -2486,13 +2506,13 @@
                     p.activeFighter.strikingBonus = 0;
                 }
                 p.activeFighter.strikingBonus += 3;
-                showAction(`Effect: +3 Striking (next strike will deal +${p.activeFighter.strikingBonus} bonus damage)`, player, 'advantage');
+                showAction(`Effect: +3 Striking (next strike will deal +${p.activeFighter.strikingBonus} bonus damage)`, player, 'advantage', 'card-corner');
             } else if (card.effect.includes('Restore 10 Stamina')) {
                 const oldStamina = p.activeFighter.stamina;
                 p.activeFighter.stamina = Math.min(p.activeFighter.maxStamina, p.activeFighter.stamina + 10);
                 const actualHeal = p.activeFighter.stamina - oldStamina;
                 floatTextOverFighter(player, `+${actualHeal}`, 'heal');
-                showAction(`Effect: Restored ${actualHeal} stamina`, player, 'heal');
+                showAction(`Effect: Restored ${actualHeal} stamina`, player, 'heal', 'card-corner');
             }
 
             updateUI();
@@ -2543,7 +2563,7 @@
                             if (!newFighter.strikingBonus) newFighter.strikingBonus = 0;
                             defender.activeFighter = newFighter;
                             defender.hand = defender.hand.filter(c => c.uniqueId !== newFighter.uniqueId);
-                            addLog(`Opponent deploys ${newFighter.name} to the arena!`, defenderName);
+                            addLog(`Opponent deploys ${newFighter.name} to the arena!`, defenderName, '', 'card-fighter');
                             updateUI();
                         }, 800);
                     } else {
@@ -2576,7 +2596,7 @@
                 const b = gameState.player.activeFighter.status.bleed;
                 gameState.player.activeFighter.stamina -= b.amount;
                 b.turns -= 1;
-                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'player', 'damage');
+                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'player', 'damage', 'card-technique');
                 floatTextOverFighter('player', `-${b.amount}`, 'damage');
                 if (b.turns <= 0) {
                     delete gameState.player.activeFighter.status.bleed;
@@ -2663,7 +2683,7 @@
                 const b = gameState.opponent.activeFighter.status.bleed;
                 gameState.opponent.activeFighter.stamina -= b.amount;
                 b.turns -= 1;
-                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'opponent', 'damage');
+                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'opponent', 'damage', 'card-technique');
                 floatTextOverFighter('opponent', `-${b.amount}`, 'damage');
                 if (b.turns <= 0) {
                     delete gameState.opponent.activeFighter.status.bleed;
@@ -2712,7 +2732,7 @@
 
                     gameState.opponent.activeFighter = fighter;
                     gameState.opponent.hand = gameState.opponent.hand.filter(c => c.uniqueId !== fighter.uniqueId);
-                    addLog(`Opponent deploys ${fighter.name} to the arena!`, 'opponent');
+                    addLog(`Opponent deploys ${fighter.name} to the arena!`, 'opponent', '', 'card-fighter');
                     updateUI();
 
                     setTimeout(() => continueOpponentAI(), 1000);
@@ -2859,7 +2879,7 @@
             modal.classList.add('active');
         }
 
-        function addLog(message, player = null, type = '') {
+        function addLog(message, player = null, type = '', cardType = '') {
             // Suppress non-critical and redundant messages
             const suppressList = [
                 'You drew:',
@@ -2875,10 +2895,10 @@
                 if (message.startsWith(marker)) return;
             }
             // Route to action banners only (log UI removed)
-            showAction(message, player, type);
+            showAction(message, player, type, cardType);
         }
 
-        function showAction(message, player = null, type = '') {
+        function showAction(message, player = null, type = '', cardType = '') {
             // Resolve owner: if not provided, infer from current turn
             let owner = player;
             if (owner !== 'player' && owner !== 'opponent') {
@@ -2909,6 +2929,7 @@
             if (owner === 'opponent') item.classList.add('opponent');
             if (owner === 'player') item.classList.add('player');
             if (type) item.classList.add(type);
+            if (cardType) item.classList.add(cardType);
             item.textContent = message;
 
             // Remove animation class after animation completes
