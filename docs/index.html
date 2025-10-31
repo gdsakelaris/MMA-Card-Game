@@ -1140,6 +1140,15 @@
         </div>
     </div>
 
+    <!-- Discard Card Modal -->
+    <div class="modal selection-modal" id="discardCardModal">
+        <div class="modal-content">
+            <h2>Hand Full!</h2>
+            <p>Choose one card to discard.</p>
+            <div class="select-grid" id="discardCardGrid"></div>
+        </div>
+    </div>
+
     <div class="footer">
         <a href="privacy.html" target="_blank">Privacy Policy</a>
     </div>
@@ -1874,17 +1883,89 @@
                 }
             }
 
-            // If hand is full, discard oldest card (first in hand) to make room
+            // If hand is full, need to discard
             if (gameState[player].hand.length >= HAND_LIMIT) {
-                const discarded = gameState[player].hand.shift(); // Remove oldest card
-                if (!silent) {
-                    addLog(`${player === 'player' ? 'Your' : 'Opponent\'s'} hand is full. Discarded ${discarded.name} to draw ${card.name}.`, player === 'player' ? null : 'opponent');
+                if (player === 'player' && !silent) {
+                    // Player chooses which card to discard
+                    promptCardDiscard(card);
+                    return card; // Card will be added after discard selection
+                } else {
+                    // Opponent or silent draw: auto-discard oldest
+                    const discarded = gameState[player].hand.shift();
+                    if (!silent) {
+                        addLog(`Opponent's hand is full. Discarded ${discarded.name} to draw ${card.name}.`, 'opponent');
+                    }
                 }
             }
 
             gameState[player].hand.push(card);
 
             return card;
+        }
+
+        let pendingDrawnCard = null; // Store card waiting to be added after discard
+
+        function promptCardDiscard(drawnCard) {
+            // Store the drawn card
+            pendingDrawnCard = drawnCard;
+
+            // Show modal with current hand
+            const modal = document.getElementById('discardCardModal');
+            const grid = document.getElementById('discardCardGrid');
+            grid.innerHTML = '';
+
+            addLog(`Your hand is full! Choose a card to discard.`);
+
+            gameState.player.hand.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'select-card';
+
+                let cardDisplay = '';
+                if (card.type === 'fighter') {
+                    cardDisplay = `
+                        <div class="card-header">${card.name}</div>
+                        <div class="card-type">${card.style}</div>
+                        <div class="card-body">
+                            <p><strong>Striking:</strong> ${card.striking}</p>
+                            <p><strong>Grappling:</strong> ${card.grappling}</p>
+                            <p><strong>Defense:</strong> ${card.defense}</p>
+                            <p><strong>Stamina:</strong> ${card.stamina}</p>
+                        </div>
+                    `;
+                } else {
+                    cardDisplay = `
+                        <div class="card-header">${card.name}</div>
+                        <div class="card-type">${card.type.toUpperCase()}</div>
+                        <div class="card-body">
+                            <p><strong>Energy:</strong> ${card.energy}</p>
+                            <p>${card.effect}</p>
+                        </div>
+                    `;
+                }
+
+                cardEl.innerHTML = cardDisplay;
+                cardEl.onclick = () => selectCardToDiscard(card.uniqueId);
+                grid.appendChild(cardEl);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function selectCardToDiscard(cardId) {
+            // Remove the selected card from hand
+            const discarded = gameState.player.hand.find(c => c.uniqueId === cardId);
+            gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== cardId);
+
+            // Add the drawn card
+            gameState.player.hand.push(pendingDrawnCard);
+
+            addLog(`You discarded ${discarded.name} to draw ${pendingDrawnCard.name}.`);
+
+            // Close modal
+            document.getElementById('discardCardModal').classList.remove('active');
+            pendingDrawnCard = null;
+
+            updateUI();
         }
 
         function drawCard() {
