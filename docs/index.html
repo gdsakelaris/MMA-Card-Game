@@ -1635,15 +1635,15 @@
         }
         
         function drawOpeningHand(player) {
-            // Always draw exactly 4 non-fighter cards + 1 fighter (5 cards total)
+            // Always draw exactly 5 non-fighter cards + 1 fighter (6 cards total)
             gameState[player].hand = [];
             const deck = gameState[player].deck;
 
-            // Draw 4 non-fighter cards
+            // Draw 5 non-fighter cards
             let nonFightersDrawn = 0;
             let deckIndex = deck.length - 1;
 
-            while (nonFightersDrawn < 4 && deckIndex >= 0) {
+            while (nonFightersDrawn < 5 && deckIndex >= 0) {
                 if (deck[deckIndex].type !== 'fighter') {
                     gameState[player].hand.push(deck.splice(deckIndex, 1)[0]);
                     nonFightersDrawn++;
@@ -1651,8 +1651,8 @@
                 deckIndex--;
             }
 
-            // If couldn't find 4 non-fighters (shouldn't happen with 42 non-fighter cards), fill with any cards
-            while (gameState[player].hand.length < 4 && deck.length > 0) {
+            // If couldn't find 5 non-fighters (shouldn't happen with 42 non-fighter cards), fill with any cards
+            while (gameState[player].hand.length < 5 && deck.length > 0) {
                 gameState[player].hand.push(deck.pop());
             }
 
