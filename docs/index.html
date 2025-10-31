@@ -1955,6 +1955,12 @@
                     return;
                 }
 
+                // Check if opponent has active fighter for techniques that require one
+                if ((card.subtype === 'strike' || card.subtype === 'submission' || card.subtype === 'grappling') && !gameState.opponent.activeFighter) {
+                    addLog('Opponent needs an active fighter to attack!');
+                    return;
+                }
+
                 // Pre-announce technique to ensure a banner always appears (except for gnp and submissions blocked above)
                 if (gameState.player.activeFighter) {
                     showAction(`${gameState.player.activeFighter.name} uses ${card.name}!`, 'player');
@@ -1982,15 +1988,15 @@
             const attacker = gameState[player];
             const defender = player === 'player' ? gameState.opponent : gameState.player;
 
-            // Check if both players have active fighters for strikes, grappling and submissions
-            if ((card.subtype === 'strike' || card.subtype === 'submission' || card.subtype === 'grappling') && !defender.activeFighter) {
-                addLog('Opponent needs an active fighter to attack!');
-                return;
-            }
-
+            // Safety check - this should have been caught earlier in playCard
             if (!attacker.activeFighter) {
                 addLog('You need an active fighter to use techniques!');
                 return;
+            }
+
+            // Announce technique (for opponent, since player already announces in playCard)
+            if (player === 'opponent' && attacker.activeFighter) {
+                showAction(`${attacker.activeFighter.name} uses ${card.name}!`, player);
             }
 
             attacker.energy -= card.energy;
@@ -2481,6 +2487,10 @@
             const playableTechs = gameState.opponent.hand.filter(c => {
                 if (c.type !== 'technique') return false;
                 if (c.energy > gameState.opponent.energy) return false;
+                // Strikes, grappling, and submissions require player to have an active fighter
+                if ((c.subtype === 'strike' || c.subtype === 'submission' || c.subtype === 'grappling') && !gameState.player.activeFighter) {
+                    return false;
+                }
                 // Ground and Pound requires positional advantage
                 if (c.id === 'tech_gnp' && !gameState.opponent.positionalAdvantage) {
                     return false;
@@ -2502,6 +2512,10 @@
                     const stillHasPlayable = gameState.opponent.hand.some(c => {
                         if (c.type !== 'technique') return false;
                         if (c.energy > gameState.opponent.energy) return false;
+                        // Strikes, grappling, and submissions require player to have an active fighter
+                        if ((c.subtype === 'strike' || c.subtype === 'submission' || c.subtype === 'grappling') && !gameState.player.activeFighter) {
+                            return false;
+                        }
                         // Ground and Pound requires positional advantage
                         if (c.id === 'tech_gnp' && !gameState.opponent.positionalAdvantage) {
                             return false;
