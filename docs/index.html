@@ -2105,9 +2105,17 @@
                     attacker.positionalAdvantage = true;
                     showAction(`${attacker.activeFighter.name} gains Advantage!`, player, 'advantage');
                     if (card.damage) {
-                        defender.activeFighter.stamina -= card.damage;
-                        showAction(`Takedown impact: ${card.damage} damage!`, player, 'damage');
-                        floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${card.damage}`, 'damage');
+                        // Add grappling skill scaling to takedown impact damage
+                        let takedownDamage = card.damage;
+                        const grapplingImpact = Math.floor(attacker.activeFighter.grappling / 3);
+                        const defenseReduction = Math.floor(defender.activeFighter.defense / 3);
+                        takedownDamage += grapplingImpact - defenseReduction;
+                        // Minimum is card base damage
+                        takedownDamage = Math.max(card.damage, takedownDamage);
+
+                        defender.activeFighter.stamina -= takedownDamage;
+                        showAction(`Takedown impact: ${takedownDamage} damage!`, player, 'damage');
+                        floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${takedownDamage}`, 'damage');
                         checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
                     }
                 } else {
@@ -2117,17 +2125,22 @@
             } else if (card.subtype === 'submission') {
                 // Pre-announce already done, don't duplicate
 
-                // Apply position modifier to base technique damage first
+                // Apply position modifier to base technique damage
                 let baseDamage = card.damage;
-                if (attacker.positionalAdvantage) {
-                    baseDamage = Math.floor(baseDamage * 1.3); // 30% bonus from top control
-                } else if (defender.positionalAdvantage) {
+                if (defender.positionalAdvantage) {
                     baseDamage = Math.floor(baseDamage * 0.6); // 60% penalty from bottom position
                 }
+                // No bonus for top position - just use base damage
 
-                // Add skill differential (unaffected by position)
-                const grapplingBonus = Math.floor(attacker.activeFighter.grappling / 2);
-                const submissionDefense = Math.floor(defender.activeFighter.grappling / 2);
+                // Add skill differential using FULL stats (matches striking system)
+                let grapplingBonus = attacker.activeFighter.grappling;
+
+                // Grappler style bonus (consistent with Striker getting +2)
+                if (attacker.activeFighter.style === 'Grappler') {
+                    grapplingBonus += 2;
+                }
+
+                const submissionDefense = defender.activeFighter.grappling;
                 let damage = baseDamage + grapplingBonus - submissionDefense;
 
                 // Apply minimum damage floor based on modified base
