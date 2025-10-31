@@ -187,8 +187,13 @@
         }
 
         .technique-card:hover {
-            box-shadow: 0 10px 24px rgba(255, 140, 66, 0.4);
-            border-color: #ff8c42;
+            box-shadow: 0 10px 24px rgba(255, 80, 80, 0.4);
+            border-color: #ff5050;
+        }
+
+        .defense-card:hover {
+            box-shadow: 0 10px 24px rgba(255, 215, 0, 0.4);
+            border-color: #ffd700;
         }
 
         .corner-card:hover {
@@ -203,12 +208,17 @@
         }
 
         .card.technique-card {
-            background: linear-gradient(180deg, #2d1810 0%, #1f120b 60%, #140c08 100%);
-            border-color: rgba(255, 140, 0, 0.5);
+            background: linear-gradient(180deg, #2e1010 0%, #1f0b0b 60%, #140808 100%);
+            border-color: rgba(255, 80, 80, 0.5);
+        }
+
+        .card.defense-card {
+            background: linear-gradient(180deg, #2e2810 0%, #1f1c0b 60%, #141008 100%);
+            border-color: rgba(255, 215, 0, 0.5);
         }
 
         .card.corner-card {
-            background: linear-gradient(180deg, #1a2e1a 0%, #16213e 60%, #0f1626 100%);
+            background: linear-gradient(180deg, #1a2e1a 0%, #132419 60%, #0d1a10 100%);
             border-color: rgba(100, 255, 100, 0.5);
         }
 
@@ -254,7 +264,11 @@
         }
 
         .technique-card .card-type {
-            color: #ff8c42;
+            color: #ff5050;
+        }
+
+        .defense-card .card-type {
+            color: #ffd700;
         }
 
         .corner-card .card-type {
@@ -309,7 +323,11 @@
         }
 
         .technique-card .card-ability {
-            color: #ff8c42;
+            color: #ff5050;
+        }
+
+        .defense-card .card-ability {
+            color: #ffd700;
         }
 
         .corner-card .card-ability {
@@ -587,9 +605,14 @@
             50% { box-shadow: 0 0 20px rgba(100, 150, 255, 0.8); }
         }
 
-        @keyframes glowOrange {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 140, 66, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(255, 140, 66, 0.8); }
+        @keyframes glowRed {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 80, 80, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 80, 80, 0.8); }
+        }
+
+        @keyframes glowYellow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
         }
 
         @keyframes glowGreen {
@@ -606,7 +629,11 @@
         }
 
         .technique-card.glow {
-            animation: glowOrange 1s ease-in-out infinite;
+            animation: glowRed 1s ease-in-out infinite;
+        }
+
+        .defense-card.glow {
+            animation: glowYellow 1s ease-in-out infinite;
         }
 
         .corner-card.glow {
@@ -3079,6 +3106,9 @@
                 cardElement.className += ' fighter-card';
             } else if (card.type === 'technique') {
                 cardElement.className += ' technique-card';
+                if (card.subtype === 'defense') {
+                    cardElement.className += ' defense-card';
+                }
             } else if (card.type === 'corner') {
                 cardElement.className += ' corner-card';
             }
