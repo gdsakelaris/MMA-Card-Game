@@ -2204,6 +2204,7 @@
                 if (roll < successChance) {
                     attacker.positionalAdvantage = true;
                     defender.positionalAdvantage = false;
+                    defender.defenseBuff = null; // Clear any waiting defensive cards (block/parry/slip)
                     showAction(`${attacker.activeFighter.name} gains Advantage!`, player, 'advantage');
                     if (card.damage) {
                         // Add grappling skill scaling to takedown impact damage
@@ -2220,6 +2221,8 @@
                         checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
                     }
                 } else {
+                    // Stuffed takedown - defender still loses any defensive cards from the scramble
+                    defender.defenseBuff = null;
                     // Show stuffed message from defender's perspective for better visibility
                     const defenderName = player === 'player' ? 'opponent' : 'player';
                     showAction(`${defender.activeFighter.name} stuffed the takedown!`, defenderName, 'advantage');

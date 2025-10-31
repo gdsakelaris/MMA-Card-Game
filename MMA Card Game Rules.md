@@ -123,9 +123,14 @@ Minimum damage = Card Damage
 5. **Random roll** determines if takedown succeeds
 
 **If successful:**
-- Attacker gains positional advantage
+- Attacker gains positional advantage (defender loses any advantage they had)
+- Defender's defensive buffs (Block/Parry/Slip Counter) are cleared
 - Impact damage = Card Damage + floor(Attacker Grappling / 3) - floor(Defender Grappling / 3)
 - Minimum impact damage = Card Damage
+
+**If failed (stuffed):**
+- Defender's defensive buffs are still cleared (scrambling to defend disrupts defensive stance)
+- Defender maintains or gains initiative
 
 ### Submissions
 
@@ -169,13 +174,16 @@ Step 3: Calculate final damage
 
 ### Defense Cards
 
-**Reduce incoming damage on next strike**
+**Reduce incoming damage on next attack (strike or submission)**
 
-- **Block** - 1 Energy, reduce next strike by 5 damage
-- **Parry** - 2 Energy, reduce next strike by 3 damage, counter damage = 3 + floor(Defender Striking / 4)
-- **Slip Counter** - 2 Energy, reduce next strike by 8 damage
+- **Block** - 1 Energy, reduce next attack by 5 damage
+- **Parry** - 2 Energy, reduce next attack by 3 damage, counter damage = 3 + floor(Defender Striking / 4)
+- **Slip Counter** - 2 Energy, reduce next attack by 8 damage, counter damage = 4
 
-**Note**: Parry counter damage scales with the defender's striking skill - better strikers counter more effectively.
+**Notes**:
+- Parry counter damage scales with the defender's striking skill - better strikers counter more effectively
+- Defensive cards work against ALL attacks (strikes and submissions)
+- Takedown attempts (successful or failed) clear any waiting defensive cards
 
 ---
 
@@ -233,8 +241,9 @@ Players can perform actions in any order:
 
 ### Positional Advantage
 
-- Gained by successful takedowns
+- Gained by successful takedowns (automatically clears defender's advantage)
 - Required for Ground and Pound and submissions
+- **Only one fighter can have positional advantage at a time**
 - **Persists through**:
   - Ground and Pound strikes
   - Submissions (allows submission chains)
@@ -242,19 +251,23 @@ Players can perform actions in any order:
   - Regular strikes are used (Jab, Cross, Hook, Kick, etc.)
   - Fighter is KO'd (new fight scenario)
 
+**Important**: When a takedown succeeds, the attacker gains advantage AND the defender loses any advantage they had. This ensures only one fighter is on top at a time.
+
 ### Status Effects
 
 #### Bleed
 
-- Applied by Cutting Elbow
+- Applied by Cutting Elbow (only on clean hits - not when blocked/parried/slipped)
 - Deals 2 damage at start of each turn
 - Lasts for 2 turns
 - Shown in action feed with countdown
+- Defensive cards prevent both damage AND bleed application
 
 #### Staggered
 
-- Applied by Spinning Back Fist
+- Applied by Spinning Back Fist (only on clean hits - not when blocked/parried/slipped)
 - Opponent skips their entire next turn (no energy gain, no draw, no actions)
+- Defensive cards prevent both damage AND stagger application
 
 ### Fighter Knockout
 
@@ -342,7 +355,7 @@ A player wins when:
 
 1. **Stamina Management**: Tired fighters (low stamina %) have reduced takedown defense
 2. **Submission Chains**: Use Ground and Pound to keep advantage, then chain submissions
-3. **Defense for Strikes Only**: High defense only reduces strike damage, not takedowns
+3. **Defense Cards Work on Everything**: Block/Parry/Slip Counter reduce damage from strikes AND submissions
 4. **Grappling is King**: Grappling stat attacks AND defends both takedowns and submissions, plus boosts Ground and Pound
 5. **Energy Efficiency**: Low-cost cards allow multiple actions per turn
 6. **Fighter Card Management**: Keep 2 fighters in hand as backup - running out of fighters in hand = instant loss
@@ -352,6 +365,8 @@ A player wins when:
    - Ringside Medic for critical heals
 8. **Positional Control**: Ground and Pound keeps advantage for submission setups
 9. **Bottom Position Risk**: Submissions from bottom do only 60% damage - try to gain top position first
+10. **Takedowns Beat Defense**: Any takedown attempt (successful or not) clears opponent's waiting defensive cards - use this to remove their blocks/parries before striking
+11. **Status Effects Require Clean Hits**: Bleed and Stagger only apply if attack isn't blocked - defensive cards prevent status effects
 
 ### Fighter Priorities
 
@@ -362,14 +377,18 @@ A player wins when:
 
 ### Advanced Tips
 
-- **Takedown Probability Math**: Each point of grappling advantage = +10% success chance (now grappling vs grappling)
+- **Takedown Probability Math**: Each point of grappling advantage = +10% success chance (grappling vs grappling)
 - **Tired Fighters**: Below 50% stamina = -2 grappling for takedown defense (easier to take down)
 - **Submission Defense**: High grappling fighters defend submissions better AND resist takedowns
 - **Position Matters**: Bottom submissions only do 60% base damage - gain top control first
 - **Grappling Scaling**: Better grapplers deal more Ground and Pound damage (+grappling/4)
 - **Parry Scaling**: Better strikers deal more counter damage when parrying (+striking/4)
+- **Slip Counter Scaling**: Fixed 4 damage counter - doesn't scale with stats
 - **Hand Fighter Management**: Always keep 2 fighters in hand - you lose instantly if KO'd with no hand fighters
 - **Smart Drawing**: Game won't waste your draw on a 3rd fighter - automatically draws non-fighters when at 2-fighter limit
+- **Takedown as Counter**: Use takedowns to clear opponent's defensive stance before striking - works even if stuffed
+- **Only One on Top**: Successful takedown grants you advantage AND removes opponent's advantage automatically
+- **Defense Blocks Everything**: Block/Parry/Slip Counter work on strikes AND submissions - versatile protection
 
 ---
 
@@ -404,7 +423,11 @@ The digital version uses a probabilistic takedown system:
 - Submissions scale with FULL grappling stats (not halved)
 - Ground and Pound bonus scales with grappling (3 + grappling/4)
 - Parry counter scales with striking (3 + striking/4)
+- Slip counter is fixed 4 damage (no scaling)
 - Takedown impact scales with grappling difference (grappling/3 vs grappling/3)
+- Defensive cards reduce damage from strikes AND submissions
+- Minimum final damage is always 1 (can't fully block attacks)
+- Status effects (Bleed, Stagger) only apply on clean hits (not when blocked)
 
 ### Visual Feedback
 
@@ -464,4 +487,4 @@ To play this without a computer:
 ---
 
 *Document updated to match current digital implementation*
-*Last Updated: Version 2.7 - Major energy rebalancing pass: max energy increased to 16 (from 12), starting energy increased to 8 (from 7). Card costs adjusted for better balance: Teep Kick 2→1, Head Kick 5→4, Single Leg Takedown 3→2, Double Leg Takedown 4→3, Suplex 5→4, Kimura 4→3, D'Arce Choke 5→4, Slip Counter 3→2, Ground and Pound 3→2, Ringside Medic 3→2. Deck size increased to 75 cards with consistent composition (15 fighters, 48 techniques as 2x copies, 12 corners as 4x copies). Every deck now has identical card composition for competitive consistency. Opening hand always exactly 1 fighter + 4 non-fighter cards. Manual card discard selection when hand is full. Intense Training bonus persists until next strike is thrown. Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters. Defensive cards now work correctly. Takedown stuffed notifications improved.*
+*Last Updated: Version 2.8 - Bug fixes and mechanic clarifications: Defensive cards (Block/Parry/Slip Counter) now work on ALL attacks (strikes AND submissions). Slip Counter now properly deals 4 counter damage. Status effects (Bleed, Stagger) only apply on clean hits - defensive cards prevent both damage and status application. Positional advantage system fixed: only one fighter can have advantage at a time, successful takedowns clear defender's advantage. Takedowns (successful or failed) now clear any waiting defensive buffs from the defender due to the scramble disrupting defensive stance. All damage calculations verified and corrected. Previous updates (v2.7): Major energy rebalancing pass: max energy increased to 16 (from 12), starting energy increased to 8 (from 7). Card costs adjusted for better balance: Teep Kick 2→1, Head Kick 5→4, Single Leg Takedown 3→2, Double Leg Takedown 4→3, Suplex 5→4, Kimura 4→3, D'Arce Choke 5→4, Slip Counter 3→2, Ground and Pound 3→2, Ringside Medic 3→2. Deck size increased to 75 cards with consistent composition (15 fighters, 48 techniques as 2x copies, 12 corners as 4x copies).*
