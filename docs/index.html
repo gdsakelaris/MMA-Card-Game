@@ -2117,30 +2117,21 @@
             } else if (card.subtype === 'submission') {
                 // Pre-announce already done, don't duplicate
 
-                let damage = card.damage;
-
-                // Add half grappling stat to submission damage (attacker's submission skill)
-                const grapplingBonus = Math.floor(attacker.activeFighter.grappling / 2);
-                damage += grapplingBonus;
-
-                // Subtract defender's grappling (submission defense comes from grappling knowledge, not defense)
-                const submissionDefense = Math.floor(defender.activeFighter.grappling / 2);
-                damage -= submissionDefense;
-
-                // Check who has positional advantage
+                // Apply position modifier to base technique damage first
+                let baseDamage = card.damage;
                 if (attacker.positionalAdvantage) {
-                    // Bonus damage when you have advantage (better control)
-                    damage += 2;
-                    // Ensure damage is never less than the card's displayed damage
-                    damage = Math.max(card.damage, damage);
+                    baseDamage = Math.floor(baseDamage * 1.3); // 30% bonus from top control
                 } else if (defender.positionalAdvantage) {
-                    // Submissions from bottom do only 60% damage
-                    damage = Math.floor(damage * 0.6);
-                    // No minimum damage guarantee when attempting from bottom
-                } else {
-                    // Neutral position
-                    damage = Math.max(card.damage, damage);
+                    baseDamage = Math.floor(baseDamage * 0.6); // 60% penalty from bottom position
                 }
+
+                // Add skill differential (unaffected by position)
+                const grapplingBonus = Math.floor(attacker.activeFighter.grappling / 2);
+                const submissionDefense = Math.floor(defender.activeFighter.grappling / 2);
+                let damage = baseDamage + grapplingBonus - submissionDefense;
+
+                // Apply minimum damage floor based on modified base
+                damage = Math.max(baseDamage, damage);
 
                 // Show message with ACTUAL damage that will be dealt
                 if (attacker.positionalAdvantage) {
