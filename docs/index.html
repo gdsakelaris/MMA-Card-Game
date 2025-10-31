@@ -1133,10 +1133,10 @@
         </div>
     </div>
 
-    <!-- Opening Fighter Selection Modal -->
+    <!-- Fighter Selection Modal -->
     <div class="modal selection-modal" id="selectFighterModal">
         <div class="modal-content">
-            <h2>Choose Your Opening Fighter</h2>
+            <h2>Choose Your Fighter</h2>
             <p>Select one fighter to enter the arena.</p>
             <div class="select-grid" id="selectFighterGrid"></div>
         </div>
@@ -1640,6 +1640,9 @@
             if (fighterIdx !== -1) {
                 const fighter = deck.splice(fighterIdx, 1)[0];
                 gameState[player].hand.push(fighter);
+
+                // Opening hand can have 3 fighters (since one will be deployed)
+                // No need to enforce limit here
             } else {
                 // Fallback: draw 1 more if somehow no fighter remains
                 drawCardToHand(player, true);
@@ -1711,26 +1714,20 @@
         }
 
         function promptReplacementFighterSelection() {
-            // Collect all available fighters from bench, hand, and deck
-            const benchFighters = [...(gameState.player.bench || [])];
+            // Collect available fighters from HAND only
             const handFighters = gameState.player.hand.filter(c => c.type === 'fighter');
-            const deckFighters = gameState.player.deck.filter(c => c.type === 'fighter');
 
-            const availableFighters = [
-                ...benchFighters,
-                ...handFighters,
-                ...deckFighters
-            ];
-
-            if (availableFighters.length === 0) {
-                // No fighters anywhere - player loses
-                addLog('You have no fighters left!', 'player');
+            if (handFighters.length === 0) {
+                // No fighters in hand - player loses
+                addLog('You have no fighters in hand!', 'player');
                 updateUI();
                 setTimeout(() => {
-                    endGame('opponent', 'No fighters remaining');
+                    endGame('opponent', 'No fighters in hand');
                 }, 1000);
                 return;
             }
+
+            const availableFighters = handFighters;
 
             // Show selection modal
             const modal = document.getElementById('selectFighterModal');
@@ -1741,17 +1738,9 @@
                 const el = document.createElement('div');
                 el.className = 'select-card';
 
-                // Determine location
-                let location = 'Deck';
-                if (benchFighters.some(b => b.uniqueId === f.uniqueId)) {
-                    location = 'Bench';
-                } else if (handFighters.some(h => h.uniqueId === f.uniqueId)) {
-                    location = 'Hand';
-                }
-
                 el.innerHTML = `
                     <div class="card-header">${f.name}</div>
-                    <div class="card-type">${f.style} (${location})</div>
+                    <div class="card-type">${f.style} (Hand)</div>
                     <div class="card-stats">
                         <div class="card-stat"><span class="card-stat-label">Striking:</span><span class="card-stat-value">${f.striking}</span></div>
                         <div class="card-stat"><span class="card-stat-label">Grappling:</span><span class="card-stat-value">${f.grappling}</span></div>
@@ -1768,19 +1757,8 @@
         }
 
         function selectReplacementFighter(uniqueId) {
-            // Find fighter in bench, hand, or deck
-            let fighter = (gameState.player.bench || []).find(c => c.uniqueId === uniqueId);
-            let location = 'bench';
-
-            if (!fighter) {
-                fighter = gameState.player.hand.find(c => c.uniqueId === uniqueId);
-                location = 'hand';
-            }
-
-            if (!fighter) {
-                fighter = gameState.player.deck.find(c => c.uniqueId === uniqueId);
-                location = 'deck';
-            }
+            // Find fighter in hand only
+            const fighter = gameState.player.hand.find(c => c.uniqueId === uniqueId);
 
             if (!fighter) return;
 
@@ -1790,17 +1768,9 @@
             // Deploy fighter
             gameState.player.activeFighter = fighter;
 
-            // Remove from original location
-            if (location === 'bench') {
-                gameState.player.bench = gameState.player.bench.filter(c => c.uniqueId !== uniqueId);
-                addLog(`You promote ${fighter.name} from bench!`, 'player');
-            } else if (location === 'hand') {
-                gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
-                addLog(`You deploy ${fighter.name} from hand!`, 'player');
-            } else if (location === 'deck') {
-                gameState.player.deck = gameState.player.deck.filter(c => c.uniqueId !== uniqueId);
-                addLog(`You select ${fighter.name} from deck!`, 'player');
-            }
+            // Remove from hand
+            gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
+            addLog(`You deploy ${fighter.name} from hand!`, 'player');
 
             closeFighterSelect();
             updateUI();
@@ -1866,7 +1836,40 @@
                 return null;
             }
 
-            const card = gameState[player].deck.pop();
+            // Check current fighters in hand
+            const currentFighters = gameState[player].hand.filter(c => c.type === 'fighter');
+            const fighterLimit = gameState.phase === 'setup' ? 3 : 2;
+            const atFighterLimit = currentFighters.length >= fighterLimit;
+
+            let card = gameState[player].deck.pop();
+
+            // If at fighter limit and drew a fighter, put it back and draw a non-fighter
+            if (atFighterLimit && card.type === 'fighter') {
+                // Put the fighter back in the deck
+                gameState[player].deck.unshift(card);
+
+                // Find a non-fighter card in the deck
+                const nonFighterIndex = gameState[player].deck.findIndex(c => c.type !== 'fighter');
+
+                if (nonFighterIndex === -1) {
+                    // No non-fighter cards available in deck
+                    if (!silent) {
+                        addLog(`${player === 'player' ? 'You' : 'Opponent'} cannot draw - only fighters remain and hand is at fighter limit!`, player);
+                    }
+                    return null;
+                }
+
+                // Remove the non-fighter from its position and draw it
+                card = gameState[player].deck.splice(nonFighterIndex, 1)[0];
+
+                if (!silent && player === 'player') {
+                    addLog(`You drew: ${card.name} (fighter limit reached)`);
+                }
+            } else {
+                if (!silent && player === 'player') {
+                    addLog(`You drew: ${card.name}`);
+                }
+            }
 
             // If hand is full, discard oldest card (first in hand) to make room
             if (gameState[player].hand.length >= HAND_LIMIT) {
@@ -1877,10 +1880,6 @@
             }
 
             gameState[player].hand.push(card);
-
-            if (!silent && player === 'player') {
-                addLog(`You drew: ${card.name}`);
-            }
 
             return card;
         }
@@ -2216,6 +2215,19 @@
                     return;
                 }
 
+                // Check if defender has any fighters left in HAND only
+                const handFighters = defender.hand.filter(c => c.type === 'fighter');
+
+                if (handFighters.length === 0) {
+                    // No fighters in hand - defender loses immediately
+                    addLog(`${defenderName === 'player' ? 'You have' : 'Opponent has'} no fighters in hand!`, defenderName);
+                    updateUI();
+                    setTimeout(() => {
+                        endGame(defenderName === 'player' ? 'opponent' : 'player', 'No fighters in hand');
+                    }, 1000);
+                    return;
+                }
+
                 // Player gets to choose replacement fighter
                 if (defenderName === 'player') {
                     setTimeout(() => {
@@ -2223,50 +2235,23 @@
                     }, 800);
                 } else {
                     // Opponent auto-selects (AI behavior)
-                    // Promote from bench first
-                    if ((defender.bench || []).length > 0) {
-                        const newFighter = defender.bench.shift();
+                    // Deploy from hand only
+                    let newFighter = defender.hand.find(c => c.type === 'fighter');
+                    if (newFighter) {
                         setTimeout(() => {
                             if (!newFighter.strikingBonus) newFighter.strikingBonus = 0;
                             defender.activeFighter = newFighter;
-                            addLog(`Opponent promotes ${newFighter.name} from bench!`, defenderName);
+                            defender.hand = defender.hand.filter(c => c.uniqueId !== newFighter.uniqueId);
+                            addLog(`Opponent deploys ${newFighter.name} from hand!`, defenderName);
                             updateUI();
                         }, 800);
                     } else {
-                        // Try from hand
-                        let newFighter = defender.hand.find(c => c.type === 'fighter');
-                        if (newFighter) {
-                            setTimeout(() => {
-                                if (!newFighter.strikingBonus) newFighter.strikingBonus = 0;
-                                defender.activeFighter = newFighter;
-                                defender.hand = defender.hand.filter(c => c.uniqueId !== newFighter.uniqueId);
-                                addLog(`Opponent deploys ${newFighter.name}!`, defenderName);
-                                updateUI();
-                            }, 800);
-                        } else {
-                            // Draw until fighter found or deck empty
-                            const drawUntilFighter = () => {
-                                if (defender.deck.length === 0) {
-                                    addLog(`Opponent has no fighters left!`, defenderName);
-                                    updateUI();
-                                    setTimeout(() => {
-                                        endGame('player', 'No fighters remaining');
-                                    }, 1000);
-                                    return;
-                                }
-                                const card = defender.deck.pop();
-                                if (card.type === 'fighter') {
-                                    if (!card.strikingBonus) card.strikingBonus = 0;
-                                    defender.activeFighter = card;
-                                    addLog(`Opponent top-decks ${card.name}!`, defenderName);
-                                    updateUI();
-                                } else {
-                                    defender.hand.push(card);
-                                    drawUntilFighter();
-                                }
-                            };
-                            setTimeout(drawUntilFighter, 800);
-                        }
+                        // No fighters in hand - should have been caught earlier but just in case
+                        addLog(`Opponent has no fighters in hand!`, defenderName);
+                        updateUI();
+                        setTimeout(() => {
+                            endGame('player', 'No fighters in hand');
+                        }, 1000);
                     }
                 }
 
