@@ -1560,7 +1560,7 @@
                     subtype: 'defense',
                     energy: 1,
                     reduction: 5,
-                    effect: 'Reduce next incoming strike damage by 5'
+                    effect: 'Reduce next incoming attack damage by 5'
                 },
                 {
                     id: 'tech_parry',
@@ -2249,6 +2249,34 @@
                 // Apply minimum damage floor based on modified base
                 damage = Math.max(baseDamage, damage);
 
+                // Apply defender's temporary defense if any (AFTER minimum damage floor)
+                let wasBlocked = false;
+                if (defender.defenseBuff && defender.defenseBuff.amount) {
+                    wasBlocked = true;
+                    const reduction = defender.defenseBuff.amount;
+                    damage -= reduction;
+                    showAction(`Defense: -${reduction} damage blocked!`, player === 'player' ? 'opponent' : 'player', 'advantage');
+                    if (defender.defenseBuff.type === 'parry') {
+                        // Parry counter scales with defender's striking skill
+                        const counter = 3 + Math.floor(defender.activeFighter.striking / 4);
+                        attacker.activeFighter.stamina -= counter;
+                        showAction(`Parry counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        floatTextOverFighter(player, `-${counter}`, 'damage');
+                        checkFighterKO(attacker, player);
+                    } else if (defender.defenseBuff.type === 'slip') {
+                        // Slip counter deals fixed 4 damage
+                        const counter = 4;
+                        attacker.activeFighter.stamina -= counter;
+                        showAction(`Slip counter: ${counter} damage!`, player === 'player' ? 'opponent' : 'player', 'damage');
+                        floatTextOverFighter(player, `-${counter}`, 'damage');
+                        checkFighterKO(attacker, player);
+                    }
+                    defender.defenseBuff = null;
+                }
+
+                // Ensure minimum damage of 1 (can't block all damage)
+                damage = Math.max(1, damage);
+
                 // Show message with ACTUAL damage that will be dealt
                 if (attacker.positionalAdvantage) {
                     showAction(`${card.name} locked in: ${damage} damage!`, player, 'damage');
@@ -2262,7 +2290,7 @@
                 floatTextOverFighter(player === 'player' ? 'opponent' : 'player', `-${damage}`, 'damage');
                 checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
             } else if (card.subtype === 'defense') {
-                // Set a one-time defense buff applied to defender on next incoming strike
+                // Set a one-time defense buff applied to defender on next incoming attack (strike or submission)
                 const target = attacker; // playing defense for yourself
                 const amount = card.reduction || 0;
                 let type = 'block';
