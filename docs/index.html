@@ -2212,7 +2212,10 @@
                         checkFighterKO(defender, player === 'player' ? 'opponent' : 'player');
                     }
                 } else {
-                    showAction(`Takedown stuffed!`, player);
+                    // Show stuffed message from defender's perspective for better visibility
+                    const defenderName = player === 'player' ? 'opponent' : 'player';
+                    showAction(`${defender.activeFighter.name} stuffed the takedown!`, defenderName, 'advantage');
+                    floatTextOverFighter(defenderName, 'STUFFED', 'info');
                 }
                 
             } else if (card.subtype === 'submission') {
