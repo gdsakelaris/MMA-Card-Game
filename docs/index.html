@@ -1635,7 +1635,7 @@
         }
         
         function drawOpeningHand(player) {
-            // Guarantee at least 1 fighter in opening hand
+            // Always draw 4 random cards + 1 guaranteed fighter (5 cards total)
             gameState[player].hand = [];
 
             // First, draw 4 random cards
@@ -1643,22 +1643,22 @@
                 drawCardToHand(player, true);
             }
 
-            // Check if we have at least 1 fighter
+            // Then ALWAYS add 1 fighter from deck (respecting 3 fighter limit)
             const fightersInHand = gameState[player].hand.filter(c => c.type === 'fighter');
 
-            if (fightersInHand.length === 0) {
-                // No fighters yet - manually add one from deck
+            if (fightersInHand.length < 3) {
+                // Only add if we have less than 3 fighters
                 const deck = gameState[player].deck;
                 const fighterIdx = deck.findIndex(c => c.type === 'fighter');
                 if (fighterIdx !== -1) {
                     const fighter = deck.splice(fighterIdx, 1)[0];
                     gameState[player].hand.push(fighter);
                 } else {
-                    // Extreme edge case: no fighters in deck (shouldn't happen)
+                    // No fighters in deck
                     console.error('No fighters found in deck during opening hand!');
                 }
             }
-            // If we already have fighters from the 4 random draws, we're good
+            // If we already have 3 fighters from random draws, we're at the limit
         }
 
         function pickBestFighter(hand) {
