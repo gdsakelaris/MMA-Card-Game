@@ -1804,34 +1804,29 @@
         function buildDeck(player) {
             const deck = [];
 
-            // Randomly select 8 fighters from the pool of 15
-            const availableFighters = [...cardDatabase.fighters];
-            const selectedFighters = [];
-            for (let i = 0; i < 8; i++) {
-                const randomIndex = Math.floor(Math.random() * availableFighters.length);
-                const selectedFighter = availableFighters.splice(randomIndex, 1)[0];
-                selectedFighters.push(selectedFighter);
-            }
-
-            // Add the 8 selected fighters to deck
-            for (let i = 0; i < selectedFighters.length; i++) {
-                const fighter = JSON.parse(JSON.stringify(selectedFighters[i]));
+            // Add ALL 15 fighters (1 copy of each)
+            for (let i = 0; i < cardDatabase.fighters.length; i++) {
+                const fighter = JSON.parse(JSON.stringify(cardDatabase.fighters[i]));
                 fighter.uniqueId = `${player}_${fighter.id}_${Date.now()}_${i}`;
                 deck.push(fighter);
             }
 
-            // Add 32 technique cards
-            for (let i = 0; i < 32; i++) {
-                const tech = JSON.parse(JSON.stringify(cardDatabase.techniques[i % cardDatabase.techniques.length]));
-                tech.uniqueId = `${player}_${tech.id}_${Date.now()}_${i}`;
-                deck.push(tech);
+            // Add 48 technique cards (2 copies of each of the 24 techniques)
+            for (let copy = 0; copy < 2; copy++) {
+                for (let i = 0; i < cardDatabase.techniques.length; i++) {
+                    const tech = JSON.parse(JSON.stringify(cardDatabase.techniques[i]));
+                    tech.uniqueId = `${player}_${tech.id}_${Date.now()}_${copy}_${i}`;
+                    deck.push(tech);
+                }
             }
 
-            // Add 10 corner cards
-            for (let i = 0; i < 10; i++) {
-                const corner = JSON.parse(JSON.stringify(cardDatabase.corners[i % cardDatabase.corners.length]));
-                corner.uniqueId = `${player}_${corner.id}_${Date.now()}_${i}`;
-                deck.push(corner);
+            // Add 12 corner cards (4 copies of each of the 3 corners)
+            for (let copy = 0; copy < 4; copy++) {
+                for (let i = 0; i < cardDatabase.corners.length; i++) {
+                    const corner = JSON.parse(JSON.stringify(cardDatabase.corners[i]));
+                    corner.uniqueId = `${player}_${corner.id}_${Date.now()}_${copy}_${i}`;
+                    deck.push(corner);
+                }
             }
 
             gameState[player].deck = deck;

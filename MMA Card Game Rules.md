@@ -8,11 +8,13 @@ MMA Warriors is a 1v1 MMA-themed card game where players build decks of fighters
 
 ## Game Components
 
-### Deck Composition (50 cards total)
+### Deck Composition (75 cards total)
 
-- **8 Fighter Cards** - Randomly selected from a pool of 15 UFC fighters
-- **32 Technique Cards** - Strikes, grappling moves, submissions, and defensive techniques
-- **10 Corner Cards** - Support cards that provide buffs and healing
+**Every deck has identical composition for consistency:**
+
+- **15 Fighter Cards** - All 15 UFC fighters (1 copy of each)
+- **48 Technique Cards** - 24 unique techniques (2 copies of each)
+- **12 Corner Cards** - 3 unique corner cards (4 copies of each)
 
 ### Player Resources
 
@@ -187,7 +189,7 @@ Step 3: Calculate final damage
 
 ## Setup
 
-1. Each player receives a shuffled 50-card deck
+1. Each player receives a shuffled 75-card deck (identical composition)
 2. Each player draws an opening hand of 5 cards (exactly 1 fighter + 4 non-fighter cards)
 3. Opponent automatically deploys their fighter
 4. **Player chooses** to deploy their fighter
@@ -462,4 +464,4 @@ To play this without a computer:
 ---
 
 *Document updated to match current digital implementation*
-*Last Updated: Version 2.3 - Opening hand now always exactly 1 fighter + 4 non-fighter cards. Manual card discard selection when hand is full. Intense Training bonus now persists until next strike is thrown. Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters*
+*Last Updated: Version 2.4 - Deck size increased to 75 cards with consistent composition (15 fighters, 48 techniques as 2x copies, 12 corners as 4x copies). Every deck now has identical card composition for competitive consistency. Opening hand always exactly 1 fighter + 4 non-fighter cards. Manual card discard selection when hand is full. Intense Training bonus persists until next strike is thrown. Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters*
