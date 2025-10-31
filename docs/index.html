@@ -2131,13 +2131,16 @@
                 if (attacker.positionalAdvantage) {
                     // Bonus damage when you have advantage (better control)
                     damage += 2;
+                    // Ensure damage is never less than the card's displayed damage
+                    damage = Math.max(card.damage, damage);
                 } else if (defender.positionalAdvantage) {
-                    // Penalty when opponent has advantage (you're attempting from bottom)
-                    damage -= 2;
+                    // Submissions from bottom do only 60% damage
+                    damage = Math.floor(damage * 0.6);
+                    // No minimum damage guarantee when attempting from bottom
+                } else {
+                    // Neutral position
+                    damage = Math.max(card.damage, damage);
                 }
-
-                // Ensure damage is never less than the card's displayed damage
-                damage = Math.max(card.damage, damage);
 
                 // Show message with ACTUAL damage that will be dealt
                 if (attacker.positionalAdvantage) {
