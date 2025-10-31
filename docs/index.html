@@ -1449,7 +1449,7 @@
                     subtype: 'strike',
                     energy: 3,
                     damage: 6,
-                    effect: 'Requires advantage. +3 bonus. Stays on ground'
+                    effect: 'Requires advantage. Bonus damage scales with grappling. Stays on ground'
                 },
                 // === GRAPPLING ===
                 {
@@ -2832,7 +2832,7 @@
                 <div class="stamina-bar-bg">
                     <div class="stamina-bar-fill" style="width: ${staminaPercent}%"></div>
                 </div>
-                ${gameState[owner].positionalAdvantage ? '<span class="positional-advantage">⭐ ADVANTAGE</span>' : ''}
+                ${gameState[owner].positionalAdvantage ? '<span class="positional-advantage">ADVANTAGE</span>' : ''}
             `;
             
             return card;
