@@ -2203,6 +2203,7 @@
                 const roll = Math.random();
                 if (roll < successChance) {
                     attacker.positionalAdvantage = true;
+                    defender.positionalAdvantage = false;
                     showAction(`${attacker.activeFighter.name} gains Advantage!`, player, 'advantage');
                     if (card.damage) {
                         // Add grappling skill scaling to takedown impact damage
