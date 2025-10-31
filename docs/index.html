@@ -377,6 +377,34 @@
             font-size: 0.85em;
         }
 
+        .log-item {
+            padding: 4px;
+            margin: 3px 0;
+            border-left: 3px solid #999;
+            padding-left: 8px;
+            font-size: 0.85em;
+            color: #ddd;
+            background: rgba(255,255,255,0.03);
+            border-radius: 3px;
+        }
+
+        .log-item.opponent-log {
+            border-left-color: #d20a0a;
+            background: rgba(210,10,10,0.08);
+        }
+
+        .log-item.player-log {
+            border-left-color: #00e1ff;
+            background: rgba(0,225,255,0.08);
+        }
+
+        #gameLogMessages {
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
         .log-entry.opponent {
             border-left-color: #d20a0a;
         }
@@ -524,25 +552,29 @@
             pointer-events: none;
         }
         .inline-action-feed { /* per-side inline feed */
-            margin-top: 6px;
+            margin-top: 4px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            min-height: 24px;
+            align-items: flex-start;
+            gap: 2px;
+            min-height: 20px;
             flex: 1;
             pointer-events: none;
+            width: 100%;
         }
         .action-item {
             background: rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.25);
-            border-left-width: 4px;
+            border-left-width: 3px;
             color: #fff;
-            padding: 6px 12px;
-            border-radius: 4px;
-            min-width: 260px;
-            text-align: center;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-            animation: feedIn 0.25s ease-out, feedOut 0.3s ease-in 8s forwards;
+            padding: 3px 8px;
+            border-radius: 3px;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            display: block;
+            width: 50%;
+            font-size: 0.8em;
+            line-height: 1.2;
         }
         .action-item.player { border-left-color: #00e1ff; }
         .action-item.opponent { border-left-color: #d20a0a; }
@@ -550,6 +582,21 @@
         .action-item.heal { background: rgba(78,204,163,0.18); }
         .action-item.advantage { background: rgba(210,210,10,0.18); }
         .action-item.ko { background: rgba(210,10,10,0.28); font-weight: bold; }
+
+        .action-item.new-message {
+            animation: messageSlideIn 0.3s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
         @keyframes feedIn {
             from { opacity: 0; transform: translate(-50%, -8px); }
@@ -1060,7 +1107,7 @@
             <!-- Opponent Area -->
             <div class="opponent-area">
                 <div class="area-header">
-                    <span class="player-name">OPPONENT</span>
+                    <span class="player-name">OPP</span>
                     <div class="health-bar">
                         <div class="health-bar-bg">
                             <div class="health-bar-fill" id="opponentHealthBar" style="width: 100%;">
@@ -1689,7 +1736,7 @@
                 if (!f.strikingBonus) f.strikingBonus = 0;
                 gameState.player.activeFighter = f;
                 gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== f.uniqueId);
-                addLog(`You deploy ${f.name} to the arena!`);
+                addLog(`You deploy ${f.name} to the arena!`, 'player');
                 startAfterOpeningSelection();
                 return;
             }
@@ -1726,7 +1773,7 @@
             if (!f.strikingBonus) f.strikingBonus = 0;
             gameState.player.activeFighter = f;
             gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
-            addLog(`You deploy ${f.name} to the arena!`);
+            addLog(`You deploy ${f.name} to the arena!`, 'player');
             closeFighterSelect();
             startAfterOpeningSelection();
         }
@@ -1788,7 +1835,7 @@
 
             // Remove from hand
             gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== uniqueId);
-            addLog(`You deploy ${fighter.name} from hand!`, 'player');
+            addLog(`You deploy ${fighter.name} to the arena!`, 'player');
 
             closeFighterSelect();
             updateUI();
@@ -2010,8 +2057,7 @@
                 // Deploy fighter
                 gameState.player.activeFighter = card;
                 gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== card.uniqueId);
-
-                addLog(`${card.name} enters the arena!`);
+                addLog(`You deploy ${card.name} to the arena!`, 'player');
 
                 updateUI();
             } else if (card.type === 'technique') {
@@ -2396,7 +2442,7 @@
                             if (!newFighter.strikingBonus) newFighter.strikingBonus = 0;
                             defender.activeFighter = newFighter;
                             defender.hand = defender.hand.filter(c => c.uniqueId !== newFighter.uniqueId);
-                            addLog(`Opponent deploys ${newFighter.name} from hand!`, defenderName);
+                            addLog(`Opponent deploys ${newFighter.name} to the arena!`, defenderName);
                             updateUI();
                         }, 800);
                     } else {
@@ -2565,7 +2611,7 @@
 
                     gameState.opponent.activeFighter = fighter;
                     gameState.opponent.hand = gameState.opponent.hand.filter(c => c.uniqueId !== fighter.uniqueId);
-                    addLog(`Opponent plays ${fighter.name}!`, 'opponent');
+                    addLog(`Opponent deploys ${fighter.name} to the arena!`, 'opponent');
                     updateUI();
 
                     setTimeout(() => continueOpponentAI(), 1000);
@@ -2738,67 +2784,44 @@
                 owner = (gameState.currentPlayer === 'opponent') ? 'opponent' : 'player';
             }
 
-            function attemptAppend(retries = 10) {
-                const feedId = owner === 'opponent' ? 'opponentActionFeed' : 'playerActionFeed';
-                let feed = document.getElementById(feedId);
-                if (!feed) {
-                    const zoneId = owner === 'opponent' ? 'opponentFighterZone' : 'playerFighterZone';
-                    const zone = document.getElementById(zoneId);
-                    if (zone) {
-                        // If zone exists but feed not yet rendered (e.g., mid-update), retry shortly
-                        if (retries > 0) {
-                            return setTimeout(() => attemptAppend(retries - 1), 80);
-                        }
-                        // As a fallback, create the feed now
-                        feed = document.createElement('div');
-                        feed.id = feedId;
-                        feed.className = 'inline-action-feed';
-                        zone.appendChild(feed);
-                    }
+            // Get the feed for this player
+            const feedId = owner === 'opponent' ? 'opponentActionFeed' : 'playerActionFeed';
+            let feed = document.getElementById(feedId);
+
+            // If feed doesn't exist yet, create it
+            if (!feed) {
+                const zoneId = owner === 'opponent' ? 'opponentFighterZone' : 'playerFighterZone';
+                const zone = document.getElementById(zoneId);
+                if (zone) {
+                    feed = document.createElement('div');
+                    feed.id = feedId;
+                    feed.className = 'inline-action-feed';
+                    zone.appendChild(feed);
                 }
-                if (!feed) {
-                    feed = document.getElementById('actionFeed');
-                }
-                if (!feed) return;
-
-                // De-dupe: Only prevent identical consecutive messages (for UI spam prevention)
-                // But ALWAYS show effect messages (damage, heal, advantage, ko) as they represent actual game events
-                const isEffectMessage = type && (type === 'damage' || type === 'heal' || type === 'advantage' || type === 'ko');
-
-                if (!isEffectMessage) {
-                    // Only apply de-duplication to non-effect messages
-                    const normMsg = (message || '').trim().toLowerCase();
-                    const last = feed.lastElementChild;
-                    if (last && last.textContent && last.textContent.trim().toLowerCase() === normMsg) return;
-
-                    // De-dupe window: prevent duplicate messages within a short interval per side
-                    window.recentActionMessages = window.recentActionMessages || [];
-                    const now = Date.now();
-                    // purge old
-                    window.recentActionMessages = window.recentActionMessages.filter(m => now - m.t < 2000);
-                    const key = owner + '|' + normMsg;
-                    if (window.recentActionMessages.some(m => m.k === key)) return;
-                    window.recentActionMessages.push({ k: key, t: now });
-                }
-
-                const item = document.createElement('div');
-                item.className = 'action-item';
-                if (owner === 'opponent') item.classList.add('opponent');
-                if (owner === 'player') item.classList.add('player');
-                if (type) item.classList.add(type);
-                item.textContent = message;
-                feed.appendChild(item);
-                // Cap to 5
-                while (feed.children.length > 5) feed.removeChild(feed.firstChild);
-                setTimeout(() => {
-                    if (item.parentNode === feed) feed.removeChild(item);
-                }, 8500);
             }
 
-            // Try to append now (will retry if feed not yet available due to UI updating)
-            attemptAppend();
-            // Also queue a microtask to re-attempt after UI update cycles
-            setTimeout(() => attemptAppend(3), 0);
+            if (!feed) return;
+
+            // Create and add the message to the log
+            const item = document.createElement('div');
+            item.className = 'action-item new-message';
+            if (owner === 'opponent') item.classList.add('opponent');
+            if (owner === 'player') item.classList.add('player');
+            if (type) item.classList.add(type);
+            item.textContent = message;
+
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                item.classList.remove('new-message');
+            }, 300);
+
+            // Prepend to top so newest is at top
+            feed.insertBefore(item, feed.firstChild);
+
+            // Keep only the 5 most recent messages (remove from bottom)
+            while (feed.children.length > 5) {
+                feed.removeChild(feed.lastChild);
+            }
         }
 
         function floatTextOverFighter(owner, text, cls = 'info') {
@@ -2884,29 +2907,41 @@
 
         function renderFighter(player) {
             const zone = document.getElementById(player === 'player' ? 'playerFighterZone' : 'opponentFighterZone');
+            const feedId = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
+
+            // Find and temporarily detach the existing action feed to preserve all messages
+            let existingFeed = document.getElementById(feedId);
+            let feedToRestore = null;
+
+            if (existingFeed && existingFeed.parentNode === zone) {
+                // Detach it so it won't be cleared with innerHTML
+                feedToRestore = zone.removeChild(existingFeed);
+            }
+
+            // Clear the zone
             zone.innerHTML = '';
-            
+
+            // Add fighter card or empty slot
             if (!gameState[player].activeFighter) {
                 const emptySlot = document.createElement('div');
                 emptySlot.className = 'empty-slot';
                 emptySlot.textContent = 'No Active Fighter';
                 zone.appendChild(emptySlot);
-                // Ensure action feed container exists beside where fighter would be
+            } else {
+                const fighter = gameState[player].activeFighter;
+                const card = createFighterCard(fighter, player);
+                zone.appendChild(card);
+            }
+
+            // Restore the preserved feed with all messages, or create new one if first time
+            if (feedToRestore) {
+                zone.appendChild(feedToRestore);
+            } else {
                 const feed = document.createElement('div');
-                feed.id = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
+                feed.id = feedId;
                 feed.className = 'inline-action-feed';
                 zone.appendChild(feed);
-                return;
             }
-            
-            const fighter = gameState[player].activeFighter;
-            const card = createFighterCard(fighter, player);
-            zone.appendChild(card);
-            // Add/ensure inline action feed next to fighter
-            const feed = document.createElement('div');
-            feed.id = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
-            feed.className = 'inline-action-feed';
-            zone.appendChild(feed);
         }
 
         function createFighterCard(fighter, owner) {

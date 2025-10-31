@@ -1,0 +1,177 @@
+Strategic Depth Enhancements
+
+1. Deck Building System
+Currently all decks are identical. Allow players to:
+•	Choose their roster: Select 10-15 fighters from a larger pool (30+ fighters)
+•	Customize technique ratios: Choose how many of each technique type to include
+•	Create archetype decks: Pure striker, pure grappler, or hybrid builds
+•	Unlock system: Start with basic fighters, unlock elite fighters through wins
+
+        2. Stance System
+        Add tactical stances fighters can adopt:
+        •	Aggressive Stance (+2 damage, -1 defense) - costs 1 energy
+        •	Defensive Stance (+3 defense, -1 damage) - costs 1 energy
+        •	Pressure Stance (+10% takedown success) - costs 1 energy
+        •	Counter Stance (next successful defense deals double counter damage) - costs 2 energy
+        •	Stances persist until changed, adding layer of positioning
+
+        3. Combo System
+        Reward sequential play with combo bonuses:
+        •	Strike chains: Playing 2+ strikes in one turn grants +1 damage to each after the first
+        •	Grappling pressure: Successive takedown attempts increase success chance by +5% each
+        •	Submission chains: Already exists, but add visual combo counter
+        •	Mixed combos: Strike → Takedown → Ground and Pound gets a "Perfect Transition" bonus
+
+4. Fighter Fatigue/Momentum
+Add a momentum/fatigue mechanic:
+•	Successful attacks build momentum tokens (max 3)
+•	Spend momentum for power moves or to re-roll failed takedowns
+•	Taking damage builds fatigue - reduces stats temporarily
+•	Creates ebb and flow like real MMA rounds
+
+
+Tactical Options
+
+6. Cage Control & Positioning
+Add a positional layer beyond ground/standing:
+•	Center Octagon: Neutral position (current default)
+•	Against Cage: Defender -1 to all stats, attacker easier takedowns
+•	Break Away action: Escape cage position (costs 1 energy)
+•	Certain techniques force position changes
+
+7. Counter-Play Cards
+Add reactive cards played on opponent's turn:
+•	Stuff (2 energy, instant): Immediately fail opponent's takedown
+•	Check Kick (1 energy, instant): Reduce leg kick damage, deal 2 counter
+•	Sprawl (2 energy, instant): Avoid takedown AND gain advantage
+•	Must hold energy between turns to use
+
+8. Advanced Defense Options
+Expand defensive play:
+•	Rolling with Punches: Reduce damage by 50% but prevents counter damage
+•	Cage Grab (risky): 50% chance to avoid takedown, 50% lose 5 stamina (illegal)
+•	Clinch Break: Escape opponent's clinch attempts
+•	Submission Defense: Reduce submission damage by grappling stat vs attacker's
+
+9. Fight IQ / Special Abilities
+Give each fighter a unique signature ability:
+•	Islam: "Sambo Control" - +15% submission success from top
+•	Pereira: "Left Hook Larry" - First hook each fight deals +5 damage
+•	Holloway: "Blessed Express" - Strikes cost -1 energy
+•	Oliveira: "Do Bronx" - Submissions from bottom only -30% penalty instead of -40%
+•	Adds personality and matchup-specific strategies
+
+10. Game Plan Cards
+Pre-fight planning phase:
+•	Choose a game plan before fight: "First Round Finish", "Grind", "Point Fighting"
+•	Game plans grant bonuses if you stick to the strategy
+•	"First Round Finish": +3 damage in round 1, -2 defense in later rounds
+•	"Grind": +5 stamina, -1 damage
+•	Risk/reward for committing to a strategy
+
+
+Player Engagement
+
+11. Progression & Unlocks
+•	Leveling system: Gain XP from wins
+•	Unlock new fighters: Start with 10, unlock to 30+
+•	Card upgrades: Permanent slight stat boosts to favorite fighters
+•	Achievements: "Land 100 head kicks", "Win via submission 10 times"
+•	Daily challenges: "Win using only leg kicks and takedowns"
+
+12. Tournament Mode
+•	8-fighter bracket: Fight through to become champion
+•	Increasing difficulty: Each opponent gets harder
+•	Draft mode: Pick fighters one-by-one against AI opponent
+•	Reward system: Better rewards for tournament wins
+
+13. Multiplayer
+•	Pass-and-play: Local multiplayer on same device
+•	Online ranked: Elo rating system
+•	Deck sharing: Export/import deck codes
+•	Spectator mode: Watch top-ranked matches
+
+14. Visual & Audio Feedback
+•	Knockout animations: Dramatic slow-motion for finishing blows
+•	Submission tap-out: Visual indication of submission success
+•	Crowd reactions: Cheers for big moves
+•	Entrance music: Each fighter has unique theme
+•	Commentary: Dynamic text describing action ("WHAT A KNOCKOUT!")
+
+
+Balance Improvements
+
+15. Fighter Role System
+Balance fighters by giving clear roles:
+•	Tank: High stamina/defense, low damage (Merab)
+•	Glass Cannon: High damage, low stamina (Pereira)
+•	Well-Rounded: Balanced stats (Volk)
+•	Specialist: Extreme in one area (Islam for grappling)
+•	Ensure each role is viable
+
+16. Energy Curve Adjustments
+•	Low-cost cards should be weaker: Ensure expensive cards feel impactful
+•	Energy efficiency stat: Some fighters generate +1 energy per turn
+•	Energy denial: Cards that reduce opponent's energy gain next turn
+•	Burst turn: Once per game, gain +4 energy this turn
+
+17. Counter-Meta Design
+•	Anti-grappler cards: "Takedown Defense Training" corner card (+3 grappling for defense)
+•	Anti-striker cards: "Pressure Fighter" reduces strike damage by 2
+•	Meta shifts: Regularly add new fighters to shake up dominant strategies
+
+
+Replayability Features
+
+18. Campaign Mode
+•	Story-driven: Rise through rankings to become champion
+•	Boss battles: Face legendary fighters with special rules
+•	Narrative choices: Affects fighter development
+•	Multiple endings: Based on your fighting style
+
+19. Daily/Weekly Modes
+•	Daily Challenge: Pre-built deck vs AI with special rules
+•	Weekly Tournament: Compete for high score on leaderboard
+•	Rotating formats: "Strikers only", "No corner cards", "Double stamina"
+
+20. Statistics & Analysis
+•	Fight history: Review past matches
+•	Win rate by fighter: See which fighters you're best with
+•	Favorite techniques: Track most-used cards
+•	Heatmaps: Where damage came from
+•	Improvement suggestions: "You rarely use submissions - try more!"
+
+
+Quality of Life
+
+21. Undo Last Action
+•	Allow taking back a card play (once per turn)
+•	Reduces frustration from misclicks
+•	Disabled in ranked mode
+
+22. Card Filtering
+•	Filter hand by type: "Show only strikes", "Show only defense"
+•	Makes decision-making faster with large hands
+
+23. Tutorial & Tips
+•	Interactive tutorial: Teaches mechanics step-by-step
+•	Tooltips: Hover over cards for detailed explanations
+•	Strategy guide: In-game tips for beginners
+•	Replay system: Save and rewatch exciting matches
+
+24. Difficulty Settings
+•	Easy: AI makes random plays
+•	Medium: Current AI
+•	Hard: AI uses optimal strategy and card counting
+•	Nightmare: AI gets +1 to all stats
+
+
+Most Impactful Quick Wins
+
+If you want maximum impact with minimum effort, prioritize these:
+1.	Fighter unique abilities (#9) - Adds flavor and strategy immediately
+2.	Combo system (#3) - Rewards skillful play without complex rules
+3.	Deck building (#1) - Massively increases replayability
+4.	Round system (#5) - Adds structure and comeback mechanics
+5.	Better AI difficulty (#24) - Keeps players engaged longer
+
