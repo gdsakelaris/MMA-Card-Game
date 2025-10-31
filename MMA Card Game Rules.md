@@ -20,7 +20,6 @@ MMA Warriors is a 1v1 MMA-themed card game where players build decks of fighters
 - **Energy**: Starts at 7, gains +2 per turn, max 12
 - **Hand Limit**: 10 cards maximum
 - **Fighter Card Limit**: Maximum 2 fighter cards in hand during gameplay (3 allowed in opening hand before first fighter deployment)
-- **Bench**: Maximum 5 fighters
 
 ---
 
@@ -216,7 +215,7 @@ Step 3: Calculate final damage
 
 Players can perform actions in any order:
 
-- Deploy fighters (to active zone or bench, max 5 on bench)
+- Deploy fighter (only if no active fighter currently deployed)
 - Play technique cards (requires active fighter and sufficient energy)
 - Play corner cards (requires active fighter and sufficient energy)
 - Actions continue until no playable cards remain
@@ -264,7 +263,7 @@ When a fighter's stamina reaches 0:
 3. Positional advantages are reset (new fight scenario)
 4. **Check for fighters in HAND only** (after drawing if in draw phase):
    - If no fighters in hand: Player loses immediately
-   - Game does NOT check bench or deck
+   - Only hand is checked for available fighters
 5. **Player replacement** (manual selection):
    - Shows modal with all available fighters from HAND only
    - Player clicks to select which fighter to deploy
@@ -458,9 +457,9 @@ To play this without a computer:
 3. **Energy Tracking**: Use tokens (start 7, gain +2 per turn, max 12)
 4. **Status Effects**: Use status tokens/cards for Bleed and Stagger
 5. **Probability Alternative**: Use simple comparison (grappling vs grappling) with d6 tiebreaker
-6. **Fighter Hand Limit**: Use a separate zone for fighters (max 2 during play)
+6. **Fighter Deployment**: Only one active fighter at a time - cannot deploy fighters while one is active
 
 ---
 
 *Document updated to match current digital implementation*
-*Last Updated: Version 2.0 - Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters*
+*Last Updated: Version 2.1 - Bench removed. Only one active fighter at a time. Updated formulas with grappling-based takedown defense, full grappling stat scaling for submissions, position-based submission modifiers, smart fighter drawing, hand-only fighter requirements, and skill-based scaling for Ground and Pound and Parry counters*

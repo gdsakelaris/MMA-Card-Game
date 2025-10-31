@@ -1079,8 +1079,7 @@
                 </div>
                 <div class="hand-counter">Hand: <span id="opponentHandCount">5</span></div>
                 <!-- per-side inline action feed will render inside fighter zone -->
-                <div class="bench-zone" id="opponentBench"></div>
-                
+
             </div>
 
             <!-- Center Action Area -->
@@ -1112,7 +1111,6 @@
                     <div class="empty-slot">No Active Fighter</div>
                 </div>
                 <!-- per-side inline action feed will render inside fighter zone -->
-                <div class="bench-zone" id="playerBench"></div>
                 <div class="hand-area" id="playerHand">
                     <!-- Player's hand cards will be inserted here -->
                 </div>
@@ -1160,7 +1158,6 @@
                 maxEnergy: 12,
                 deck: [],
                 hand: [],
-                bench: [],
                 activeFighter: null,
                 positionalAdvantage: false
             },
@@ -1171,7 +1168,6 @@
                 maxEnergy: 12,
                 deck: [],
                 hand: [],
-                bench: [],
                 activeFighter: null,
                 positionalAdvantage: false
             }
@@ -1630,23 +1626,30 @@
         }
         
         function drawOpeningHand(player) {
-            // Deterministic: draw 4 cards, then guarantee 1 fighter from deck
+            // Guarantee at least 1 fighter in opening hand
             gameState[player].hand = [];
+
+            // First, draw 4 random cards
             for (let i = 0; i < 4; i++) {
                 drawCardToHand(player, true);
             }
-            const deck = gameState[player].deck;
-            const fighterIdx = deck.findIndex(c => c.type === 'fighter');
-            if (fighterIdx !== -1) {
-                const fighter = deck.splice(fighterIdx, 1)[0];
-                gameState[player].hand.push(fighter);
 
-                // Opening hand can have 3 fighters (since one will be deployed)
-                // No need to enforce limit here
-            } else {
-                // Fallback: draw 1 more if somehow no fighter remains
-                drawCardToHand(player, true);
+            // Check if we have at least 1 fighter
+            const fightersInHand = gameState[player].hand.filter(c => c.type === 'fighter');
+
+            if (fightersInHand.length === 0) {
+                // No fighters yet - manually add one from deck
+                const deck = gameState[player].deck;
+                const fighterIdx = deck.findIndex(c => c.type === 'fighter');
+                if (fighterIdx !== -1) {
+                    const fighter = deck.splice(fighterIdx, 1)[0];
+                    gameState[player].hand.push(fighter);
+                } else {
+                    // Extreme edge case: no fighters in deck (shouldn't happen)
+                    console.error('No fighters found in deck during opening hand!');
+                }
             }
+            // If we already have fighters from the 4 random draws, we're good
         }
 
         function pickBestFighter(hand) {
@@ -1913,20 +1916,17 @@
             }
 
             if (card.type === 'fighter') {
+                // Can only deploy fighter if no active fighter
+                if (gameState.player.activeFighter) {
+                    addLog('You already have an active fighter!');
+                    return;
+                }
+
                 // Initialize fighter stats
                 if (!card.strikingBonus) card.strikingBonus = 0;
 
-                // If no active fighter, set as active; otherwise place on bench (max 5)
-                if (!gameState.player.activeFighter) {
-                    gameState.player.activeFighter = card;
-                } else {
-                    if ((gameState.player.bench || []).length >= 5) {
-                        addLog('Your bench is full (max 5)!');
-                        return;
-                    }
-                    gameState.player.bench.push(card);
-                    addLog(`${card.name} moved to your bench.`);
-                }
+                // Deploy fighter
+                gameState.player.activeFighter = card;
                 gameState.player.hand = gameState.player.hand.filter(c => c.uniqueId !== card.uniqueId);
 
                 addLog(`${card.name} enters the arena!`);
@@ -2711,9 +2711,6 @@
             // Render fighters
             renderFighter('player');
             renderFighter('opponent');
-            renderBench('player');
-            renderBench('opponent');
-            
             // Render player hand
             renderHand();
         }
@@ -2782,17 +2779,6 @@
             feed.id = (player === 'player' ? 'player' : 'opponent') + 'ActionFeed';
             feed.className = 'inline-action-feed';
             zone.appendChild(feed);
-        }
-
-        function renderBench(owner) {
-            const benchEl = document.getElementById(owner === 'player' ? 'playerBench' : 'opponentBench');
-            benchEl.innerHTML = '';
-            const bench = gameState[owner].bench || [];
-            bench.forEach(f => {
-                const card = createFighterCard(f, owner);
-                card.classList.add('bench-card');
-                benchEl.appendChild(card);
-            });
         }
 
         function createFighterCard(fighter, owner) {
