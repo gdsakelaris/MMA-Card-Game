@@ -2,9 +2,30 @@
   "permissions": {
     "allow": [
       "Bash(start index.html)",
-      "Bash(start docs/index.html)"
+      "Bash(start docs/index.html)",
+      "Bash(sed -n '1355,3420p' docs/index.html)",
+      "Bash(node --check /tmp/game.js)",
+      "Bash(sed -n '1371,3470p' docs/index.html)",
+      "Bash(node --check /tmp/game2.js)",
+      "Bash(cd \"c:/Users/gdsak/OneDrive/Desktop/MMA Card Game\" && sed -n '1374,3569p' docs/index.html > /tmp/game2.js && node --check /tmp/game2.js && echo \"SYNTAX OK\")",
+      "Bash(node /tmp/react_test.js)",
+      "Bash(node --check /tmp/game3.js)",
+      "Bash(git --no-pager diff --stat)",
+      "Bash(node --check js/game.js)",
+      "Bash(sed -i '32,455d' js/game.js)",
+      "Bash(node --check js/cards.js)",
+      "Bash(grep -n \"^\\\\s*\\\\.\\\\\\(card\\\\|btn\\\\|stamina\\\\|health\\\\|turn\\\\|fighter\\\\|hand\\\\|action-feed\\\\|empty-slot\\\\|card-energy\\\\|card-header\\\\|card-type\\\\|select-card\\\\|advantage-badge\\\\\\)[A-Za-z-]*\\\\s*[{,]\\\\|#turnIndicator\" css/styles.css)",
+      "Bash(sed -i \"s|eval\\(cards.slice\\(cards.indexOf\\('const cardDatabase'\\)\\)\\);|let cardDatabase; eval\\(cards.slice\\(cards.indexOf\\('const cardDatabase'\\)\\).replace\\('const cardDatabase','cardDatabase'\\)\\);|\" /tmp/counter_test.js)",
+      "Bash(node /tmp/counter_test.js)",
+      "Bash(grep -n \"Regular strikes \\(not Ground and Pound\\) reset\\\\|Fight returns to standing\\\\|} else if \\(card.subtype === 'defense'\\) {\\\\|target.defenseBuff = { amount, type }\" js/game.js)",
+      "Bash(node _verify.js)",
+      "Bash(node -e ' *)",
+      "Bash(awk '-F'\\\\''|,' '{print $2, $NF}')"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "\\tmp"
+    ]
   }
 }

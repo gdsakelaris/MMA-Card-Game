@@ -1,490 +1,259 @@
-# MMA WARRIORS - MMA Card Game Rules
+# MMA WARRIORS — Card Game Rules (v4.5)
 
-## Game Overview
-
-MMA Warriors is a 1v1 MMA-themed card game where players build decks of fighters and techniques to defeat their opponent. Players manage energy, deploy fighters, and use striking, grappling, and submission techniques in strategic combat.
+A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
 ---
 
-## Game Components
+## Goal
 
-### Deck Composition (75 cards total)
-
-**Every deck has identical composition for consistency:**
-
-- **15 Fighter Cards** - All 15 UFC fighters (1 copy of each)
-- **48 Technique Cards** - 24 unique techniques (2 copies of each)
-- **12 Corner Cards** - 3 unique corner cards (4 copies of each)
-
-### Player Resources
-
-- **Health**: 100 (shared across all fighters)
-- **Energy**: Starts at 8, gains +2 per turn, max 16
-- **Hand Limit**: 10 cards maximum
-- **Fighter Card Limit**: Maximum 2 fighter cards in hand during gameplay (opening hand has exactly 1 fighter)
+Be the **last team standing**: KO your opponent's fighters until they have **none left** to put in the cage.
 
 ---
 
-## Fighter Cards
+## Components
 
-### Fighter Stats
+Each player has TWO piles:
 
-Each fighter has four core stats:
+- A **Fighter pile** — your 15 fighters (these are your "player cards"). Shuffle it and **draw 3 into your Roster** at the start; that's your team for the match.
+- A **Play deck** of 72 cards — techniques + corners (copies vary by power; strong cards are rarer — see the card list).
+  - **67 Techniques** — strikes, takedowns, the clinch, submissions, escapes, and reactions
+  - **5 Corner cards** (Master Coach ×1, Intense Training ×2, Ringside Medic ×2)
 
-1. **Striking** - Offensive power for strikes, adds to strike damage, affects parry counters
-2. **Grappling** - Offensive power for takedowns and submissions, defends against takedowns and submissions, affects Ground and Pound damage
-3. **Defense** - Reduces incoming strike damage only
-4. **Stamina** - Fighter's individual health pool (when reduced to 0, fighter is KO'd)
+Plus **energy tokens** and a way to track **HP** and **health** (tokens, dials, or paper).
 
-### Fighter Styles
-
-Fighters are labeled with one of three styles (shown as just the style name, not "Fighter"):
-
-- **Striker** - +2 damage to all strikes (including Ground and Pound)
-- **Grappler** - +2 to takedown success chance AND +2 damage to all submissions
-- **Balanced** - No specific bonus
-
-### Example Fighters
-
-- **Islam Makhachev** - Grappler (Striking: 6, Grappling: 10, Defense: 8, Stamina: 40)
-- **Alex Pereira** - Striker (Striking: 10, Grappling: 4, Defense: 6, Stamina: 34)
-- **Alexander Volkanovski** - Balanced (Striking: 8, Grappling: 8, Defense: 9, Stamina: 42)
-- **Ilia Topuria** - Balanced (Striking: 9, Grappling: 7, Defense: 7, Stamina: 38)
-- **Merab Dvalishvili** - Grappler (Striking: 6, Grappling: 9, Defense: 7, Stamina: 45)
-- **Charles Oliveira** - Grappler (Striking: 7, Grappling: 10, Defense: 6, Stamina: 36)
-- **Max Holloway** - Striker (Striking: 9, Grappling: 6, Defense: 7, Stamina: 45)
+> Physical tip: only the shuffle is random, so no dice are needed. A **playmat** with four position zones — *Standing*, *Clinch*, *Top*, *Bottom* — and a spot for your **Roster** keeps everything clear.
 
 ---
 
-## Technique Cards
+## Fighters — three stats
 
-### Strikes
+Each fighter has just three numbers:
 
-**Deal damage and reset fight to standing position (unless Ground and Pound)**
+- **Striking (1–5)** — added to standup strike damage
+- **Grappling (1–5)** — added to takedown impact, Ground & Pound, and submissions
+- **HP (~22–32)** — the fighter's health; at 0 they're KO'd
 
-#### Low Cost Strikes (1-2 Energy)
+There is **no Defense stat** and **no stamina/fatigue tracking** — you defend by playing reaction cards. A fighter's "style" (Striker / Grappler / Balanced) is just flavor; the numbers tell the story.
 
-- **Quick Jab** - 1 Energy, 3 damage
-- **Teep Kick** - 1 Energy, 3 damage
-- **Leg Kick** - 2 Energy, 4 damage
-- **Body Shot** - 2 Energy, 4 damage
+Examples:
 
-#### Medium Cost Strikes (3 Energy)
-
-- **Power Cross** - 3 Energy, 6 damage
-- **Cutting Elbow** - 3 Energy, 5 damage + Bleed (2 damage for 2 turns)
-- **Uppercut** - 3 Energy, 6 damage
-
-#### High Cost Strikes (4 Energy)
-
-- **Heavy Hook** - 4 Energy, 8 damage
-- **Spinning Back Fist** - 4 Energy, 7 damage (opponent skips next turn if lands)
-- **Head Kick** - 4 Energy, 10 damage
-
-#### Special Strike
-
-- **Ground and Pound** - 2 Energy, 6 damage (requires positional advantage, keeps fight on ground, bonus damage scales with grappling)
-
-**Strike Damage Formula:**
-
-```
-Damage = Card Damage
-       + Attacker Striking
-       + Striking Bonus (from corner cards)
-       - Defender Defense
-       + Style Bonus (+2 if Striker)
-       - Defense Buffs (Block/Parry if active)
-
-Ground and Pound Bonus (when attacker has advantage):
-       + (3 + floor(Attacker Grappling / 4))
-
-Minimum damage = Card Damage
-```
-
-### Grappling (Takedowns)
-
-**Attempt to gain positional advantage**
-
-- **Clinch** - 2 Energy, +2 bonus, 1 damage on success
-- **Single Leg Takedown** - 2 Energy, +2 bonus, 2 damage on success
-- **Double Leg Takedown** - 3 Energy, +3 bonus, 3 damage on success
-- **Suplex** - 4 Energy, +4 bonus, 5 damage on success
-
-**Takedown Success (Probabilistic):**
-
-1. **Attacker Score** = Attacker Grappling + Card Bonus + Style Bonus (+2 if Grappler)
-2. **Defender Score** = Defender Grappling - Stamina Penalties
-   - 100-70% stamina: No penalty
-   - 70-50% stamina: -1 grappling
-   - 50-30% stamina: -2 grappling
-   - Below 30% stamina: -3 grappling
-3. **Success Chance** = 50% base + 10% per point of difference
-4. **Clamped** between 10% minimum and 90% maximum
-5. **Random roll** determines if takedown succeeds
-
-**If successful:**
-- Attacker gains positional advantage (defender loses any advantage they had)
-- Defender's defensive buffs (Block/Parry/Slip Counter) are cleared
-- Impact damage = Card Damage + floor(Attacker Grappling / 3) - floor(Defender Grappling / 3)
-- Minimum impact damage = Card Damage
-
-**If failed (stuffed):**
-- Defender's defensive buffs are still cleared (scrambling to defend disrupts defensive stance)
-- Defender maintains or gains initiative
-
-### Submissions
-
-**Deal heavy damage while on the ground (requires ground position)**
-
-- **Guillotine Choke** - 3 Energy, 10 base damage
-- **Kimura** - 3 Energy, 11 base damage
-- **Armbar** - 4 Energy, 12 base damage
-- **Triangle Choke** - 4 Energy, 13 base damage
-- **D'Arce Choke** - 4 Energy, 14 base damage
-- **Rear Naked Choke** - 5 Energy, 15 base damage
-
-**Submission Requirements:**
-
-- Fight must be on ground (either player has positional advantage)
-- Cannot be used when both fighters are standing
-- Always land (cannot be completely defended)
-
-**Submission Damage Formula:**
-
-```
-Step 1: Apply position modifier to base damage
-  Base Damage = Card Damage
-  If Attacker has advantage (top position): Base Damage × 1.0 (no change)
-  If Defender has advantage (bottom position): Base Damage × 0.6 (60% penalty)
-
-Step 2: Add skill differential
-  Grappling Bonus = Attacker Grappling + Style Bonus (+2 if Grappler)
-  Grappling Defense = Defender Grappling
-
-Step 3: Calculate final damage
-  Damage = Base Damage + Grappling Bonus - Grappling Defense
-  Minimum damage = Base Damage (the position-modified amount)
-```
-
-**Position Effects:**
-- **Top position (attacker has advantage)**: Full base damage
-- **Bottom position (defender has advantage)**: Only 60% of base damage
-
-**Note**: Grappling stat provides both offensive power AND defensive ability for submissions. The skill differential is NOT affected by position - only the technique's base effectiveness is modified.
-
-### Defense Cards
-
-**Reduce incoming damage on next attack (strike or submission)**
-
-- **Block** - 1 Energy, reduce next attack by 5 damage
-- **Parry** - 2 Energy, reduce next attack by 3 damage, counter damage = 3 + floor(Defender Striking / 4)
-- **Slip Counter** - 2 Energy, reduce next attack by 8 damage, counter damage = 4
-
-**Notes**:
-- Parry counter damage scales with the defender's striking skill - better strikers counter more effectively
-- Defensive cards work against ALL attacks (strikes and submissions)
-- Takedown attempts (successful or failed) clear any waiting defensive cards
+| Fighter | Striking | Grappling | HP |
+|---|---|---|---|
+| Alex Pereira (Striker) | 5 | 1 | 22 |
+| Islam Makhachev (Grappler) | 3 | 5 | 28 |
+| Alexander Volkanovski (Balanced) | 4 | 4 | 30 |
+| Charles Oliveira (Grappler) | 4 | 5 | 25 |
 
 ---
 
-## Corner Cards
+## Resources
 
-- **Master Coach** - 3 Energy: **Permanently** increase all stats by +1 (Striking, Grappling, Defense). Draw 1 card.
-- **Intense Training** - 2 Energy: Gain +3 Striking bonus until next strike is thrown (resets after strike is used)
-- **Ringside Medic** - 2 Energy: Restore 10 Stamina (capped at maxStamina)
-
----
-
-## Setup
-
-1. Each player receives a shuffled 75-card deck (identical composition)
-2. Each player draws an opening hand of 5 cards (exactly 1 fighter + 4 non-fighter cards)
-3. Opponent automatically deploys their fighter
-4. **Player chooses** to deploy their fighter
-5. Both players start with 8 energy (displayed from start)
-6. Player starts first
+- **Roster ("player cards")**: your 3 drawn fighters, in their own zone — they do **not** count toward your hand. Deploy one to fight; when it's KO'd, deploy another from the roster. **When your last fighter is KO'd, you lose** — there's no separate health pool, just your three fighters. (The bar by your name simply shows fighters remaining.)
+- **Energy**: start at **4**, gain **+2** at the start of each later turn, cap **10**. Unspent energy stays available to play **reactions** on the opponent's turn.
+- **Hand**: your playable cards (techniques + corners) — limit **12** (shown as two rows of six). You draw **6 cards** at the start. Fighters are never in your hand; they live in the roster.
 
 ---
 
-## Turn Structure
+## Turn structure
 
-### Energy Phase
-
-- **Turn 1 (Player)**: Start with 8 energy
-- **Turn 2+ (Both players)**: Gain +2 energy per turn (max 16)
-- Per-round bonuses reset (Intense Training bonus goes to 0)
-- Status effects tick (Bleed damage applied)
-
-### Draw Phase
-
-- Draw 1 card from deck
-- If hand is full (10 cards), oldest card is auto-discarded to make room
-- Can **skip draw phase** to go directly to Main Phase
-
-### Main Phase
-
-Players can perform actions in any order:
-
-- Deploy fighter (only if no active fighter currently deployed)
-- Play technique cards (requires active fighter and sufficient energy)
-- Play corner cards (requires active fighter and sufficient energy)
-- Actions continue until no playable cards remain
-
-### End Phase
-
-- Hand is discarded down to 10 cards if over limit
-- Turn passes to opponent
+1. **Energy** — gain +2 (turn 1 is a fixed 4). Apply any start-of-turn effects (Bleed). Your strike-combo counter resets.
+2. **Draw** — draw 1 card from your play deck (techniques/corners only) — or skip.
+3. **Main** — deploy a fighter from your roster if you have none active, then play any cards you can afford.
+4. **End** — discard down to 12, pass.
 
 ---
 
-## Combat Mechanics
+## The damage formula (one addition)
 
-### Positional Advantage
+| Attack | Damage |
+|---|---|
+| **Standup strike** | card base **+ Striking** (+ combo) |
+| **Ground & Pound** | card base **+ Grappling** (+ combo) |
+| **Takedown impact** | card base **+ Grappling** |
+| **Submission** | **from dominant top:** base **+ Grappling**; **off the top** (clinch / guard): **base only** |
 
-- Gained by successful takedowns (automatically clears defender's advantage)
-- Required for Ground and Pound and submissions
-- **Only one fighter can have positional advantage at a time**
-- **Persists through**:
-  - Ground and Pound strikes
-  - Submissions (allows submission chains)
-- **Resets to standing when**:
-  - Regular strikes are used (Jab, Cross, Hook, Kick, etc.)
-  - Fighter is KO'd (new fight scenario)
+**Why submissions matter:** because a submission locked from **top control** adds your Grappling, a grappler's finish (a top-position RNC, D'Arce, or Triangle) **out-damages almost any single strike** — that's how the ground game keeps pace with a striker's burst. Off the top, a submission is only its base — getting on top is the whole point.
 
-**Important**: When a takedown succeeds, the attacker gains advantage AND the defender loses any advantage they had. This ensures only one fighter is on top at a time.
+**Combo**: each standup strike after the first **this turn** adds **+1** (2nd +1, 3rd +2, 4th +3…). **Only strikes that LAND build the combo** — a strike that's blocked to 0, parried, or slipped doesn't advance the counter, so a good read on defense breaks the opponent's rhythm. Saving cards for a big turn pays off — but it leaves no energy banked to defend.
 
-### Status Effects
+**Leg damage**: each clean **Leg Kick** stacks a permanent **−1 to ALL of the victim's strikes** — chop the legs and they hit softer all fight.
 
-#### Bleed
-
-- Applied by Cutting Elbow (only on clean hits - not when blocked/parried/slipped)
-- Deals 2 damage at start of each turn
-- Lasts for 2 turns
-- Shown in action feed with countdown
-- Defensive cards prevent both damage AND bleed application
-
-#### Staggered
-
-- Applied by Spinning Back Fist (only on clean hits - not when blocked/parried/slipped)
-- Opponent skips their entire next turn (no energy gain, no draw, no actions)
-- Defensive cards prevent both damage AND stagger application
-
-### Fighter Knockout
-
-When a fighter's stamina reaches 0:
-
-1. Fighter is KO'd and removed from play
-2. Player loses 20 health
-3. Positional advantages are reset (new fight scenario)
-4. **Check for fighters in HAND only** (after drawing if in draw phase):
-   - If no fighters in hand: Player loses immediately
-   - Only hand is checked for available fighters
-5. **Player replacement** (manual selection):
-   - Shows modal with all available fighters from HAND only
-   - Player clicks to select which fighter to deploy
-6. **Opponent replacement** (automatic):
-   - Deploys from hand automatically
-   - If no fighters in hand: Opponent loses
+The defender does **not** subtract anything. Their only defense is a **reaction card**.
 
 ---
 
-## Win Conditions
+## Positions (sticky)
 
-A player wins when:
+Position only changes via the **Clinch** card, a **takedown**, a **Counter Takedown / Sprawl**, **Stand Up**, **Reversal**, a **knockdown** (a big clean strike — see below), or a **KO**. An ordinary strike does **not** change position.
 
-1. **Opponent's health reaches 0**
-2. **Opponent has no fighters in hand** when their active fighter is KO'd
-3. **Opponent's deck is empty** when they need to draw
+| Position | What you can do |
+|---|---|
+| **Standing / neutral** | Standup strikes, takedown attempts, **enter the Clinch** |
+| **Clinch** | **Short inside strikes** (Uppercut, Cutting Elbow), takedowns, **flying submissions** (Guillotine / Triangle / Armbar), **Stand Up / Separate** |
+| **Top** (you have control) | Ground & Pound, any submission (full damage), Stand Up |
+| **Bottom** (opponent on top) | Submissions from guard (60% base), **Upkick**, Stand Up, **Reversal** |
 
----
-
-## Special Rules
-
-### Hand Management
-
-- Hand limit is strictly 10 cards total
-- Fighter card limit is 2 fighters in hand during gameplay (3 allowed in opening hand)
-- **Smart fighter drawing**: If you already have 2 fighters in hand and would draw a 3rd fighter, the game automatically draws a non-fighter card instead (fighter goes back in deck)
-- If only fighters remain in deck and you're at fighter limit, draw fails
-- Drawing with full hand (10 cards) auto-discards **oldest card** (first in hand)
-- Can skip draw phase if hand is full
-
-### Energy Management
-
-- Energy does NOT carry over between turns
-- Maximum energy cap is 16
-- First turn energy is fixed at 8 for both players (shown immediately)
-
-### Stat Caps
-
-- **Stamina**: Capped at maxStamina (cannot be healed above starting value)
-- **Energy**: Capped at 16
-- **Striking, Grappling, Defense**: **NO CAPS** - can grow infinitely via Master Coach
-
-### Temporary vs Permanent Bonuses
-
-- **Intense Training**: Temporary +3 striking bonus (shown in gold on fighter card, resets after next strike is thrown)
-- **Master Coach**: Permanent +1 to all stats (visible on fighter card forever)
-
-### Fighter Card Display
-
-- Shows style as just the name: "Striker", "Grappler", "Balanced" (not "Striker Fighter")
-- Striking stat shows temporary bonus in gold: "10 +3" if Intense Training is active
-- Positional advantage shown as "⭐ ADVANTAGE" badge on fighter card
-
-### AI Opponent Behavior
-
-- Prioritizes healing when below 40% stamina
-- 30% chance to play corner cards strategically
-- Plays techniques randomly from valid options
-- Will not use Ground and Pound without positional advantage
-- Will not use submissions unless fight is on ground
-- 70% chance to continue playing cards if energy remains
+**The Clinch** (the *Clinch* card, 1 energy): tie up with your opponent. Inside, you can throw **short strikes** (the **Uppercut** and **Cutting Elbow** are legal here — long-range jabs, kicks and the Head Kick are not), shoot a **takedown** (→ top), or hit a **flying submission**. The clinch is the only place to throw a flying **Guillotine / Triangle / Armbar** (the D'Arce and Kimura need the ground). Committing to a flying submission **drags the fight to the mat — you end up in top control.** Break free any time with **Stand Up / Separate**.
 
 ---
 
-## Strategy Tips
+## Takedowns (no dice)
 
-### Deck Archetypes
+A takedown **always lands** — putting you on top and dealing its impact — **unless** the defender answers it with a takedown reaction:
 
-- **Striker Build**: Focus on high-striking fighters, stack strike cards
-- **Grappler Build**: Focus on high-grappling fighters, takedowns into submissions
-- **Balanced Build**: Mix of styles with good defense fighters
+- **Stuff** (1) — stop the takedown, stay standing
+- **Sprawl** (2) — stop it, stay standing, **counter for 2**
+- **Counter Takedown** (3) — **reverse it**: *you* take *them* down to top control
 
-### Key Tactics
+A downed fighter can't throw standup strikes — from the bottom they can throw an **Upkick** (a clean one kicks the top fighter off and both return to neutral), or spend the turn to **Stand Up** (→ neutral) or **Reversal** (→ top). That tempo cost is what makes a takedown worth landing. **You can't shoot a takedown from the bottom** — that's what Reversal is for.
 
-1. **Stamina Management**: Tired fighters (low stamina %) have reduced takedown defense
-2. **Submission Chains**: Use Ground and Pound to keep advantage, then chain submissions
-3. **Defense Cards Work on Everything**: Block/Parry/Slip Counter reduce damage from strikes AND submissions
-4. **Grappling is King**: Grappling stat attacks AND defends both takedowns and submissions, plus boosts Ground and Pound
-5. **Energy Efficiency**: Low-cost cards allow multiple actions per turn
-6. **Fighter Card Management**: Keep 2 fighters in hand as backup - running out of fighters in hand = instant loss
-7. **Corner Card Timing**:
-   - Master Coach for permanent stat boosts (expensive but valuable)
-   - Intense Training right before your next strike (bonus persists across turns until strike is used)
-   - Ringside Medic for critical heals
-8. **Positional Control**: Ground and Pound keeps advantage for submission setups
-9. **Bottom Position Risk**: Submissions from bottom do only 60% damage - try to gain top position first
-10. **Takedowns Beat Defense**: Any takedown attempt (successful or not) clears opponent's waiting defensive cards - use this to remove their blocks/parries before striking
-11. **Status Effects Require Clean Hits**: Bleed and Stagger only apply if attack isn't blocked - defensive cards prevent status effects
-
-### Fighter Priorities
-
-- **High Grappling** (Islam 10, Charles 10): Defends takedowns, strong submissions, defends submissions, boosts Ground and Pound
-- **High Defense** (Volkanovski 9, Belal 8): Takes less strike damage only
-- **High Striking** (Alex Pereira 10, Ilia 9): Dangerous on the feet with Striker bonus, better parry counters
-- **High Stamina** (Merab 45, Max 45): Can survive longer fights and resist late-fight takedowns
-
-### Advanced Tips
-
-- **Takedown Probability Math**: Each point of grappling advantage = +10% success chance (grappling vs grappling)
-- **Tired Fighters**: Below 50% stamina = -2 grappling for takedown defense (easier to take down)
-- **Submission Defense**: High grappling fighters defend submissions better AND resist takedowns
-- **Position Matters**: Bottom submissions only do 60% base damage - gain top control first
-- **Grappling Scaling**: Better grapplers deal more Ground and Pound damage (+grappling/4)
-- **Parry Scaling**: Better strikers deal more counter damage when parrying (+striking/4)
-- **Slip Counter Scaling**: Fixed 4 damage counter - doesn't scale with stats
-- **Hand Fighter Management**: Always keep 2 fighters in hand - you lose instantly if KO'd with no hand fighters
-- **Smart Drawing**: Game won't waste your draw on a 3rd fighter - automatically draws non-fighters when at 2-fighter limit
-- **Takedown as Counter**: Use takedowns to clear opponent's defensive stance before striking - works even if stuffed
-- **Only One on Top**: Successful takedown grants you advantage AND removes opponent's advantage automatically
-- **Defense Blocks Everything**: Block/Parry/Slip Counter work on strikes AND submissions - versatile protection
+**Anti-stagnation rule** — if you **hold top control** (or are **in the clinch**) but have no useful card to play, you can **Stand Up for free** (no card, no energy). This prevents a game stalemate when both fighters run out of grappling/submission options — just reset to neutral and strike again. The fighter on the **bottom still has to spend a card**, so this favors control but breaks deadlock.
 
 ---
 
-## Game Flow Summary
+## Submissions
 
-1. **Opening**: Both players deploy their opening fighter (exactly 1 in starting hand), both start with 8 energy
-2. **Draw Phase**: Draw 1 card (smart drawing prevents 3rd fighter), or skip if hand full
-3. **Main Phase**: Play cards until no valid actions remain
-4. **Combat**: Execute strikes, takedowns, submissions based on card types
-5. **Fighter KO**: Player manually selects replacement from hand only (loses if no hand fighters)
-6. **Turn End**: Pass to opponent
-7. **Victory**: Reduce opponent health to 0 or opponent has no hand fighters when KO'd
+**Damage depends on position:** from **dominant top control** a submission deals its **base + Grappling**; thrown **off the top** (from the clinch or off your back) it deals **base damage only** — no Grappling. The position is the reward.
 
----
-
-## Technical Notes (Digital Version)
-
-### Probability System
-
-The digital version uses a probabilistic takedown system:
-
-- Base 50% success rate
-- +10% per point of grappling advantage over defender's grappling
-- Defender's grappling reduced by stamina penalties (tired fighters)
-- Clamped between 10-90% to ensure variance
-
-### Damage Calculations
-
-- All damage calculations ensure minimum = card base damage (or position-modified base for submissions)
-- Striking bonus (Intense Training) shown in gold on fighter card
-- All damage messages show final actual damage dealt
-- Submissions scale with FULL grappling stats (not halved)
-- Ground and Pound bonus scales with grappling (3 + grappling/4)
-- Parry counter scales with striking (3 + striking/4)
-- Slip counter is fixed 4 damage (no scaling)
-- Takedown impact scales with grappling difference (grappling/3 vs grappling/3)
-- Defensive cards reduce damage from strikes AND submissions
-- Minimum final damage is always 1 (can't fully block attacks)
-- Status effects (Bleed, Stagger) only apply on clean hits (not when blocked)
-
-### Visual Feedback
-
-- Action feed displays move announcements and results
-- Floating text shows damage/healing over fighters
-- Color coding: Red (damage), Green (healing), Yellow (advantage/info)
-- Stamina bars update in real-time with color gradient
-
-### Fighter Replacement
-
-- Modal shows all fighters from HAND only
-- Each fighter labeled with location: (Hand)
-- Click any fighter to deploy immediately
-- Modal title: "Select Replacement Fighter"
-- If no fighters in hand after KO: Instant loss
+- **Flying submissions** — Guillotine, Triangle, Armbar — can be hit from the **clinch (flying), top, or bottom**. Throwing one from the clinch takes the fight to the ground (you land on top).
+  - **Armbar** is the exception: it adds **Grappling from any position** — base + Grappling even off the top. A finish you can complete anywhere.
+  - **Triangle** is a guard weapon: off the top it does base **+2** when locked from your **back** (bottom).
+- **Ground submissions** — Kimura, D'Arce — need the fight **on the ground** (top or bottom). They are **not** flying submissions: you can't hit them from the clinch.
+- **Rear Naked Choke** — needs **top control** only (base + Grappling).
+- Any submission is fully stopped by a **Submission Defense** reaction.
 
 ---
 
-## End Game Screens
+## Reactions — defend with cards, not stats
 
-**Victory**:
+Reactions are played **in response** to the opponent's declared attack, only if you **banked enough energy**. Each reaction answers only the kind of attack it realistically would.
 
-- Title: "🏆 VICTORY! 🏆"
-- Message: "You defeated the opponent! [reason]"
-- Button: "Play Again" (reloads page)
+**Vs a strike:**
+- **Block** (1) — reduce the strike by 3
+- **Parry** (2) — deflect it completely (no damage), no counter
+- **Slip Counter** (2) — slip it (no damage) **and counter for 3**
+- **Check Kick** (1) — *kicks only*: check it (no damage) **and counter for 2** (you can't check a punch)
 
-**Defeat**:
+**Vs a takedown:** Stuff / Sprawl / Counter Takedown (above).
 
-- Title: "💀 DEFEAT 💀"
-- Message: "You were defeated! [reason]"
-- Button: "Play Again" (reloads page)
-- Modal styled in red
+**Vs a submission:** **Submission Defense** (2) — fully defend the lock.
 
-**Possible Reasons**:
-
-- "Health depleted"
-- "No fighters in hand"
-- "Deck Out"
+Counters can KO an attacking fighter. Defending (even a partial Block) stops on-hit effects like Bleed and Stagger.
 
 ---
 
-## Physical Card Game Adaptation
+## Status effects
 
-To play this without a computer:
-
-1. **Takedown Resolution**:
-
-   - Roll 1d10 + attacker's grappling vs 1d10 + defender's grappling
-   - Tired fighters (below half stamina) roll 2d10 take lower
-   - Higher total wins
-2. **Damage Tracking**: Use dice or counters for stamina and health
-3. **Energy Tracking**: Use tokens (start 8, gain +2 per turn, max 16)
-4. **Status Effects**: Use status tokens/cards for Bleed and Stagger
-5. **Probability Alternative**: Use simple comparison (grappling vs grappling) with d6 tiebreaker
-6. **Fighter Deployment**: Only one active fighter at a time - cannot deploy fighters while one is active
+- **Bleed** (Cutting Elbow) — 2 damage at the start of each turn for 2 turns. Only on a clean (undefended) hit.
+- **Stagger** (Spinning Back Fist) — opponent skips their entire next turn. Only on a clean hit.
+- **Leg damage** (Leg Kick) — stacking **−1 to all the victim's strikes**, for the rest of the fight. Only on a clean hit.
+- **Spacing** (Teep Kick) — the opponent **can't shoot a takedown or tie up the clinch on their next turn**. Only on a clean hit.
 
 ---
 
-*Document updated to match current digital implementation*
-*Last Updated: Version 2.8 - Bug fixes and mechanic clarifications: Defensive cards (Block/Parry/Slip Counter) now work on ALL attacks (strikes AND submissions). Slip Counter now properly deals 4 counter damage. Status effects (Bleed, Stagger) only apply on clean hits - defensive cards prevent both damage and status application. Positional advantage system fixed: only one fighter can have advantage at a time, successful takedowns clear defender's advantage. Takedowns (successful or failed) now clear any waiting defensive buffs from the defender due to the scramble disrupting defensive stance. All damage calculations verified and corrected. Previous updates (v2.7): Major energy rebalancing pass: max energy increased to 16 (from 12), starting energy increased to 8 (from 7). Card costs adjusted for better balance: Teep Kick 2→1, Head Kick 5→4, Single Leg Takedown 3→2, Double Leg Takedown 4→3, Suplex 5→4, Kimura 4→3, D'Arce Choke 5→4, Slip Counter 3→2, Ground and Pound 3→2, Ringside Medic 3→2. Deck size increased to 75 cards with consistent composition (15 fighters, 48 techniques as 2x copies, 12 corners as 4x copies).*
+## Knockdowns & cardio (v4.2)
+
+These two subsystems make striking and grappling feed each other — and model fighters tiring out — with **no extra tracking beyond your energy tokens**.
+
+- **Knockdown** — only **power strikes** (Head Kick, Heavy Hook, Uppercut, Power Cross) can knock down — cheap pokes like Jab or Teep never do, even in a combo. A clean hit dealing **8 or more** damage **drops the opponent**: they go to the **bottom** and **you take top control**. Now follow them down — Ground & Pound, or lock in a Rear Naked Choke. This is how a striking exchange turns into a ground finish, just like the real thing. (A reaction that stops the hit also stops the knockdown.)
+- **Cardio (energy drain)** — grinding work saps the gas tank:
+  - **Body Shot** — a clean hit **drains 2 of the opponent's energy**.
+  - **Landing a takedown** — the scramble **drains 1 of their energy**.
+
+  A gassed opponent can't afford reactions — body work and wrestling quietly strip away their defense.
+
+---
+
+## Corner cards
+
+- **Master Coach** (3) — permanently **+1 Striking and +1 Grappling** to your fighter; draw a card.
+- **Intense Training** (2) — **+2 Striking** until your next strike.
+- **Ringside Medic** (2) — restore **6 HP**.
+- **Second Wind** (0 energy) — gain **+4 energy** immediately (up to your cap). Free play when you need to unlock a bigger card.
+
+---
+
+## Knockouts & winning
+
+When a fighter hits 0 HP they're **KO'd**: position resets to standing and you deploy a new fighter **from your roster**. When your **last fighter** is KO'd and your roster is empty, **you lose**. (You also lose if your play deck runs out when you must draw.)
+
+---
+
+## Card list (with deck copies)
+
+**Standup strikes** — *base + Striking*
+| Card | Type | Base | Energy | Copies | Note |
+|---|---|---|---|---|---|
+| Quick Jab | punch | 2 | 1 | 4 | cheap combo starter (a punch can't be Check-Kicked) |
+| Teep Kick | kick | 2 | 1 | 3 | **Spacing** — no takedown/clinch for them next turn |
+| Leg Kick | kick | 3 | 1 | 3 | **Leg damage** — stacking −1 to all their strikes |
+| Body Shot | punch | 3 | 2 | 3 | **Cardio** — drains 2 of their energy |
+| Power Cross | punch | 4 | 2 | 2 | straight power — a **Block can't reduce it** |
+| Cutting Elbow | elbow | 4 | 2 | 2 | **Bleed**; legal in the clinch AND from top control (anti-stagnation) |
+| Uppercut | punch | 5 | 3 | 2 | knocks down at 8+; legal in the clinch |
+| Heavy Hook | punch | 6 | 3 | 2 | **Knockdown** if combo'd to 8+ |
+| Spinning Back Fist | punch | 6 | 3 | 1 | **Stagger** |
+| Head Kick | kick | 8 | 4 | 1 | **Knockdown** (always 8+) → top control |
+
+**Ground & Pound** — *base + Grappling, top only* — base 3, energy **1**, ×2 — cheap, repeatable top-control damage
+
+**Upkick** — *base + Striking, bottom only* — base 3, energy 2, ×2 — a clean hit kicks the top fighter off (both return to neutral)
+
+**Clinch** — *tie up to enable flying submissions + inside strikes* — energy 1, ×3
+
+**Takedowns** — *impact = base + Grappling (from standing or the clinch → top)*
+| Card | Base | Energy | Copies |
+|---|---|---|---|
+| Single Leg Takedown | 2 | 2 | 3 |
+| Double Leg Takedown | 3 | 3 | 2 |
+| Suplex | 5 | 4 | 1 |
+
+**Submissions** — *base + Grappling (×0.6 off top)*
+| Card | Position | Base | Energy | Copies | Note |
+|---|---|---|---|---|---|
+| Guillotine Choke | flying (clinch/top/bottom) | 4 | 3 | 2 | |
+| Kimura | ground (top/bottom) | 5 | 3 | 2 | no clinch |
+| Triangle Choke | flying (clinch/top/bottom) | 6 | 4 | 1 | **+2 from your back** (guard) |
+| Armbar | flying (clinch/top/bottom) | 6 | 4 | 1 | **adds Grappling from anywhere** (not just the top) |
+| D'Arce Choke | ground (top/bottom) | 7 | 4 | 1 | no clinch |
+| Rear Naked Choke | top only | 8 | 4 | 1 | |
+
+**Escapes** — Stand Up / Separate (energy 2, ×3, ground or clinch → neutral), Reversal (energy 3, ×2, bottom → top)
+
+**Reactions**
+| Card | Answers | Effect | Energy | Copies |
+|---|---|---|---|---|
+| Block | strike | reduce 3 | 1 | 4 |
+| Parry | strike | negate | 2 | 2 |
+| Slip Counter | strike | negate + counter 3 | 2 | 2 |
+| Check Kick | kicks only | negate + counter 2 | 1 | 2 |
+| Stuff | takedown | negate | 1 | 3 |
+| Sprawl | takedown | negate + counter 2 | 2 | 2 |
+| Counter Takedown | takedown | reverse to top | 3 | 1 |
+| Submission Defense | submission | negate | 2 | 2 |
+
+**Corners** — Master Coach (3, ×1), Intense Training (2, ×2), Ringside Medic (2, ×2)
+
+---
+
+## AI opponent (digital)
+
+The AI scores every legal action and plays the best one, with difficulty tiers: **Easy** (random), **Medium** (greedy), **Hard** (best play, banks energy to react, escapes when grounded, values control), **Nightmare** (Hard +1 Striking/Grappling).
+
+---
+
+## Implementation (digital)
+
+Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
+
+*Last updated: Version 4.5 — Anti-stagnation ground rules + balance tweaks. **Knockdowns only from power strikes** (Head Kick, Heavy Hook, Uppercut, Power Cross) — cheap pokes never trigger knockdown even at 8+ in a combo, eliminating silly Teep knockdowns. **Free Stand Up** from top control or clinch for the dominant fighter breaks ground deadlocks (the bottom player still spends a card). **Cutting Elbow now plays from top** to give grapplers more standing-position options. **Opening hand is 6 cards** (was 5). New **Second Wind** corner card (0 energy) gains +4 energy instantly — pure tempo. Anti-soft-lock prevents scenarios where both fighters are stuck grinding with no options. One ruleset for digital and physical.*
+
+*Version 4.4 — Submission damage model + grappling buff + cleaner UI. Submissions now add **Grappling only from dominant top control**; off the top (clinch/guard) they do **base damage only** — so a top-position submission out-damages most strikes and is how grappling keeps pace with striking (Armbar is the exception, adding Grappling anywhere; Triangle gets +2 off the back). **Ground & Pound dropped to 1 energy** (cheap, repeatable top damage). **Combo now only counts strikes that LAND** — a blocked/parried/slipped strike doesn't build it. UI: move-notifications are colored by **corner only** (one blue theme for the player, one red for the opponent — no per-move-type colors) and **simplified** (removed the redundant "X uses Y!" banners; the result line stands alone). The **active fighter card** is now fully themed blue (player) or red (opponent). One ruleset for digital and physical.*
+
+*Version 4.3 — MMA-logic cleanup + clinch game + Upkick + simplified win. Fixed positional discrepancies: **D'Arce and Kimura** are ground submissions (no clinch); **flying** subs (Guillotine/Triangle/Armbar) are the only clinch subs, and committing to one drags the fight to the mat (you take top control). The **clinch** now allows short inside strikes (**Uppercut, Cutting Elbow**); **Stand Up / Separate** breaks the clinch or stands you up. A **knockdown** establishes dominant top control (as before). Takedowns still can't be shot from the bottom (that's what **Reversal** is for). New **Upkick** (bottom-only strike; a clean one separates both fighters to neutral). The separate 100-health pool is **gone** — it's simply **last fighter standing** (the name bar shows fighters remaining). One ruleset for digital and physical.*
+
+*Version 4.2 — Unique moves + knockdowns + cardio. Every standup strike now does something distinct, and the two identical submissions were split apart: **Teep** = spacing (no takedown/clinch for them next turn), **Leg Kick** = stacking −1 to all their strikes, **Body Shot** = drains 2 energy (cardio), **Power Cross** = straight power a Block can't reduce, **Armbar** = full damage from any position, **Triangle** = +2 from the guard. New **Knockdown** rule: a clean standup strike of 8+ drops the opponent and hands the attacker top control (links striking → ground finish). New **cardio** drain: Body Shot saps 2 energy, a landed takedown saps 1 — gassed fighters can't afford reactions. All token-trackable; one ruleset for digital and physical.*
+
+*Version 4.1 — Roster + Clinch. Fighters are now "player cards": a separate pile you draw 3 from into your Roster at the start (not in your hand). The hand holds only techniques/corners, limit 12 (two rows of six). Added a Clinch position: the Clinch card (1 energy) ties you up, and flying "any" submissions can ONLY be thrown from the clinch (or the ground) — open standing can't. Takedown/Stand Up exit the clinch. Numbers tuned for easy mental math: Striking/Grappling 1–5, HP ~22–32, energy 4/+2/max 10. Builds on v4.0 (base+skill damage, no Defense, deterministic takedowns, negate/reduce/reverse reactions). One ruleset for digital and physical.*
+
+*Version 4.0 — physical-playable redesign. Three-stat fighters (Striking/Grappling/HP, no Defense). Damage = card base + one skill (+1 per prior strike). Deterministic, card-answered takedowns (Stuff/Sprawl/Counter Takedown). Reactions negate/reduce/reverse; Parry no longer counters, Slip and Check Kick do; Check Kick only answers kicks; Submission Defense fully negates. Deck weighted by card power.*
