@@ -48,7 +48,12 @@
                 { id: 'fighter_12', name: 'Max Holloway',          type: 'fighter', striking: 5, grappling: 3, hp: 32, maxHp: 32, style: 'Striker' },
                 { id: 'fighter_13', name: 'Belal Muhammad',        type: 'fighter', striking: 3, grappling: 5, hp: 30, maxHp: 30, style: 'Grappler' },
                 { id: 'fighter_14', name: 'Arman Tsarukyan',       type: 'fighter', striking: 4, grappling: 4, hp: 26, maxHp: 26, style: 'Balanced' },
-                { id: 'fighter_15', name: 'Charles Oliveira',      type: 'fighter', striking: 4, grappling: 5, hp: 25, maxHp: 25, style: 'Grappler' }
+                { id: 'fighter_15', name: 'Charles Oliveira',      type: 'fighter', striking: 4, grappling: 5, hp: 25, maxHp: 25, style: 'Grappler' },
+                { id: 'fighter_16', name: 'Petr Yan',              type: 'fighter', striking: 5, grappling: 3, hp: 28, maxHp: 28, style: 'Striker' },
+                { id: 'fighter_17', name: 'Justin Gaethje',        type: 'fighter', striking: 5, grappling: 2, hp: 25, maxHp: 25, style: 'Striker' },
+                { id: 'fighter_18', name: 'Sean Strickland',       type: 'fighter', striking: 4, grappling: 3, hp: 32, maxHp: 32, style: 'Striker' },
+                { id: 'fighter_19', name: 'Joshua Van',            type: 'fighter', striking: 4, grappling: 3, hp: 29, maxHp: 29, style: 'Striker' },
+                { id: 'fighter_20', name: 'Ciryl Gane',            type: 'fighter', striking: 5, grappling: 2, hp: 26, maxHp: 26, style: 'Striker' }
             ],
             techniques: [
                 // === STANDUP STRIKES (damage = base + Striking, only from neutral) ===

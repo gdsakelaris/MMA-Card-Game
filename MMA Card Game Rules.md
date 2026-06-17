@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.9.4)
+# MMA WARRIORS — Card Game Rules (v4.9.5)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -14,7 +14,7 @@ Be the **last team standing**: KO your opponent's fighters until they have **non
 
 Each player has TWO piles:
 
-- A **Fighter pile** — your 15 fighters (these are your "player cards"). Shuffle it and **draw 3 into your Roster** at the start; that's your team for the match.
+- A **Fighter pile** — your 20 fighters (these are your "player cards"). Shuffle it and **draw 3 into your Roster** at the start; that's your team for the match.
 - A **Play deck** of 74 cards — techniques + corners (copies vary by power; strong cards are rarer — see the card list).
   - **67 Techniques** — strikes, takedowns, the clinch, submissions, escapes, and reactions
   - **7 Corner cards** (Master Coach ×1, Intense Training ×2, Ringside Medic ×2, Second Wind ×2)
@@ -251,6 +251,8 @@ On Medium and up it also **answers a flying submission thrown from the clinch** 
 ## Implementation (digital)
 
 Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
+
+*Version 4.9.5 — Roster expansion. Added 5 fighters (now **20**): Petr Yan (STR 5 / GRP 3 / HP 28), Justin Gaethje (5 / 2 / 25), Sean Strickland (4 / 3 / 32), Joshua Van (4 / 3 / 29), Ciryl Gane (5 / 2 / 26) — all primarily strikers. You still draw 3 into your Roster. (Signature fighter abilities remain unbuilt — design proposed, on hold.) One ruleset for digital and physical.*
 
 *Version 4.9.4 — Flying-sub turn fix + Stand-Up clarity + UI cleanup. **Bug fix:** a flying submission that's **defended and swept** now **ends the attacker's turn**. Before, the sweep handed the defender top control on the *attacker's* turn, so the attacker just stood back up before the defender could use it ("it said sweeps on top, but the positions didn't update"). Now the defender keeps that top control into their own turn — exactly like a landed takedown. A flying sub that **lands** still keeps the attacker's turn. **Stand Up / Separate is no longer playable from top control** — top already has the free Stand Up (no card, no energy), so playing the card there only wasted a card + 2 energy; it stays essential for escaping the **bottom** and breaking the **clinch**. **UI:** the Hand/Deck/Roster counters moved into each fighter's box (top = opponent, bottom = you), and the now-redundant "N Fighters" and "CORNER: N" labels were removed (the bar by each name still shows fighters remaining). **Position status** (Standing / Top Control / Bottom / Clinch) moved out of the center box into a **per-fighter badge** that reflects each fighter's actual state and **persists regardless of whose turn it is** (the two sides mirror: one Top ⇄ the other Bottom), replacing the old single center indicator that only showed the current player's view; dead CSS from the removed/old elements was stripped. Shuffle verified genuinely random (Fisher–Yates) — repeated same-card draws are situational cards (Stand Up needs the ground, Reversal the bottom, reactions only fire on defense) piling up while your strikes/takedowns get played, not a shuffle fault. One ruleset for digital and physical.*
 
