@@ -93,7 +93,6 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 8px;
-            margin-left: 30px;
             gap: 8px;
         }
 
@@ -144,23 +143,18 @@
         /* Spacer pushes content right */
         .fighter-zone::before { content: ''; flex: 1 1 0; }
 
-        /* Stack label above card vertically, as a flex column */
-        .fighters-label-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            flex: 0 0 auto;
-        }
-
+        /* "N Fighters" label — a centered block sitting directly above the
+           fighter zone. It must live OUTSIDE #...FighterZone, because
+           renderFighter() clears that zone's innerHTML on every updateUI(). */
         .fighters-remaining {
-            width: 240px;
+            width: 100%;
             font-size: 0.9em;
             color: #999;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-align: center;
             white-space: nowrap;
+            margin-bottom: 4px;
         }
 
         .fighter-zone > .card,

@@ -21,7 +21,10 @@
       "Bash(node _verify.js)",
       "Bash(node -e ' *)",
       "Bash(awk '-F'\\\\''|,' '{print $2, $NF}')",
-      "Bash(node --check docs/js/game.js)"
+      "Bash(node --check docs/js/game.js)",
+      "Bash(cd \"c:/Users/gdsak/OneDrive/Desktop/MMA Card Game\" && echo \"=== IDs referenced in JS \\(getElementById\\) ===\" && grep -ohrE \"getElementById\\\\\\(['\\\\\"]\\([^'\\\\\"]+\\)['\\\\\"]\\\\\\)\" docs/js | sed -E \"s/.*getElementById\\\\\\(['\\\\\"]\\([^'\\\\\"]+\\)['\\\\\"]\\\\\\).*/\\\\1/\" | sort -u > /tmp/js_ids.txt && cat /tmp/js_ids.txt && echo \"\" && echo \"=== IDs present in index.html ===\" && grep -oE \"id=\\\\\"[^\\\\\"]+\\\\\"\" docs/index.html | sed -E 's/id=\"\\([^\"]+\\)\"/\\\\1/' | sort -u > /tmp/html_ids.txt && cat /tmp/html_ids.txt && echo \"\" && echo \"=== JS IDs MISSING from HTML \\(these throw null.textContent in browser\\) ===\" && comm -23 /tmp/js_ids.txt /tmp/html_ids.txt)",
+      "Read(//tmp/**)",
+      "Bash(node -e \"try{require.resolve\\('jsdom'\\);console.log\\('jsdom available'\\)}catch\\(e\\){console.log\\('no jsdom'\\)}\")"
     ],
     "deny": [],
     "ask": [],
