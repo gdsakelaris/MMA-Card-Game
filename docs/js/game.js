@@ -533,22 +533,25 @@
                         showAction('Staggered! Opponent skips their next turn.', player, 'advantage', cardTypeClass);
                         floatTextOverFighter(defenderName, 'STAGGERED', 'info');
                     }
-                    // Knockdown — only a POWER strike (canKnockdown) that lands clean drops them, and
-                    // only on the shot's OWN power (base + Striking + training - leg damage). The combo
-                    // bonus is rhythm, not a heavy blow, so it's excluded: a jab can never knock down,
-                    // and a light power strike inflated to 8 by a combo doesn't either.
-                    const knockdownPower = damage - comboBonus(strikeCombo);
-                    if (defender.activeFighter.hp > 0
-                        && card.canKnockdown
-                        && knockdownPower >= CONFIG.knockdownThreshold
-                        && !attacker.positionalAdvantage && !defender.positionalAdvantage) {
-                        attacker.positionalAdvantage = true;
-                        defender.positionalAdvantage = false;
-                        attacker.inClinch = false;
-                        defender.inClinch = false;
-                        showAction(`KNOCKDOWN! ${defender.activeFighter.name} drops — ${attacker.activeFighter.name} takes top control!`, player, 'advantage', cardTypeClass);
-                        floatTextOverFighter(defenderName, 'KNOCKDOWN', 'info');
-                    }
+                }
+
+                // Knockdown — about DELIVERED power, not merely whether a card was thrown. A negate
+                // (Parry / Slip / Check Kick) zeroes the damage, so there's no knockdown; a Block only
+                // prevents it if it actually brings the shot below the threshold — and a Block can't
+                // soften a Power Cross, so that one still drops them at 8+. Only a POWER strike
+                // (canKnockdown) qualifies, and the combo bonus is excluded: a knockdown reflects the
+                // weight of the single shot (base + Striking + training - leg damage), not rhythm.
+                const knockdownPower = damage - comboBonus(strikeCombo);
+                if (damage > 0 && defender.activeFighter && defender.activeFighter.hp > 0
+                    && card.canKnockdown
+                    && knockdownPower >= CONFIG.knockdownThreshold
+                    && !attacker.positionalAdvantage && !defender.positionalAdvantage) {
+                    attacker.positionalAdvantage = true;
+                    defender.positionalAdvantage = false;
+                    attacker.inClinch = false;
+                    defender.inClinch = false;
+                    showAction(`KNOCKDOWN! ${defender.activeFighter.name} drops — ${attacker.activeFighter.name} takes top control!`, player, 'advantage', cardTypeClass);
+                    floatTextOverFighter(defenderName, 'KNOCKDOWN', 'info');
                 }
 
                 // Intense Training (striking bonus) is consumed only by a striking-based strike
@@ -623,16 +626,25 @@
                     floatTextOverFighter(defenderName, `-${damage}`, 'damage');
                 }
 
-                // A LANDED flying submission drags the fight to the mat — you land in top control.
-                // If it was fully defended (Submission Defense), the defender shut it down, so the
-                // attacker is NOT rewarded with the position — both stay tied up in the clinch.
-                if (flyingFromClinch && !subbed.defended && defender.activeFighter && defender.activeFighter.hp > 0) {
+                // Committing to a flying submission from the clinch takes the fight to the mat —
+                // the only question is who ends up on top. If it LANDS, the attacker rides it down
+                // into top control. If it's fully DEFENDED (Submission Defense), the attacker
+                // over-committed and gets swept under: the DEFENDER takes top control and the
+                // attacker lands on the bottom. Either way the clinch breaks.
+                if (flyingFromClinch && defender.activeFighter && defender.activeFighter.hp > 0) {
                     attacker.inClinch = false;
                     defender.inClinch = false;
-                    attacker.positionalAdvantage = true;
-                    defender.positionalAdvantage = false;
-                    showAction(`${attacker.activeFighter.name} drags it to the mat — top control!`, player, 'advantage', cardTypeClass);
-                    floatTextOverFighter(player, 'TOP CONTROL', 'info');
+                    if (subbed.defended) {
+                        defender.positionalAdvantage = true;
+                        attacker.positionalAdvantage = false;
+                        showAction(`${defender.activeFighter.name} defends and sweeps on top — ${attacker.activeFighter.name} lands on the bottom!`, defenderName, 'advantage', cardTypeClass);
+                        floatTextOverFighter(defenderName, 'TOP CONTROL', 'info');
+                    } else {
+                        attacker.positionalAdvantage = true;
+                        defender.positionalAdvantage = false;
+                        showAction(`${attacker.activeFighter.name} drags it to the mat — top control!`, player, 'advantage', cardTypeClass);
+                        floatTextOverFighter(player, 'TOP CONTROL', 'info');
+                    }
                 }
                 checkFighterKO(defender, defenderName, 'submission');
             } else if (card.subtype === 'escape') {

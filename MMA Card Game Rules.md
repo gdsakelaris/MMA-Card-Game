@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.8)
+# MMA WARRIORS — Card Game Rules (v4.9)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -84,16 +84,16 @@ The defender does **not** subtract anything. Their only defense is a **reaction 
 
 ## Positions (sticky)
 
-Position only changes via the **Clinch** card, a **takedown**, a **Counter Takedown / Sprawl**, **Stand Up**, **Reversal**, a **knockdown** (a big clean strike — see below), or a **KO**. An ordinary strike does **not** change position.
+Position only changes via the **Clinch** card, a **takedown** or **Counter Takedown**, **Stand Up / Separate**, **Reversal**, an **Upkick**, a **flying submission** (from the clinch), a **knockdown** (a big clean strike — see below), or a **KO**. An ordinary strike does **not** change position; **Stuff / Sprawl** keep you standing (they prevent the takedown rather than moving you).
 
 | Position | What you can do |
 |---|---|
 | **Standing / neutral** | Standup strikes, takedown attempts, **enter the Clinch** |
-| **Clinch** | **Short inside strikes** (Uppercut, Cutting Elbow), takedowns, **flying submissions** (Guillotine / Triangle / Armbar), **Stand Up / Separate** |
+| **Clinch** | **Short inside strikes** (Uppercut, Heavy Hook, Body Shot, Cutting Elbow), takedowns, **flying submissions** (Guillotine / Triangle / Armbar), **Stand Up / Separate** |
 | **Top** (you have control) | Ground & Pound, any submission (full damage), Stand Up |
 | **Bottom** (opponent on top) | Submissions from guard (base only; Triangle +2), **Upkick**, Stand Up, **Reversal** |
 
-**The Clinch** (the *Clinch* card, 1 energy): tie up with your opponent. Inside, you can throw **short strikes** (the **Uppercut** and **Cutting Elbow** are legal here — long-range jabs, kicks and the Head Kick are not), shoot a **takedown** (→ top), or hit a **flying submission**. The clinch is the only place to throw a flying **Guillotine / Triangle / Armbar** (the D'Arce and Kimura need the ground). A flying submission that **lands drags the fight to the mat — you end up in top control** (if it's fully defended by a Submission Defense, you stay tied up in the clinch). Break free any time with **Stand Up / Separate**.
+**The Clinch** (the *Clinch* card, 1 energy): tie up with your opponent. Inside, you can throw **short inside strikes** (the **Uppercut**, **Heavy Hook**, **Body Shot**, and **Cutting Elbow** are legal here — long-range jabs, kicks and the Head Kick are not), shoot a **takedown** (→ top), or hit a **flying submission**. The clinch is the only place to throw a flying **Guillotine / Triangle / Armbar** (the D'Arce and Kimura need the ground). A flying submission takes the fight to the mat: if it **lands** you ride it down into **top control**; if it's fully **defended** (Submission Defense) you over-commit and get **swept under — the defender takes top and you land on the bottom**. Either way the clinch breaks; leave it the safe way with **Stand Up / Separate**.
 
 ---
 
@@ -117,7 +117,7 @@ A downed fighter can't throw standup strikes — from the bottom they can throw 
 
 **Damage depends on position:** from **dominant top control** a submission deals its **base + Grappling**; thrown **off the top** (from the clinch or off your back) it deals **base damage only** — no Grappling. The position is the reward.
 
-- **Flying submissions** — Guillotine, Triangle, Armbar — can be hit from the **clinch (flying), top, or bottom**. A flying one thrown from the clinch that lands takes the fight to the ground (you land on top); if it's fully defended you stay in the clinch.
+- **Flying submissions** — Guillotine, Triangle, Armbar — can be hit from the **clinch (flying), top, or bottom**. A flying one thrown from the clinch takes the fight to the ground: if it lands you end up on top; if it's fully defended (Submission Defense) you get swept under — the defender takes top and you land on the bottom. (Throwing a flying submission is a real gamble on position.)
   - **Armbar** is the exception: it adds **Grappling from any position** — base + Grappling even off the top. A finish you can complete anywhere.
   - **Triangle** is a guard weapon: off the top it does base **+2** when locked from your **back** (bottom).
 - **Ground submissions** — Kimura, D'Arce — need the fight **on the ground** (top or bottom). They are **not** flying submissions: you can't hit them from the clinch.
@@ -134,7 +134,7 @@ Reactions are played **in response** to the opponent's declared attack. **Pure d
 - **Block** (0) — reduce the strike by 3
 - **Parry** (0) — deflect it completely (no damage), no counter
 - **Slip Counter** (1) — slip it (no damage) **and counter for 3**
-- **Check Kick** (1) — *kicks only*: check it (no damage) **and counter for 2** (you can't check a punch)
+- **Check Kick** (1) — *kicks only*: check it (no damage) **and counter for 4** — eating a checked kick hurts more than a slipped punch (you can't check a punch)
 
 **Vs a takedown:** Stuff / Sprawl / Counter Takedown (above).
 
@@ -157,7 +157,7 @@ Counters can KO an attacking fighter. Defending (even a partial Block) stops on-
 
 These two subsystems make striking and grappling feed each other — and model fighters tiring out — with **no extra tracking beyond your energy tokens**.
 
-- **Knockdown** — only **power strikes** (Head Kick, Heavy Hook, Uppercut, Power Cross) can knock down — cheap pokes like Jab or Teep never do. A clean hit whose **own power** (base **+ Striking**, plus any training buff, minus leg damage) reaches **8 or more** **drops the opponent**: they go to the **bottom** and **you take top control**. The **combo bonus does NOT count** toward a knockdown — combos add damage, but a knockdown is about the weight of the single shot, so a light power strike padded to 8 by a combo won't drop anyone (heavier base + a better striker = more reliable knockdown). Now follow them down — Ground & Pound, or lock in a Rear Naked Choke. (A reaction that stops the hit also stops the knockdown.)
+- **Knockdown** — only **power strikes** (Head Kick, Heavy Hook, Uppercut, Power Cross) can knock down — cheap pokes like Jab or Teep never do. A hit whose **delivered power** (base **+ Striking**, plus any training buff, minus leg damage **and minus any Block reduction**) reaches **8 or more** **drops the opponent**: they go to the **bottom** and **you take top control**. The **combo bonus does NOT count** toward a knockdown — combos add damage, but a knockdown is about the weight of the single shot, so a light power strike padded to 8 by a combo won't drop anyone (heavier base + a better striker = more reliable knockdown). A knockdown is about **delivered power**, so: a full **negate** (Parry / Slip) stops it cold; a **Block** only stops it if it brings the shot below 8 (and a Block **can't soften a Power Cross**, so that one still drops you at 8+). Now follow them down — Ground & Pound, or lock in a Rear Naked Choke.
 - **Cardio (energy drain)** — grinding work saps the gas tank:
   - **Body Shot** — a clean hit **drains 2 of the opponent's energy**.
   - **Landing a takedown** — the scramble **drains 1 of their energy**.
@@ -191,13 +191,13 @@ When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a s
 | Quick Jab | punch | 2 | 1 | 4 | cheap combo starter (a punch can't be Check-Kicked) |
 | Teep Kick | kick | 2 | 1 | 3 | **Spacing** — no takedown/clinch for them next turn |
 | Leg Kick | kick | 3 | 1 | 3 | **Leg damage** — stacking −1 to all their strikes |
-| Body Shot | punch | 3 | 2 | 3 | **Cardio** — drains 2 of their energy |
-| Power Cross | punch | 4 | 2 | 2 | straight power — a **Block can't reduce it** |
+| Body Shot | punch | 3 | 2 | 3 | **Cardio** — drains 2 of their energy; **legal in the clinch** |
+| Power Cross | punch | 4 | 2 | 2 | straight power — a **Block can't reduce it** (so a Block won't stop its knockdown either) |
 | Cutting Elbow | elbow | 4 | 2 | 2 | **Bleed**; legal **standing, in the clinch, and from top control** (not off your back) |
 | Uppercut | punch | 5 | 3 | 2 | knocks down at 8+; legal in the clinch |
-| Heavy Hook | punch | 6 | 3 | 2 | **Knockdown** if its own power (6 + Striking) lands clean for 8+ |
+| Heavy Hook | punch | 6 | 3 | 2 | **Knockdown** if its delivered power (6 + Striking) reaches 8+; **legal in the clinch** |
 | Spinning Back Fist | punch | 6 | 3 | 1 | **Stagger** |
-| Head Kick | kick | 8 | 4 | 1 | **Knockdown** (always 8+) → top control |
+| Head Kick | kick | 8 | 4 | 1 | **Knockdown** (8 base + Striking) → top control |
 
 **Ground & Pound** — *base + Grappling, top only* — base 3, energy **1**, ×2 — cheap, repeatable top-control damage
 
@@ -230,7 +230,7 @@ When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a s
 | Block | strike | reduce 3 | 0 | 4 |
 | Parry | strike | negate | 0 | 2 |
 | Slip Counter | strike | negate + counter 3 | 1 | 2 |
-| Check Kick | kicks only | negate + counter 2 | 1 | 2 |
+| Check Kick | kicks only | negate + counter 4 | 1 | 2 |
 | Stuff | takedown | negate | 0 | 3 |
 | Sprawl | takedown | negate + counter 2 | 1 | 2 |
 | Counter Takedown | takedown | reverse to top | 1 | 1 |
@@ -250,7 +250,9 @@ The AI scores every legal action and plays the best one, with difficulty tiers: 
 
 Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
 
-*Last updated: Version 4.8 — Reaction economy + finishes + audit fixes. **Reactions rebalanced:** pure defense (Block, Parry, Stuff, Submission Defense) is now **free (0 energy)**; only the counters/reversals (Slip, Check Kick, Sprawl, Counter Takedown) cost **1** — so a gassed fighter can always defend but can't hit back. **Submission KOs read as tap-outs** (the win screen names the finish — Submission or KO). New **Second Wind** corner card (0 energy, +4 energy instantly) — the play deck is now **74 cards (7 corners)**. **Color theme:** each action type has its own neon hue (red strikes, orange wrestling/clinch, purple submissions, teal escapes, gold reactions, green corners, blue fighters). **Audit fixes:** a flying submission that is fully **defended** no longer hands the attacker top control (you stay in the clinch); a clinch-shot takedown reversed by Counter Takedown cleanly breaks the clinch; the AI's knockdown read now uses the shot's own power (excludes the combo bonus, matching the rule). One ruleset for digital and physical.*
+*Last updated: Version 4.9 — Clinch striking, Check Kick punish, knockdown-by-delivered-power, flying-sub gamble. **More strikes work in the clinch:** Body Shot and Heavy Hook join Uppercut and Cutting Elbow as legal short inside strikes (the Clinch card text now lists them; long-range jabs/kicks/Head Kick still need open space). **Check Kick counter raised 2 → 4** — eating a checked kick hurts more than a slipped punch (it now out-counters Slip, the trade-off being it only answers kicks). **Knockdown is now about DELIVERED power:** it fires on the shot's own power (base + Striking − leg damage − any Block reduction, combo excluded) reaching 8+ — so a full negate (Parry/Slip) stops it, a Block stops it only if it brings the shot below 8, and a Block can't soften a Power Cross so that one still drops you at 8+ (this fixed an inconsistency where Block prevented a Power Cross knockdown despite doing nothing to its damage). **Defended flying submission now sweeps the attacker under:** a flying sub from the clinch that's fully defended hands the *defender* top control (the attacker lands on the bottom) instead of rewarding the attacker — throwing a flying sub is now a real positional gamble. AI no longer wastes the Stand Up card from top control (it stands for free). One ruleset for digital and physical.*
+
+*Version 4.8 — Reaction economy + finishes + audit fixes. **Reactions rebalanced:** pure defense (Block, Parry, Stuff, Submission Defense) is now **free (0 energy)**; only the counters/reversals (Slip, Check Kick, Sprawl, Counter Takedown) cost **1** — so a gassed fighter can always defend but can't hit back. **Submission KOs read as tap-outs** (the win screen names the finish — Submission or KO). New **Second Wind** corner card (0 energy, +4 energy instantly) — the play deck is now **74 cards (7 corners)**. **Color theme:** each action type has its own neon hue (red strikes, orange wrestling/clinch, purple submissions, teal escapes, gold reactions, green corners, blue fighters). **Audit fixes:** a flying submission that is fully **defended** no longer hands the attacker top control (you stay in the clinch); a clinch-shot takedown reversed by Counter Takedown cleanly breaks the clinch; the AI's knockdown read now uses the shot's own power (excludes the combo bonus, matching the rule). One ruleset for digital and physical.*
 
 *Version 4.5 — Anti-stagnation ground rules + balance tweaks. **Knockdowns only from power strikes** (Head Kick, Heavy Hook, Uppercut, Power Cross) — cheap pokes never trigger knockdown even at 8+ in a combo, eliminating silly Teep knockdowns. **Free Stand Up** from top control or clinch for the dominant fighter breaks ground deadlocks (the bottom player still spends a card). **Cutting Elbow now plays from top** to give grapplers more standing-position options. **Opening hand is 6 cards** (was 5). New **Second Wind** corner card (0 energy) gains +4 energy instantly — pure tempo. Anti-soft-lock prevents scenarios where both fighters are stuck grinding with no options. One ruleset for digital and physical.*
 

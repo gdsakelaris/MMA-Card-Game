@@ -30,7 +30,8 @@
       "Bash(git --no-pager diff --stat HEAD)",
       "Bash(git --no-pager diff HEAD -- \"MMA Card Game Rules.md\" docs/js/cards.js docs/js/game.js)",
       "Bash(node _audit_test.js)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(git --no-pager diff --stat HEAD -- docs/ \"MMA Card Game Rules.md\")"
     ],
     "deny": [],
     "ask": [],

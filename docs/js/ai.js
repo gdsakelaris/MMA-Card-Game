@@ -67,7 +67,8 @@
                     const dmg = calcStrikeDamage(card, me, foe);
                     return dmg + 3 + (dmg >= def.hp ? 100 : 0); // damage + escaping the bottom back to neutral
                 }
-                // standup strikes are only legal from neutral, so we're never grounded here
+                // standup strikes are legal from neutral (a few short ones also in the clinch) —
+                // never from the ground here, so the neutral/clinch damage math applies
                 const dmg = calcStrikeDamage(card, me, foe);
                 let s = dmg;
                 if (card.id === 'tech_spinning') s += 4; // stagger skips their turn
@@ -119,7 +120,7 @@
                 }
                 // Stand Up
                 if (onBottom) return 5 + bestStrike * 0.3;          // escape to striking range
-                if (onTop) return (groundOffense === 0 && bestStrike > 0) ? 5 : -1; // striker disengages
+                if (onTop) return -1;                                // never spend the card from top — freeStandUp() is free
                 if (me.inClinch) return bestStrike > 0 ? 3 + bestStrike * 0.2 : 1;  // break the clinch to strike
                 return -1; // not grounded
             }
