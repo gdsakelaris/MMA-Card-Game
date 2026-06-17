@@ -181,6 +181,8 @@ When a fighter hits 0 HP they're **KO'd**: position resets to standing and you d
 
 ## Card list (with deck copies)
 
+**Color key (digital):** each action type has its own neon color so you can read your hand at a glance — 🔴 **red = strikes**, 🟠 **orange = wrestling/position** (takedowns & clinch), 🟣 **purple = submissions**, 🟢 **teal = escapes** (Stand Up / Reversal), 🟡 **gold = reactions** (defense), 🟢 **green = corner cards**, 🔵 **blue = fighters**.
+
 **Standup strikes** — *base + Striking*
 | Card | Type | Base | Energy | Copies | Note |
 |---|---|---|---|---|---|

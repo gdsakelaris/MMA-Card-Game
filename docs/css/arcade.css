@@ -338,6 +338,56 @@ body::after {
 }
 .hand-area .card { width: auto; }
 
+/* =====================================================================
+   CARD CATEGORY COLOR THEME — one neon hue per action type so the hand
+   reads at a glance. Each category sets a `--cat` color + a tinted body;
+   border / label / ability text / hover / glow all derive from --cat.
+   Loaded after styles.css, so these win over the legacy red technique-card.
+   ===================================================================== */
+.card.cat-strike     { --cat: #ff5a5a; background: linear-gradient(180deg, #2a1012 0%, #160a0b 65%, #0d0708 100%); } /* striking */
+.card.cat-grapple    { --cat: #ff9d3c; background: linear-gradient(180deg, #2a1c0c 0%, #18110a 65%, #0d0906 100%); } /* takedowns / clinch */
+.card.cat-submission { --cat: #bd7bff; background: linear-gradient(180deg, #1a0e2a 0%, #130a20 65%, #0c0716 100%); } /* submissions */
+.card.cat-escape     { --cat: #3bd6c4; background: linear-gradient(180deg, #0d2826 0%, #0a1b1a 65%, #06100f 100%); } /* escapes */
+.card.cat-reaction   { --cat: #ffcf3a; background: linear-gradient(180deg, #2a2410 0%, #18150a 65%, #0d0b06 100%); } /* reactions / defense */
+.card.cat-corner     { --cat: #5cff97; background: linear-gradient(180deg, #0f2a18 0%, #0a1b10 65%, #06100a 100%); } /* corner */
+
+.card.cat-strike, .card.cat-grapple, .card.cat-submission,
+.card.cat-escape, .card.cat-reaction, .card.cat-corner {
+    border-color: var(--cat);
+    box-shadow: 0 0 12px -2px var(--cat);
+}
+.card.cat-strike .card-type,    .card.cat-grapple .card-type,
+.card.cat-submission .card-type,.card.cat-escape .card-type,
+.card.cat-reaction .card-type,  .card.cat-corner .card-type,
+.card.cat-strike .card-ability, .card.cat-grapple .card-ability,
+.card.cat-submission .card-ability,.card.cat-escape .card-ability,
+.card.cat-reaction .card-ability,  .card.cat-corner .card-ability {
+    color: var(--cat);
+}
+.card.cat-strike .card-header,    .card.cat-grapple .card-header,
+.card.cat-submission .card-header,.card.cat-escape .card-header,
+.card.cat-reaction .card-header,  .card.cat-corner .card-header {
+    text-shadow: 0 0 8px var(--cat);
+}
+.card.cat-strike:hover, .card.cat-grapple:hover, .card.cat-submission:hover,
+.card.cat-escape:hover, .card.cat-reaction:hover, .card.cat-corner:hover {
+    border-color: var(--cat);
+    box-shadow: 0 10px 26px -4px var(--cat);
+}
+/* Glow on a playable card pulses in its category color (overrides the old per-class glows) */
+.card.cat-strike.glow, .card.cat-grapple.glow, .card.cat-submission.glow,
+.card.cat-escape.glow, .card.cat-reaction.glow, .card.cat-corner.glow {
+    animation: catGlow 1.15s ease-in-out infinite;
+}
+@keyframes catGlow {
+    0%, 100% { box-shadow: 0 0 9px -1px var(--cat); }
+    50%      { box-shadow: 0 0 20px 1px var(--cat); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .card.cat-strike.glow, .card.cat-grapple.glow, .card.cat-submission.glow,
+    .card.cat-escape.glow, .card.cat-reaction.glow, .card.cat-corner.glow { animation: none; }
+}
+
 @media screen and (max-width: 768px) {
     .hand-area { grid-template-columns: repeat(3, 1fr); }
     .roster-card { width: 96px; }

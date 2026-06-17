@@ -18,8 +18,7 @@
                 positionalAdvantage: false,
                 inClinch: false,
                 cantGrappleNextTurn: false,
-                comboStrikes: 0,
-                comboGrapples: 0
+                comboStrikes: 0
             },
             opponent: {
                 energy: 0,
@@ -31,8 +30,7 @@
                 activeFighter: null,
                 positionalAdvantage: false,
                 inClinch: false,
-                comboStrikes: 0,
-                comboGrapples: 0
+                comboStrikes: 0
             }
         };
 
@@ -565,8 +563,12 @@
                     defender.takedownReaction = null;
                     if (r.mitigation === 'reverse') {
                         // Counter Takedown — the defender reverses and takes top control.
+                        // The scramble hits the mat, so the clinch breaks for both fighters
+                        // (otherwise a clinch-shot takedown leaves them "clinched AND grounded").
                         defender.positionalAdvantage = true;
                         attacker.positionalAdvantage = false;
+                        attacker.inClinch = false;
+                        defender.inClinch = false;
                         showAction(`${defender.activeFighter.name} reverses with a Counter Takedown — top control!`, defenderName, 'advantage', cardTypeClass);
                         floatTextOverFighter(defenderName, 'REVERSAL', 'info');
                     } else {
@@ -1396,6 +1398,23 @@
             return card.damage ? `<div class="card-stat"><span class="card-stat-label">Damage:</span><span class="card-stat-value">${card.damage}</span></div>` : '';
         }
 
+        // One color category per action type — drives the card's neon theme (see arcade.css).
+        // Strikes red, wrestling/position orange, submissions purple, escapes teal,
+        // reactions gold, corner green, fighters blue. Players read the board by color.
+        function cardCategoryClass(card) {
+            if (card.type === 'fighter') return 'cat-fighter';
+            if (card.type === 'corner') return 'cat-corner';
+            switch (card.subtype) {
+                case 'strike': return 'cat-strike';
+                case 'grappling':
+                case 'clinch': return 'cat-grapple';
+                case 'submission': return 'cat-submission';
+                case 'escape': return 'cat-escape';
+                case 'defense': return 'cat-reaction';
+                default: return 'cat-corner';
+            }
+        }
+
         function createHandCard(card) {
             const cardElement = document.createElement('div');
             cardElement.className = 'card';
@@ -1410,6 +1429,7 @@
             } else if (card.type === 'corner') {
                 cardElement.className += ' corner-card';
             }
+            cardElement.classList.add(cardCategoryClass(card));
 
             let canPlay = false;
             if (card.type === 'fighter') {
