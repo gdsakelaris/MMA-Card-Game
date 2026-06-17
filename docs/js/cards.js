@@ -63,7 +63,7 @@
                 { id: 'tech_spinning', name: 'Spinning Back Fist', type: 'technique', subtype: 'strike', strikeType: 'punch', energy: 3, damage: 6, copies: 1, effect: 'Strike: 6 + Striking. Clean hit staggers — opponent skips their next turn.' },
                 { id: 'tech_kick',     name: 'Head Kick',          type: 'technique', subtype: 'strike', strikeType: 'kick',  energy: 4, damage: 8, copies: 1, canKnockdown: true, effect: 'Strike: 8 + Striking. A clean hit is a KNOCKDOWN — they drop, you take top control.' },
                 // === GROUND STRIKE (scales with Grappling, only from top control, keeps position) ===
-                { id: 'tech_gnp',      name: 'Ground and Pound',   type: 'technique', subtype: 'strike', strikeType: 'ground', skill: 'grappling', energy: 1, damage: 3, copies: 2, effect: 'Top control only: deal 3 + Grappling for just 1 energy. Keeps you on top.' },
+                { id: 'tech_gnp',      name: 'Ground and Pound',   type: 'technique', subtype: 'strike', strikeType: 'ground', skill: 'grappling', energy: 1, damage: 3, copies: 3, effect: 'Top control only: deal 3 + Grappling for just 1 energy. Keeps you on top.' },
                 // === UPKICK (from the bottom only; a clean hit kicks them off and you scramble up) ===
                 { id: 'tech_upkick',   name: 'Upkick',             type: 'technique', subtype: 'strike', strikeType: 'upkick', energy: 2, damage: 3, copies: 2, onHitSeparate: true, effect: 'Bottom only: 3 + Striking. A clean upkick knocks the top fighter off — both back to neutral.' },
 
@@ -87,16 +87,16 @@
 
                 // === REACTIONS (played in response to an attack — bank energy to use) ===
                 // -- vs strikes --
-                { id: 'tech_block', name: 'Block',         type: 'technique', subtype: 'defense', reactsTo: ['strike'], mitigation: 'reduce', reduction: 3, energy: 0, copies: 4, effect: 'Reaction to a strike: cover up, reduce it by 3. Free.' },
+                { id: 'tech_block', name: 'Block',         type: 'technique', subtype: 'defense', reactsTo: ['strike'], mitigation: 'reduce', reduction: 3, energy: 0, copies: 3, effect: 'Reaction to a strike: cover up, reduce it by 3. Free.' },
                 { id: 'tech_parry', name: 'Parry',         type: 'technique', subtype: 'defense', reactsTo: ['strike'], mitigation: 'negate', energy: 0, copies: 2, effect: 'Reaction to a strike: deflect it completely (no damage). Free.' },
                 { id: 'tech_slip',  name: 'Slip Counter',  type: 'technique', subtype: 'defense', reactsTo: ['strike'], mitigation: 'negate', counter: 3, energy: 1, copies: 2, effect: 'Reaction to a strike: slip it (no damage) and counter for 3.' },
                 { id: 'tech_checkkick', name: 'Check Kick', type: 'technique', subtype: 'defense', reactsTo: ['strike'], reactsToStrikeType: 'kick', mitigation: 'negate', counter: 4, energy: 1, copies: 2, effect: 'Reaction to a KICK only: check it (no damage) and counter for 4 — eating a checked kick hurts.' },
                 // -- vs takedowns --
-                { id: 'tech_stuff',  name: 'Stuff',           type: 'technique', subtype: 'defense', reactsTo: ['grappling'], mitigation: 'negate', energy: 0, copies: 3, effect: 'Reaction to a takedown: stuff it, stay standing. Free.' },
+                { id: 'tech_stuff',  name: 'Stuff',           type: 'technique', subtype: 'defense', reactsTo: ['grappling'], mitigation: 'negate', energy: 0, copies: 2, effect: 'Reaction to a takedown: stuff it, stay standing. Free.' },
                 { id: 'tech_sprawl', name: 'Sprawl',          type: 'technique', subtype: 'defense', reactsTo: ['grappling'], mitigation: 'negate', counter: 2, energy: 1, copies: 2, effect: 'Reaction to a takedown: sprawl, stay standing and counter for 2.' },
                 { id: 'tech_counterTd', name: 'Counter Takedown', type: 'technique', subtype: 'defense', reactsTo: ['grappling'], mitigation: 'reverse', energy: 1, copies: 1, effect: 'Reaction to a takedown: reverse it — YOU take them down to top control.' },
                 // -- vs submissions --
-                { id: 'tech_subdef', name: 'Submission Defense', type: 'technique', subtype: 'defense', reactsTo: ['submission'], mitigation: 'negate', energy: 0, copies: 2, effect: 'Reaction to a submission: defend the lock completely (no damage). Free.' }
+                { id: 'tech_subdef', name: 'Submission Defense', type: 'technique', subtype: 'defense', reactsTo: ['submission'], mitigation: 'negate', energy: 0, copies: 3, effect: 'Reaction to a submission: defend the lock completely (no damage). Free.' }
             ],
             corners: [
                 { id: 'corner_coach',    name: 'Master Coach',     type: 'corner', energy: 3, copies: 1, effect: 'Permanently +1 Striking and +1 Grappling to your fighter. Draw a card.' },

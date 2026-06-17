@@ -50,6 +50,16 @@
                 return reverse || options[0];
             }
 
+            // A flying submission thrown from the clinch isn't just about its (base-only) damage:
+            // if it LANDS the attacker rides it down into top control, but if we DEFEND it we sweep
+            // them under and take top ourselves. That positional swing is worth a free Submission
+            // Defense even when the raw damage is low — so answer it whenever we hold the free negate.
+            if (card.subtype === 'submission'
+                && attackerState.inClinch && !attackerState.positionalAdvantage && !defenderState.positionalAdvantage) {
+                const negate = options.find(c => c.mitigation === 'negate' && c.energy <= defenderState.energy);
+                if (negate) return negate;
+            }
+
             // Strike / submission: weigh the incoming damage.
             const incoming = card.subtype === 'submission'
                 ? calcSubmissionDamage(card, attackerState, defenderState)

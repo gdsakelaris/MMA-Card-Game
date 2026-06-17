@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.9.1)
+# MMA WARRIORS — Card Game Rules (v4.9.3)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -199,7 +199,7 @@ When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a s
 | Spinning Back Fist | punch | 6 | 3 | 1 | **Stagger** |
 | Head Kick | kick | 8 | 4 | 1 | **Knockdown** (8 base + Striking) → top control |
 
-**Ground & Pound** — *base + Grappling, top only* — base 3, energy **1**, ×2 — cheap, repeatable top-control damage
+**Ground & Pound** — *base + Grappling, top only* — base 3, energy **1**, ×3 — cheap, repeatable top-control damage
 
 **Upkick** — *base + Striking, bottom only* — base 3, energy 2, ×2 — a clean hit kicks the top fighter off (both return to neutral)
 
@@ -227,14 +227,14 @@ When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a s
 **Reactions**
 | Card | Answers | Effect | Energy | Copies |
 |---|---|---|---|---|
-| Block | strike | reduce 3 | 0 | 4 |
+| Block | strike | reduce 3 | 0 | 3 |
 | Parry | strike | negate | 0 | 2 |
 | Slip Counter | strike | negate + counter 3 | 1 | 2 |
 | Check Kick | kicks only | negate + counter 4 | 1 | 2 |
-| Stuff | takedown | negate | 0 | 3 |
+| Stuff | takedown | negate | 0 | 2 |
 | Sprawl | takedown | negate + counter 2 | 1 | 2 |
 | Counter Takedown | takedown | reverse to top | 1 | 1 |
-| Submission Defense | submission | negate | 0 | 2 |
+| Submission Defense | submission | negate | 0 | 3 |
 
 **Corners** — Master Coach (3, ×1), Intense Training (2, ×2), Ringside Medic (2, ×2), Second Wind (0, ×2)
 
@@ -244,11 +244,17 @@ When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a s
 
 The AI scores every legal action and plays the best one, with difficulty tiers: **Easy** (random), **Medium** (greedy), **Hard** (best play, banks energy to react, escapes when grounded, values control), **Nightmare** (Hard +1 Striking/Grappling).
 
+On Medium and up it also **answers a flying submission thrown from the clinch** even when the damage is low — defending it (a free Submission Defense) sweeps the attacker under and hands the defender top control, so the positional swing is worth the card.
+
 ---
 
 ## Implementation (digital)
 
 Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
+
+*Version 4.9.3 — Deck-frequency rebalance (counts only — no card power, damage, energy, or position rules changed). Reweighted four cards to fix answer-to-attack proportionality without resizing the 74-card deck: **Ground & Pound 2 → 3** (reward establishing top control), **Block 4 → 3** (the weakest strike answer — only −3, and dead vs Power Cross — was over-represented), **Stuff 3 → 2** (takedown defense was ~1:1 with takedown attacks, so shots got stuffed too often and choked the grappling game), **Submission Defense 2 → 3** (submissions are the deadliest attack and had only two answers). Net: deck still 74; reactions 18 → 17 (~23% of the deck); takedown answers 6 → 5 (~1:1.2 vs takedowns); submission answers 2 → 3 (~1:2.7 vs submissions). Power-rarity curve untouched. One ruleset for digital and physical.*
+
+*Version 4.9.2 — Audit pass + AI/polish tweaks. Full re-read of every module plus a live-code harness (83 + 9 checks against the real formulas, position-legality matrix, reactions-by-attack-type, knockdown delivered-power, combo-on-land, flying-sub sweep, and KO resets — all pass). **No logic bug found; MMA logic sound; all 36 card texts accurate.** Changes: (1) **AI flying-submission read tightened** — a flying submission thrown from the clinch hands top control to whoever wins the exchange, so the AI (Medium+) now spends a free Submission Defense to answer one even when its base-only damage is low, sweeping the attacker under instead of conceding top for nothing. (2) Bleed messages read naturally ("1 turn left" / "last tick") — display only. (3) Corrected the static opening counts in the UI (Hand 6 / Deck 68, the as-dealt state) and removed a dead variable in the AI scorer. No formulas, card data, positions, or balance numbers changed. One ruleset for digital and physical.*
 
 *Version 4.9.1 — Audit pass + stagger/KO fix. Full re-read of every module against real-world MMA logic, gameplay execution, and card text (all 36 technique/corner descriptions re-verified accurate; positions, submission-from-top, reactions-by-attack-type, knockdown-by-delivered-power, cardio all sound). **Bug fix:** a **Stagger** (Spinning Back Fist) no longer carries across a KO — the staggered-fighter skip lives on the player's state, so a fighter who was staggered and then finished used to pass the skip to the **replacement** fighter (a fresh fighter is never staggered). It's now cleared in the between-fighters reset, which also closes a rare race where a bleeding+staggered fighter killed by the start-of-turn bleed tick still fired the skip-to-opponent logic. No rule text changed (this just makes the code match the already-stated stagger rule). Verified via the faithful-DOM harness (48 checks). One ruleset for digital and physical.*
 

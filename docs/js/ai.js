@@ -28,7 +28,6 @@
         // Score how valuable playing this card is right now. Higher = better.
         function aiScoreAction(card, me, foe) {
             const atk = me.activeFighter, def = foe.activeFighter;
-            const hard = (gameState.difficulty === 'hard' || gameState.difficulty === 'nightmare');
 
             if (card.type === 'corner') {
                 if (card.id === 'corner_medic') {

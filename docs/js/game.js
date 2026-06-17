@@ -778,7 +778,7 @@
                 const b = gameState.player.activeFighter.status.bleed;
                 gameState.player.activeFighter.hp -= b.amount;
                 b.turns -= 1;
-                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'player', 'damage', 'card-technique');
+                showAction(`Bleed: ${b.amount} damage${b.turns > 0 ? ` (${b.turns} ${b.turns === 1 ? 'turn' : 'turns'} left)` : ' (last tick)'}`, 'player', 'damage', 'card-technique');
                 floatTextOverFighter('player', `-${b.amount}`, 'damage');
                 if (b.turns <= 0) {
                     delete gameState.player.activeFighter.status.bleed;
@@ -870,7 +870,7 @@
                 const b = gameState.opponent.activeFighter.status.bleed;
                 gameState.opponent.activeFighter.hp -= b.amount;
                 b.turns -= 1;
-                showAction(`Bleed: ${b.amount} damage (${Math.max(0,b.turns)} turns left)`, 'opponent', 'damage', 'card-technique');
+                showAction(`Bleed: ${b.amount} damage${b.turns > 0 ? ` (${b.turns} ${b.turns === 1 ? 'turn' : 'turns'} left)` : ' (last tick)'}`, 'opponent', 'damage', 'card-technique');
                 floatTextOverFighter('opponent', `-${b.amount}`, 'damage');
                 if (b.turns <= 0) {
                     delete gameState.opponent.activeFighter.status.bleed;
