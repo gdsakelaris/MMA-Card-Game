@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.5)
+# MMA WARRIORS — Card Game Rules (v4.8)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -15,11 +15,11 @@ Be the **last team standing**: KO your opponent's fighters until they have **non
 Each player has TWO piles:
 
 - A **Fighter pile** — your 15 fighters (these are your "player cards"). Shuffle it and **draw 3 into your Roster** at the start; that's your team for the match.
-- A **Play deck** of 72 cards — techniques + corners (copies vary by power; strong cards are rarer — see the card list).
+- A **Play deck** of 74 cards — techniques + corners (copies vary by power; strong cards are rarer — see the card list).
   - **67 Techniques** — strikes, takedowns, the clinch, submissions, escapes, and reactions
-  - **5 Corner cards** (Master Coach ×1, Intense Training ×2, Ringside Medic ×2)
+  - **7 Corner cards** (Master Coach ×1, Intense Training ×2, Ringside Medic ×2, Second Wind ×2)
 
-Plus **energy tokens** and a way to track **HP** and **health** (tokens, dials, or paper).
+Plus **energy tokens** and a way to track each fighter's **HP** (tokens, dials, or paper). There is no separate health pool — your team's life total is simply how many fighters you have left.
 
 > Physical tip: only the shuffle is random, so no dice are needed. A **playmat** with four position zones — *Standing*, *Clinch*, *Top*, *Bottom* — and a spot for your **Roster** keeps everything clear.
 
@@ -74,7 +74,7 @@ Examples:
 
 **Why submissions matter:** because a submission locked from **top control** adds your Grappling, a grappler's finish (a top-position RNC, D'Arce, or Triangle) **out-damages almost any single strike** — that's how the ground game keeps pace with a striker's burst. Off the top, a submission is only its base — getting on top is the whole point.
 
-**Combo**: each standup strike after the first **this turn** adds **+1** (2nd +1, 3rd +2, 4th +3…). **Only strikes that LAND build the combo** — a strike that's blocked to 0, parried, or slipped doesn't advance the counter, so a good read on defense breaks the opponent's rhythm. Saving cards for a big turn pays off — but it leaves no energy banked to defend.
+**Combo**: each standup strike after the first **this turn** adds **+1** (2nd +1, 3rd +2, 4th +3…). **Only strikes that LAND build the combo** — a strike that's blocked to 0, parried, or slipped doesn't advance the counter, so a good read on defense breaks the opponent's rhythm. Saving cards for a big turn pays off — but spending all your energy leaves nothing banked for a counter-reaction (basic defense is still free).
 
 **Leg damage**: each clean **Leg Kick** stacks a permanent **−1 to ALL of the victim's strikes** — chop the legs and they hit softer all fight.
 
@@ -91,9 +91,9 @@ Position only changes via the **Clinch** card, a **takedown**, a **Counter Taked
 | **Standing / neutral** | Standup strikes, takedown attempts, **enter the Clinch** |
 | **Clinch** | **Short inside strikes** (Uppercut, Cutting Elbow), takedowns, **flying submissions** (Guillotine / Triangle / Armbar), **Stand Up / Separate** |
 | **Top** (you have control) | Ground & Pound, any submission (full damage), Stand Up |
-| **Bottom** (opponent on top) | Submissions from guard (60% base), **Upkick**, Stand Up, **Reversal** |
+| **Bottom** (opponent on top) | Submissions from guard (base only; Triangle +2), **Upkick**, Stand Up, **Reversal** |
 
-**The Clinch** (the *Clinch* card, 1 energy): tie up with your opponent. Inside, you can throw **short strikes** (the **Uppercut** and **Cutting Elbow** are legal here — long-range jabs, kicks and the Head Kick are not), shoot a **takedown** (→ top), or hit a **flying submission**. The clinch is the only place to throw a flying **Guillotine / Triangle / Armbar** (the D'Arce and Kimura need the ground). Committing to a flying submission **drags the fight to the mat — you end up in top control.** Break free any time with **Stand Up / Separate**.
+**The Clinch** (the *Clinch* card, 1 energy): tie up with your opponent. Inside, you can throw **short strikes** (the **Uppercut** and **Cutting Elbow** are legal here — long-range jabs, kicks and the Head Kick are not), shoot a **takedown** (→ top), or hit a **flying submission**. The clinch is the only place to throw a flying **Guillotine / Triangle / Armbar** (the D'Arce and Kimura need the ground). A flying submission that **lands drags the fight to the mat — you end up in top control** (if it's fully defended by a Submission Defense, you stay tied up in the clinch). Break free any time with **Stand Up / Separate**.
 
 ---
 
@@ -101,13 +101,15 @@ Position only changes via the **Clinch** card, a **takedown**, a **Counter Taked
 
 A takedown **always lands** — putting you on top and dealing its impact — **unless** the defender answers it with a takedown reaction:
 
-- **Stuff** (1) — stop the takedown, stay standing
-- **Sprawl** (2) — stop it, stay standing, **counter for 2**
-- **Counter Takedown** (3) — **reverse it**: *you* take *them* down to top control
+- **Stuff** (0) — stop the takedown, stay standing
+- **Sprawl** (1) — stop it, stay standing, **counter for 2**
+- **Counter Takedown** (1) — **reverse it**: *you* take *them* down to top control
 
 A downed fighter can't throw standup strikes — from the bottom they can throw an **Upkick** (a clean one kicks the top fighter off and both return to neutral), or spend the turn to **Stand Up** (→ neutral) or **Reversal** (→ top). That tempo cost is what makes a takedown worth landing. **You can't shoot a takedown from the bottom** — that's what Reversal is for.
 
-**Free Stand Up (top / clinch)** — whenever you **hold top control** (or are **in the clinch**), you may **Stand Up for free at any time** on your turn (no card, no energy) to reset to neutral. The fighter in control decides whether the fight stays on the ground, so disengaging costs them nothing — but it also **surrenders the position** (top control = cheap Ground & Pound and full-damage submissions), so you only do it to get back to striking range. The fighter on the **bottom still has to spend a card** (Stand Up / Reversal) to get up. This favors control, keeps strikers viable after a reversal, and breaks any ground stalemate.
+**Free Stand Up (dominant top only)** — whenever you **hold top control**, you may **Stand Up for free at any time** on your turn (no card, no energy) to reset to neutral. The fighter in control decides whether the fight stays on the ground, so disengaging costs them nothing — but it also **surrenders the position** (top control = cheap Ground & Pound and full-damage submissions), so you only do it to get back to striking range. The fighter on the **bottom still has to spend a card** (Stand Up / Reversal) to get up. This favors control, keeps strikers viable after a reversal, and breaks any ground stalemate.
+
+**The clinch has no free exit.** Unlike top control, the clinch is a contested 50/50 — neither fighter dominates — so there's no free break. To leave the clinch you must **play Stand Up / Separate** (the card), shoot a **takedown** (→ top), or hit a **flying submission** (→ top). Tying up is a real commitment, which is the point.
 
 ---
 
@@ -115,7 +117,7 @@ A downed fighter can't throw standup strikes — from the bottom they can throw 
 
 **Damage depends on position:** from **dominant top control** a submission deals its **base + Grappling**; thrown **off the top** (from the clinch or off your back) it deals **base damage only** — no Grappling. The position is the reward.
 
-- **Flying submissions** — Guillotine, Triangle, Armbar — can be hit from the **clinch (flying), top, or bottom**. Throwing one from the clinch takes the fight to the ground (you land on top).
+- **Flying submissions** — Guillotine, Triangle, Armbar — can be hit from the **clinch (flying), top, or bottom**. A flying one thrown from the clinch that lands takes the fight to the ground (you land on top); if it's fully defended you stay in the clinch.
   - **Armbar** is the exception: it adds **Grappling from any position** — base + Grappling even off the top. A finish you can complete anywhere.
   - **Triangle** is a guard weapon: off the top it does base **+2** when locked from your **back** (bottom).
 - **Ground submissions** — Kimura, D'Arce — need the fight **on the ground** (top or bottom). They are **not** flying submissions: you can't hit them from the clinch.
@@ -126,17 +128,17 @@ A downed fighter can't throw standup strikes — from the bottom they can throw 
 
 ## Reactions — defend with cards, not stats
 
-Reactions are played **in response** to the opponent's declared attack, only if you **banked enough energy**. Each reaction answers only the kind of attack it realistically would.
+Reactions are played **in response** to the opponent's declared attack. **Pure defense is free** — Block, Parry, Stuff, and Submission Defense cost **0**, so you can always defend if you hold the card. Reactions that **hit back or reverse** cost **1** banked energy. Each reaction answers only the kind of attack it realistically would.
 
 **Vs a strike:**
-- **Block** (1) — reduce the strike by 3
-- **Parry** (2) — deflect it completely (no damage), no counter
-- **Slip Counter** (2) — slip it (no damage) **and counter for 3**
+- **Block** (0) — reduce the strike by 3
+- **Parry** (0) — deflect it completely (no damage), no counter
+- **Slip Counter** (1) — slip it (no damage) **and counter for 3**
 - **Check Kick** (1) — *kicks only*: check it (no damage) **and counter for 2** (you can't check a punch)
 
 **Vs a takedown:** Stuff / Sprawl / Counter Takedown (above).
 
-**Vs a submission:** **Submission Defense** (2) — fully defend the lock.
+**Vs a submission:** **Submission Defense** (0) — fully defend the lock.
 
 Counters can KO an attacking fighter. Defending (even a partial Block) stops on-hit effects like Bleed and Stagger.
 
@@ -160,7 +162,7 @@ These two subsystems make striking and grappling feed each other — and model f
   - **Body Shot** — a clean hit **drains 2 of the opponent's energy**.
   - **Landing a takedown** — the scramble **drains 1 of their energy**.
 
-  A gassed opponent can't afford reactions — body work and wrestling quietly strip away their defense.
+  A gassed opponent can still throw up the **free** defenses (Block / Parry / Stuff / Submission Defense), but they can't afford the **counters** (Slip / Sprawl / Check Kick / Counter Takedown) — body work and wrestling quietly take away their ability to hit back on defense.
 
 ---
 
@@ -175,7 +177,7 @@ These two subsystems make striking and grappling feed each other — and model f
 
 ## Knockouts & winning
 
-When a fighter hits 0 HP they're **KO'd**: position resets to standing and you deploy a new fighter **from your roster**. When your **last fighter** is KO'd and your roster is empty, **you lose**. (You also lose if your play deck runs out when you must draw.)
+When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a submission did it, or a **KO** otherwise (strikes, slams, bleed): position resets to standing and you deploy a new fighter **from your roster**. When your **last fighter** is finished and your roster is empty, **you lose** (the win screen names the finish — *Submission* or *KO*). (You also lose if your play deck runs out when you must draw.)
 
 ---
 
@@ -210,7 +212,7 @@ When a fighter hits 0 HP they're **KO'd**: position resets to standing and you d
 | Double Leg Takedown | 3 | 3 | 2 |
 | Suplex | 5 | 4 | 1 |
 
-**Submissions** — *base + Grappling (×0.6 off top)*
+**Submissions** — *from dominant top: base + Grappling; off the top (clinch / guard): base only*
 | Card | Position | Base | Energy | Copies | Note |
 |---|---|---|---|---|---|
 | Guillotine Choke | flying (clinch/top/bottom) | 4 | 3 | 2 | |
@@ -225,16 +227,16 @@ When a fighter hits 0 HP they're **KO'd**: position resets to standing and you d
 **Reactions**
 | Card | Answers | Effect | Energy | Copies |
 |---|---|---|---|---|
-| Block | strike | reduce 3 | 1 | 4 |
-| Parry | strike | negate | 2 | 2 |
-| Slip Counter | strike | negate + counter 3 | 2 | 2 |
+| Block | strike | reduce 3 | 0 | 4 |
+| Parry | strike | negate | 0 | 2 |
+| Slip Counter | strike | negate + counter 3 | 1 | 2 |
 | Check Kick | kicks only | negate + counter 2 | 1 | 2 |
-| Stuff | takedown | negate | 1 | 3 |
-| Sprawl | takedown | negate + counter 2 | 2 | 2 |
-| Counter Takedown | takedown | reverse to top | 3 | 1 |
-| Submission Defense | submission | negate | 2 | 2 |
+| Stuff | takedown | negate | 0 | 3 |
+| Sprawl | takedown | negate + counter 2 | 1 | 2 |
+| Counter Takedown | takedown | reverse to top | 1 | 1 |
+| Submission Defense | submission | negate | 0 | 2 |
 
-**Corners** — Master Coach (3, ×1), Intense Training (2, ×2), Ringside Medic (2, ×2)
+**Corners** — Master Coach (3, ×1), Intense Training (2, ×2), Ringside Medic (2, ×2), Second Wind (0, ×2)
 
 ---
 

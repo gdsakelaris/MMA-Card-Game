@@ -8,7 +8,7 @@
              Strike      = card base + Striking  (+1 per prior strike this turn)
              Ground&Pound= card base + Grappling (+1 per prior strike this turn)
              Takedown    = card base + Grappling  (lands unless answered by a card)
-             Submission  = card base (x0.6 if not from top) + Grappling
+             Submission  = card base + Grappling from dominant top; off the top = base only
            There is NO Defense stat and NO stamina fatigue — the defender mitigates
            only by playing a reaction card.
            ===================================================================== */
@@ -59,7 +59,7 @@
         //   neutral: standup strikes, takedowns, enter the clinch
         //   clinch:  takedowns, flying ('any') submissions, stand up (break)
         //   top:     Ground & Pound, any submission (full), Stand Up
-        //   bottom:  'any' submissions (60%), Stand Up, Reversal
+        //   bottom:  'any' submissions (base only), Stand Up, Reversal
         function isTechniquePositionLegal(card, meState, foeState) {
             const onTop = !!meState.positionalAdvantage;
             const onBottom = !!foeState.positionalAdvantage;

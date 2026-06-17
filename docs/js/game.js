@@ -107,7 +107,7 @@
                 el.className = 'select-card';
                 el.innerHTML = `
                     <div class="card-header">${f.name}</div>
-                    <div class="card-type">${f.style}</div>
+                    <div class="card-type">${cardTypeLabel(f)}</div>
                     <div class="card-stats">
                         <div class="card-stat"><span class="card-stat-label">Striking:</span><span class="card-stat-value">${f.striking}</span></div>
                         <div class="card-stat"><span class="card-stat-label">Grappling:</span><span class="card-stat-value">${f.grappling}</span></div>
@@ -623,8 +623,10 @@
                     floatTextOverFighter(defenderName, `-${damage}`, 'damage');
                 }
 
-                // Committing to a flying submission drags the fight to the mat — you land in top control.
-                if (flyingFromClinch && defender.activeFighter && defender.activeFighter.hp > 0) {
+                // A LANDED flying submission drags the fight to the mat — you land in top control.
+                // If it was fully defended (Submission Defense), the defender shut it down, so the
+                // attacker is NOT rewarded with the position — both stay tied up in the clinch.
+                if (flyingFromClinch && !subbed.defended && defender.activeFighter && defender.activeFighter.hp > 0) {
                     attacker.inClinch = false;
                     defender.inClinch = false;
                     attacker.positionalAdvantage = true;
@@ -632,7 +634,7 @@
                     showAction(`${attacker.activeFighter.name} drags it to the mat — top control!`, player, 'advantage', cardTypeClass);
                     floatTextOverFighter(player, 'TOP CONTROL', 'info');
                 }
-                checkFighterKO(defender, defenderName);
+                checkFighterKO(defender, defenderName, 'submission');
             } else if (card.subtype === 'escape') {
                 // Reliable escapes — they always work, the cost is the energy + the turn's tempo.
                 if (card.escapeType === 'reversal') {
@@ -690,12 +692,17 @@
             updateUI();
         }
 
-        function checkFighterKO(defender, defenderName) {
+        function checkFighterKO(defender, defenderName, finishType = 'ko') {
             if (defender.activeFighter.hp <= 0) {
-                showAction(`${defender.activeFighter.name} KO'd!`, defenderName, 'ko', 'card-technique');
+                // Finish flavor depends on what ended it: a submission is a TAP-OUT, everything
+                // else (strikes, slams, bleed) is a KO.
+                const isSub = finishType === 'submission';
+                showAction(
+                    isSub ? `${defender.activeFighter.name} taps out — submission!` : `${defender.activeFighter.name} KO'd!`,
+                    defenderName, 'ko', 'card-technique');
                 defender.activeFighter = null;
 
-                // Reset position/clinch/spacing when a fighter is KO'd (a fresh fight starts)
+                // Reset position/clinch/spacing when a fighter is finished (a fresh fight starts)
                 gameState.player.positionalAdvantage = false;
                 gameState.opponent.positionalAdvantage = false;
                 gameState.player.inClinch = false;
@@ -703,13 +710,14 @@
                 gameState.player.cantGrappleNextTurn = false;
                 gameState.opponent.cantGrappleNextTurn = false;
 
-                floatTextOverFighter(defenderName, 'KO', 'damage');
+                floatTextOverFighter(defenderName, isSub ? 'TAP' : 'KO', 'damage');
 
-                // Last fighter standing wins: you lose when your active fighter is KO'd and your roster is empty.
+                // Last fighter standing wins: you lose when your active fighter is finished and your roster is empty.
                 if (defender.roster.length === 0) {
                     addLog(`${defenderName === 'player' ? 'You have' : 'Opponent has'} no fighters left!`, defenderName);
                     updateUI();
-                    setTimeout(() => endGame(defenderName === 'player' ? 'opponent' : 'player', 'No fighters left'), 1000);
+                    const reason = isSub ? 'Submission finish!' : 'KO finish!';
+                    setTimeout(() => endGame(defenderName === 'player' ? 'opponent' : 'player', reason), 1000);
                     return;
                 }
 
@@ -734,7 +742,6 @@
 
             // Fresh turn — combo momentum resets.
             gameState.player.comboStrikes = 0;
-            gameState.player.comboGrapples = 0;
             // The spacing we put on the opponent has now covered their turn — clear it.
             gameState.opponent.cantGrappleNextTurn = false;
 
@@ -825,7 +832,6 @@
 
             // Fresh turn — combo momentum resets.
             gameState.opponent.comboStrikes = 0;
-            gameState.opponent.comboGrapples = 0;
             // The spacing the opponent put on us has now covered our turn — clear it.
             gameState.player.cantGrappleNextTurn = false;
 
@@ -920,13 +926,15 @@
             // On Hard/Nightmare, bank energy to keep a defensive reaction available.
             const hard = gameState.difficulty === 'hard' || gameState.difficulty === 'nightmare';
             const hasReaction = me.hand.some(c => c.subtype === 'defense');
-            const reserve = (hard && hasReaction && foe.activeFighter) ? 2 : 0;
+            // Reactions now cost 0-1, so the AI only needs to bank a little to keep one available.
+            const reserve = (hard && hasReaction && foe.activeFighter) ? 1 : 0;
 
             const choice = aiChooseAction(me, foe, reserve);
             if (!choice) {
-                // Stuck: if it holds top/clinch but has no use for it (no play even without banking
-                // energy), disengage to neutral for free rather than dead-ending on the ground.
-                if ((me.positionalAdvantage || me.inClinch) && !aiChooseAction(me, foe, 0) && freeStandUp('opponent')) {
+                // Stuck on top: if it holds top control but has no use for it (no play even without
+                // banking energy), stand up to neutral for free rather than dead-ending on the ground.
+                // (A clinch has no free exit — the AI breaks it with the Stand Up card via scoring.)
+                if (me.positionalAdvantage && !aiChooseAction(me, foe, 0) && freeStandUp('opponent')) {
                     updateUI();
                     setTimeout(() => { if (!gameState.gameOver) continueOpponentAI(); }, 900);
                     return;
@@ -1153,7 +1161,8 @@
             document.getElementById('playerFightersRemaining').textContent = fighterLabel(fightersLeft('player'));
             document.getElementById('playerDeckCount').textContent = gameState.player.deck.length;
             document.getElementById('playerHandCount').textContent = gameState.player.hand.length;
-            document.getElementById('playerRosterCount').textContent = gameState.player.roster.length;
+            document.getElementById('playerRosterCount').textContent = gameState.player.roster.length;   // count-bar
+            document.getElementById('playerRosterCount2').textContent = gameState.player.roster.length;  // CORNER: label
 
             // Update opponent stats
             document.getElementById('opponentEnergy').textContent = `${gameState.opponent.energy}/${gameState.opponent.maxEnergy}`;
@@ -1181,14 +1190,15 @@
                 posIndicator.textContent = 'Standing';
             }
 
-            // Free Stand Up / Break Clinch — only the dominant (top) or clinched player may
-            // disengage to neutral for free (no card, no energy). The bottom fighter must pay a card.
+            // Free Stand Up — only the DOMINANT (top) player may disengage to neutral for free
+            // (no card, no energy): top control means you decide whether the fight stays down.
+            // The clinch is a contested 50/50, so breaking it costs the Stand Up / Separate card.
             const standBtn = document.getElementById('standUpBtn');
             if (standBtn) {
                 const canStand = gameState.currentPlayer === 'player' && gameState.phase === 'main'
-                    && (gameState.player.positionalAdvantage || gameState.player.inClinch);
+                    && gameState.player.positionalAdvantage;
                 standBtn.style.display = canStand ? '' : 'none';
-                standBtn.textContent = gameState.player.inClinch ? 'Break Clinch' : 'Stand Up';
+                standBtn.textContent = 'Stand Up';
             }
 
             // Render fighters, rosters, and hand
@@ -1248,25 +1258,23 @@
             return false;
         }
 
-        // The dominant (top) or clinched fighter can disengage to NEUTRAL for free — no card, no energy.
-        // The fighter on the BOTTOM cannot (they must spend a card / Reversal), so a takedown still costs
-        // the downed fighter tempo. This is the escape valve that prevents a ground stalemate.
+        // The DOMINANT (top) fighter can disengage to NEUTRAL for free — no card, no energy: top
+        // control means they decide whether the fight stays down. The BOTTOM fighter can't (they pay
+        // a card / Reversal), so a takedown still costs the downed fighter tempo. The CLINCH is a
+        // contested 50/50 — it is NOT broken for free here; that's the Stand Up / Separate card's job.
         function freeStandUp(side) {
             const me = gameState[side];
             const foe = side === 'player' ? gameState.opponent : gameState.player;
-            if (!me.positionalAdvantage && !me.inClinch) return false; // only the dominant/clinched side
-            const wasClinch = me.inClinch;
+            if (!me.positionalAdvantage) return false; // dominant top only
             me.positionalAdvantage = false;
             foe.positionalAdvantage = false;
-            me.inClinch = false;
-            foe.inClinch = false;
             const name = me.activeFighter ? me.activeFighter.name : (side === 'player' ? 'You' : 'Opponent');
-            showAction(`${name} ${wasClinch ? 'breaks the clinch' : 'stands up'} — back to neutral!`, side, '', '');
-            floatTextOverFighter(side, wasClinch ? 'BREAK' : 'STAND UP', 'info');
+            showAction(`${name} stands up — back to neutral!`, side, '', '');
+            floatTextOverFighter(side, 'STAND UP', 'info');
             return true;
         }
 
-        // Player clicks the free Stand Up button (shown only when on top or in the clinch).
+        // Player clicks the free Stand Up button (shown only when in dominant top control).
         function playerStandUpFree() {
             if (gameState.currentPlayer !== 'player' || gameState.phase !== 'main') return;
             if (freeStandUp('player')) {
@@ -1276,12 +1284,13 @@
         }
 
         // End the player's turn automatically if no actions are left.
-        // A dominant (top) or clinched fighter can ALWAYS stand up for free, so that counts as an
-        // available action — don't force-end their turn out from under that choice.
+        // A dominant (top) fighter can ALWAYS stand up for free, so that counts as an available
+        // action — don't force-end their turn out from under that choice. (The clinch has no free
+        // exit, so a clinched player with no plays simply ends their turn.)
         function maybeAutoEndTurn() {
             if (gameState.currentPlayer !== 'player' || gameState.phase !== 'main') return;
             if (hasPlayableAction()) return;
-            if (gameState.player.positionalAdvantage || gameState.player.inClinch) return; // can Stand Up / Break
+            if (gameState.player.positionalAdvantage) return; // can Stand Up for free
             addLog('No available actions. Ending turn automatically.');
             endTurn(true);
         }
@@ -1340,7 +1349,7 @@
 
             card.innerHTML = `
                 <div class="card-header">${fighter.name}</div>
-                <div class="card-type">${fighter.style}</div>
+                <div class="card-type">${cardTypeLabel(fighter)}</div>
                 <div class="card-stats">
                     <div class="card-stat">
                         <span class="card-stat-label">Striking:</span>
@@ -1415,6 +1424,22 @@
             }
         }
 
+        // The type label shown on a card, each prefixed with its own emoji so the action type
+        // reads instantly (matches the color category). Fighters show their style.
+        function cardTypeLabel(card) {
+            if (card.type === 'fighter') return `🥋 ${card.style || 'Fighter'}`;
+            if (card.type === 'corner') return '📣 Corner';
+            switch (card.subtype) {
+                case 'strike':     return '🥊 Strike';
+                case 'grappling':  return '🤼 Takedown';
+                case 'clinch':     return '🤝 Clinch';
+                case 'submission': return '🔒 Submission';
+                case 'escape':     return '🆙 Escape';
+                case 'defense':    return '⚡ Reaction';
+                default:           return card.subtype || '';
+            }
+        }
+
         function createHandCard(card) {
             const cardElement = document.createElement('div');
             cardElement.className = 'card';
@@ -1460,7 +1485,7 @@
 
                 cardElement.innerHTML = `
                     <div class="card-header">${card.name}</div>
-                    <div class="card-type">${card.style}</div>
+                    <div class="card-type">${cardTypeLabel(card)}</div>
                     <div class="card-stats">
                         <div class="card-stat">
                             <span class="card-stat-label">Striking:</span>
@@ -1483,7 +1508,7 @@
                 cardElement.innerHTML = `
                     <div class="card-energy">${card.energy}</div>
                     <div class="card-header">${card.name}</div>
-                    <div class="card-type">${card.subtype === 'defense' ? '⚡ Reaction' : card.subtype.charAt(0).toUpperCase() + card.subtype.slice(1)}</div>
+                    <div class="card-type">${cardTypeLabel(card)}</div>
                     ${techniqueStatsHTML(card)}
                     <div class="card-ability">${card.effect}</div>
                 `;
@@ -1491,7 +1516,7 @@
                 cardElement.innerHTML = `
                     <div class="card-energy">${card.energy}</div>
                     <div class="card-header">${card.name}</div>
-                    <div class="card-type">Corner Card</div>
+                    <div class="card-type">${cardTypeLabel(card)}</div>
                     <div class="card-ability">${card.effect}</div>
                 `;
             }
