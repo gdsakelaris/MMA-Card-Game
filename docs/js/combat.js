@@ -71,10 +71,10 @@
                 case 'strike':
                     if (card.strikeType === 'ground') return onTop;    // Ground & Pound: top control only
                     if (card.strikeType === 'upkick') return onBottom; // Upkick: from the bottom only
-                    if (card.groundStrike) return onTop;               // Cutting Elbow: top control (for stagnation relief)
-                    if (grounded) return false;                        // no standup strikes on the ground
+                    if (onTop) return !!card.groundStrike;             // from top, only ground-legal standup strikes (Cutting Elbow)
+                    if (onBottom) return false;                        // no standup strikes off your back (use Upkick)
                     if (inClinch) return !!card.clinchLegal;           // only short inside strikes (Uppercut/Elbow) in the clinch
-                    return true;                                       // standup strikes: open standing
+                    return true;                                       // standup strikes: open standing (neutral)
                 case 'grappling':
                     return !grounded;                                // takedowns: from open standing or clinch (reversals handle bottom)
                 case 'submission':

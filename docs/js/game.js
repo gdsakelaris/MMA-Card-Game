@@ -535,11 +535,14 @@
                         showAction('Staggered! Opponent skips their next turn.', player, 'advantage', cardTypeClass);
                         floatTextOverFighter(defenderName, 'STAGGERED', 'info');
                     }
-                    // Knockdown — only a POWER strike (canKnockdown) that lands clean for 8+ drops them;
-                    // a jab/teep/leg kick that happens to reach 8 never knocks anyone down.
+                    // Knockdown — only a POWER strike (canKnockdown) that lands clean drops them, and
+                    // only on the shot's OWN power (base + Striking + training - leg damage). The combo
+                    // bonus is rhythm, not a heavy blow, so it's excluded: a jab can never knock down,
+                    // and a light power strike inflated to 8 by a combo doesn't either.
+                    const knockdownPower = damage - comboBonus(strikeCombo);
                     if (defender.activeFighter.hp > 0
                         && card.canKnockdown
-                        && damage >= CONFIG.knockdownThreshold
+                        && knockdownPower >= CONFIG.knockdownThreshold
                         && !attacker.positionalAdvantage && !defender.positionalAdvantage) {
                         attacker.positionalAdvantage = true;
                         defender.positionalAdvantage = false;
@@ -1176,6 +1179,16 @@
                 posIndicator.textContent = 'Standing';
             }
 
+            // Free Stand Up / Break Clinch — only the dominant (top) or clinched player may
+            // disengage to neutral for free (no card, no energy). The bottom fighter must pay a card.
+            const standBtn = document.getElementById('standUpBtn');
+            if (standBtn) {
+                const canStand = gameState.currentPlayer === 'player' && gameState.phase === 'main'
+                    && (gameState.player.positionalAdvantage || gameState.player.inClinch);
+                standBtn.style.display = canStand ? '' : 'none';
+                standBtn.textContent = gameState.player.inClinch ? 'Break Clinch' : 'Stand Up';
+            }
+
             // Render fighters, rosters, and hand
             renderFighter('player');
             renderFighter('opponent');
@@ -1260,12 +1273,15 @@
             }
         }
 
-        // End the player's turn automatically if no actions are left
+        // End the player's turn automatically if no actions are left.
+        // A dominant (top) or clinched fighter can ALWAYS stand up for free, so that counts as an
+        // available action — don't force-end their turn out from under that choice.
         function maybeAutoEndTurn() {
-            if (gameState.currentPlayer === 'player' && gameState.phase === 'main' && !hasPlayableAction()) {
-                addLog('No available actions. Ending turn automatically.');
-                endTurn(true);
-            }
+            if (gameState.currentPlayer !== 'player' || gameState.phase !== 'main') return;
+            if (hasPlayableAction()) return;
+            if (gameState.player.positionalAdvantage || gameState.player.inClinch) return; // can Stand Up / Break
+            addLog('No available actions. Ending turn automatically.');
+            endTurn(true);
         }
 
         function renderFighter(player) {

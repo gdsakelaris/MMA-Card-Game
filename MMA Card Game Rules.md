@@ -107,7 +107,7 @@ A takedown **always lands** — putting you on top and dealing its impact — **
 
 A downed fighter can't throw standup strikes — from the bottom they can throw an **Upkick** (a clean one kicks the top fighter off and both return to neutral), or spend the turn to **Stand Up** (→ neutral) or **Reversal** (→ top). That tempo cost is what makes a takedown worth landing. **You can't shoot a takedown from the bottom** — that's what Reversal is for.
 
-**Anti-stagnation rule** — if you **hold top control** (or are **in the clinch**) but have no useful card to play, you can **Stand Up for free** (no card, no energy). This prevents a game stalemate when both fighters run out of grappling/submission options — just reset to neutral and strike again. The fighter on the **bottom still has to spend a card**, so this favors control but breaks deadlock.
+**Free Stand Up (top / clinch)** — whenever you **hold top control** (or are **in the clinch**), you may **Stand Up for free at any time** on your turn (no card, no energy) to reset to neutral. The fighter in control decides whether the fight stays on the ground, so disengaging costs them nothing — but it also **surrenders the position** (top control = cheap Ground & Pound and full-damage submissions), so you only do it to get back to striking range. The fighter on the **bottom still has to spend a card** (Stand Up / Reversal) to get up. This favors control, keeps strikers viable after a reversal, and breaks any ground stalemate.
 
 ---
 
@@ -155,7 +155,7 @@ Counters can KO an attacking fighter. Defending (even a partial Block) stops on-
 
 These two subsystems make striking and grappling feed each other — and model fighters tiring out — with **no extra tracking beyond your energy tokens**.
 
-- **Knockdown** — only **power strikes** (Head Kick, Heavy Hook, Uppercut, Power Cross) can knock down — cheap pokes like Jab or Teep never do, even in a combo. A clean hit dealing **8 or more** damage **drops the opponent**: they go to the **bottom** and **you take top control**. Now follow them down — Ground & Pound, or lock in a Rear Naked Choke. This is how a striking exchange turns into a ground finish, just like the real thing. (A reaction that stops the hit also stops the knockdown.)
+- **Knockdown** — only **power strikes** (Head Kick, Heavy Hook, Uppercut, Power Cross) can knock down — cheap pokes like Jab or Teep never do. A clean hit whose **own power** (base **+ Striking**, plus any training buff, minus leg damage) reaches **8 or more** **drops the opponent**: they go to the **bottom** and **you take top control**. The **combo bonus does NOT count** toward a knockdown — combos add damage, but a knockdown is about the weight of the single shot, so a light power strike padded to 8 by a combo won't drop anyone (heavier base + a better striker = more reliable knockdown). Now follow them down — Ground & Pound, or lock in a Rear Naked Choke. (A reaction that stops the hit also stops the knockdown.)
 - **Cardio (energy drain)** — grinding work saps the gas tank:
   - **Body Shot** — a clean hit **drains 2 of the opponent's energy**.
   - **Landing a takedown** — the scramble **drains 1 of their energy**.
@@ -189,9 +189,9 @@ When a fighter hits 0 HP they're **KO'd**: position resets to standing and you d
 | Leg Kick | kick | 3 | 1 | 3 | **Leg damage** — stacking −1 to all their strikes |
 | Body Shot | punch | 3 | 2 | 3 | **Cardio** — drains 2 of their energy |
 | Power Cross | punch | 4 | 2 | 2 | straight power — a **Block can't reduce it** |
-| Cutting Elbow | elbow | 4 | 2 | 2 | **Bleed**; legal in the clinch AND from top control (anti-stagnation) |
+| Cutting Elbow | elbow | 4 | 2 | 2 | **Bleed**; legal **standing, in the clinch, and from top control** (not off your back) |
 | Uppercut | punch | 5 | 3 | 2 | knocks down at 8+; legal in the clinch |
-| Heavy Hook | punch | 6 | 3 | 2 | **Knockdown** if combo'd to 8+ |
+| Heavy Hook | punch | 6 | 3 | 2 | **Knockdown** if its own power (6 + Striking) lands clean for 8+ |
 | Spinning Back Fist | punch | 6 | 3 | 1 | **Stagger** |
 | Head Kick | kick | 8 | 4 | 1 | **Knockdown** (always 8+) → top control |
 
