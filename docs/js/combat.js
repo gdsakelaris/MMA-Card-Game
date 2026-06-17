@@ -85,7 +85,8 @@
                     return !grounded && !inClinch;                   // tie up from open standing
                 case 'escape':
                     if (card.escapeType === 'reversal') return onBottom; // sweep only from the bottom
-                    return grounded || inClinch;                     // stand up from the ground or break the clinch
+                    if (onTop) return false;                         // on top you stand up for FREE (the button) — the card would just waste a card + 2 energy
+                    return onBottom || inClinch;                     // Stand Up: escape the bottom or break the clinch
                 case 'defense':
                     return false;                                    // reactions are not main-phase plays
                 default:

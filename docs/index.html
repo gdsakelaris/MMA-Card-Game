@@ -45,9 +45,9 @@
                     </div>
                 </div>
 
-                <div class="fighters-remaining" id="opponentFightersRemaining">3 Fighters</div>
+                <div class="fighter-counts count-opp">Hand <b id="opponentHandCount">6</b> · Deck <b id="opponentDeckCount">68</b> · Roster <b id="opponentRosterCount2">3</b></div>
+                <div class="position-badge pos-standing" id="opponentPosition">Standing</div>
                 <div class="fighter-zone" id="opponentFighterZone"></div>
-                <div class="roster-label">CORNER: <span id="opponentRosterCount">3</span></div>
                 <div class="roster-zone" id="opponentRoster"></div>
                 <!-- per-side inline action feed will render inside fighter zone -->
 
@@ -56,7 +56,6 @@
             <!-- Center Action Area -->
             <div class="center-area">
                 <h2 id="turnIndicator">YOUR TURN</h2>
-                <div id="positionIndicator" class="position-indicator">Standing</div>
                 <div class="action-buttons">
                     <button class="btn btn-primary" id="drawCardBtn" onclick="drawCard()">Draw Card</button>
                     <button class="btn btn-primary" id="standUpBtn" onclick="playerStandUpFree()" style="display:none;">Stand Up</button>
@@ -70,10 +69,6 @@
                         <option value="hard" selected>Hard</option>
                         <option value="nightmare">Nightmare (+1 stats)</option>
                     </select>
-                </div>
-                <div class="count-bar">
-                    <span class="count-opp">OPP — Hand <b id="opponentHandCount">6</b> · Deck <b id="opponentDeckCount">68</b> · Roster <b id="opponentRosterCount2">3</b></span>
-                    <span class="count-you">YOU — Hand <b id="playerHandCount">6</b> · Deck <b id="playerDeckCount">68</b> · Roster <b id="playerRosterCount">3</b></span>
                 </div>
             </div>
 
@@ -92,9 +87,9 @@
                     </div>
                 </div>
 
-                <div class="fighters-remaining" id="playerFightersRemaining">3 Fighters</div>
+                <div class="fighter-counts count-you">Hand <b id="playerHandCount">6</b> · Deck <b id="playerDeckCount">68</b> · Roster <b id="playerRosterCount">3</b></div>
+                <div class="position-badge pos-standing" id="playerPosition">Standing</div>
                 <div class="fighter-zone" id="playerFighterZone"></div>
-                <div class="roster-label">CORNER: <span id="playerRosterCount2">3</span></div>
                 <div class="roster-zone" id="playerRoster"></div>
                 <!-- per-side inline action feed will render inside fighter zone -->
                 <div class="hand-area" id="playerHand">

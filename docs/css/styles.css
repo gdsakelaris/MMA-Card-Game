@@ -143,20 +143,6 @@
         /* Spacer pushes content right */
         .fighter-zone::before { content: ''; flex: 1 1 0; }
 
-        /* "N Fighters" label — a centered block sitting directly above the
-           fighter zone. It must live OUTSIDE #...FighterZone, because
-           renderFighter() clears that zone's innerHTML on every updateUI(). */
-        .fighters-remaining {
-            width: 100%;
-            font-size: 0.9em;
-            color: #999;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-align: center;
-            white-space: nowrap;
-            margin-bottom: 4px;
-        }
-
         .fighter-zone > .card,
         .fighter-zone > .empty-slot { flex: 0 0 auto; }
 
@@ -615,17 +601,6 @@
             color: #d20a0a;
         }
 
-        .positional-advantage {
-            display: inline-block;
-            background: #d20a0a;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.7em;
-            font-weight: bold;
-            margin-left: 4px;
-        }
-
         /* Fighter stamina bar */
         .stamina-bar-bg {
             background: #333;
@@ -883,11 +858,6 @@
             /* The desktop spacer that pushes the active card right isn't needed
                in the mobile single-column layout and just adds dead space. */
             .fighter-zone::before { display: none; }
-
-            .fighters-remaining {
-                width: 100%;
-                max-width: 100%;
-            }
 
             .player-name {
                 font-size: 0.95em;
@@ -1265,11 +1235,6 @@
                 min-width: 120px;
                 height: 160px;
                 font-size: 0.7em;
-            }
-
-            .positional-advantage {
-                font-size: 0.6em;
-                padding: 1px 3px;
             }
 
             .stamina-bar-bg {

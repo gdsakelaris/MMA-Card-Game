@@ -349,7 +349,9 @@
             if (card.subtype === 'strike') return 'You can only throw standup strikes from neutral. Stand up first!';
             if (card.subtype === 'grappling') return 'You can only shoot a takedown from a neutral standing position.';
             if (card.subtype === 'escape' && card.escapeType === 'reversal') return 'You can only reverse from the bottom position.';
-            if (card.subtype === 'escape') return 'Stand Up can only be used when the fight is on the ground.';
+            if (card.subtype === 'escape') return gameState.player.positionalAdvantage
+                ? 'You have top control — stand up for free with the button (no card needed).'
+                : 'Stand Up can only be used from the bottom or in the clinch.';
             return 'You cannot do that from this position.';
         }
 
@@ -637,6 +639,12 @@
                     if (subbed.defended) {
                         defender.positionalAdvantage = true;
                         attacker.positionalAdvantage = false;
+                        // Losing the flying-sub gamble ENDS the attacker's turn: they over-committed and
+                        // were swept under, so the scramble (top control) belongs to the defender, who now
+                        // carries it into their OWN turn — exactly like a landed takedown. Without this the
+                        // attacker would just stand back up on the same turn and erase the reward they
+                        // handed the defender (the bug: "it said sweeps on top but positions didn't update").
+                        attacker.forceTurnEnd = true;
                         showAction(`${defender.activeFighter.name} defends and sweeps on top — ${attacker.activeFighter.name} lands on the bottom!`, defenderName, 'advantage', cardTypeClass);
                         floatTextOverFighter(defenderName, 'TOP CONTROL', 'info');
                     } else {
@@ -763,6 +771,7 @@
 
             // Fresh turn — combo momentum resets.
             gameState.player.comboStrikes = 0;
+            gameState.player.forceTurnEnd = false;
             // The spacing we put on the opponent has now covered their turn — clear it.
             gameState.opponent.cantGrappleNextTurn = false;
 
@@ -853,6 +862,7 @@
 
             // Fresh turn — combo momentum resets.
             gameState.opponent.comboStrikes = 0;
+            gameState.opponent.forceTurnEnd = false;
             // The spacing the opponent put on us has now covered our turn — clear it.
             gameState.player.cantGrappleNextTurn = false;
 
@@ -937,6 +947,9 @@
                 endOpponentTurn();
                 return;
             }
+            // A defended flying submission swept the AI under — its turn is over; the player keeps the
+            // top control they earned and carries it into their own turn.
+            if (me.forceTurnEnd) { me.forceTurnEnd = false; endOpponentTurn(); return; }
 
             // Easy difficulty keeps the original random behavior.
             if (gameState.difficulty === 'easy') {
@@ -1172,44 +1185,44 @@
             document.getElementById('turnCounter').textContent = gameState.turn;
             document.getElementById('currentPhase').textContent = gameState.phase.charAt(0).toUpperCase() + gameState.phase.slice(1);
             
-            // Fighters remaining (active + roster) — last one standing wins.
+            // Fighters remaining (active + roster) drives the bar by each name — last one standing wins.
             const fightersLeft = side => gameState[side].roster.length + (gameState[side].activeFighter ? 1 : 0);
-            const fighterLabel = n => `${n} ${n === 1 ? 'Fighter' : 'Fighters'}`;
 
-            // Update player stats
+            // Update player stats (Roster = fighters still waiting in the corner; the bar shows total left)
             document.getElementById('playerEnergy').textContent = `${gameState.player.energy}/${gameState.player.maxEnergy}`;
             document.getElementById('playerHealthBar').style.width = `${(fightersLeft('player') / CONFIG.rosterSize) * 100}%`;
-            document.getElementById('playerFightersRemaining').textContent = fighterLabel(fightersLeft('player'));
             document.getElementById('playerDeckCount').textContent = gameState.player.deck.length;
             document.getElementById('playerHandCount').textContent = gameState.player.hand.length;
-            document.getElementById('playerRosterCount').textContent = gameState.player.roster.length;   // count-bar
-            document.getElementById('playerRosterCount2').textContent = gameState.player.roster.length;  // CORNER: label
+            document.getElementById('playerRosterCount').textContent = gameState.player.roster.length;
 
             // Update opponent stats
             document.getElementById('opponentEnergy').textContent = `${gameState.opponent.energy}/${gameState.opponent.maxEnergy}`;
             document.getElementById('opponentHealthBar').style.width = `${(fightersLeft('opponent') / CONFIG.rosterSize) * 100}%`;
-            document.getElementById('opponentFightersRemaining').textContent = fighterLabel(fightersLeft('opponent'));
             document.getElementById('opponentHandCount').textContent = gameState.opponent.hand.length;
             document.getElementById('opponentDeckCount').textContent = gameState.opponent.deck.length;
-            document.getElementById('opponentRosterCount').textContent = gameState.opponent.roster.length;
             document.getElementById('opponentRosterCount2').textContent = gameState.opponent.roster.length;
 
             // Update turn indicator
             const turnIndicator = document.getElementById('turnIndicator');
             turnIndicator.textContent = gameState.currentPlayer === 'player' ? 'YOUR TURN' : 'OPPONENT\'S TURN';
 
-            // Update position indicator
-            const posIndicator = document.getElementById('positionIndicator');
-            const me = gameState[gameState.currentPlayer === 'player' ? 'player' : 'opponent'];
-            if (me.inClinch) {
-                posIndicator.textContent = 'Clinch';
-            } else if (me.positionalAdvantage) {
-                posIndicator.textContent = 'Top Control';
-            } else if (gameState[gameState.currentPlayer === 'player' ? 'opponent' : 'player'].positionalAdvantage) {
-                posIndicator.textContent = 'Bottom';
-            } else {
-                posIndicator.textContent = 'Standing';
-            }
+            // Position status — one badge per fighter box, reflecting that fighter's ACTUAL ground
+            // state. It persists regardless of whose turn it is; the two sides mirror each other
+            // (one Top ⇄ the other Bottom; both Clinch or both Standing together).
+            const setPosition = (id, side) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const meSide = gameState[side];
+                const foeSide = gameState[side === 'player' ? 'opponent' : 'player'];
+                let label = 'Standing', cls = 'pos-standing';
+                if (meSide.inClinch) { label = 'Clinch'; cls = 'pos-clinch'; }
+                else if (meSide.positionalAdvantage) { label = 'Top Control'; cls = 'pos-top'; }
+                else if (foeSide.positionalAdvantage) { label = 'Bottom'; cls = 'pos-bottom'; }
+                el.textContent = label;
+                el.className = 'position-badge ' + cls;
+            };
+            setPosition('opponentPosition', 'opponent');
+            setPosition('playerPosition', 'player');
 
             // Free Stand Up — only the DOMINANT (top) player may disengage to neutral for free
             // (no card, no energy): top control means you decide whether the fight stays down.
@@ -1310,6 +1323,9 @@
         // exit, so a clinched player with no plays simply ends their turn.)
         function maybeAutoEndTurn() {
             if (gameState.currentPlayer !== 'player' || gameState.phase !== 'main') return;
+            // A defended flying submission swept YOU under — your turn ends; the opponent keeps the top
+            // control they earned (you'll escape on your next turn, like any takedown).
+            if (gameState.player.forceTurnEnd) { gameState.player.forceTurnEnd = false; endTurn(true); return; }
             if (hasPlayableAction()) return;
             if (gameState.player.positionalAdvantage) return; // can Stand Up for free
             addLog('No available actions. Ending turn automatically.');
@@ -1388,9 +1404,8 @@
                 <div class="stamina-bar-bg">
                     <div class="stamina-bar-fill" style="width: ${staminaPercent}%"></div>
                 </div>
-                ${gameState[owner].positionalAdvantage ? '<span class="positional-advantage">ADVANTAGE</span>' : ''}
             `;
-            
+
             return card;
         }
 

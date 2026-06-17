@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.9.3)
+# MMA WARRIORS — Card Game Rules (v4.9.4)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -90,10 +90,10 @@ Position only changes via the **Clinch** card, a **takedown** or **Counter Taked
 |---|---|
 | **Standing / neutral** | Standup strikes, takedown attempts, **enter the Clinch** |
 | **Clinch** | **Short inside strikes** (Uppercut, Heavy Hook, Body Shot, Cutting Elbow), takedowns, **flying submissions** (Guillotine / Triangle / Armbar), **Stand Up / Separate** |
-| **Top** (you have control) | Ground & Pound, any submission (full damage), Stand Up |
+| **Top** (you have control) | Ground & Pound, any submission (full damage), **free Stand Up** (no card) |
 | **Bottom** (opponent on top) | Submissions from guard (base only; Triangle +2), **Upkick**, Stand Up, **Reversal** |
 
-**The Clinch** (the *Clinch* card, 1 energy): tie up with your opponent. Inside, you can throw **short inside strikes** (the **Uppercut**, **Heavy Hook**, **Body Shot**, and **Cutting Elbow** are legal here — long-range jabs, kicks and the Head Kick are not), shoot a **takedown** (→ top), or hit a **flying submission**. The clinch is the only place to throw a flying **Guillotine / Triangle / Armbar** (the D'Arce and Kimura need the ground). A flying submission takes the fight to the mat: if it **lands** you ride it down into **top control**; if it's fully **defended** (Submission Defense) you over-commit and get **swept under — the defender takes top and you land on the bottom**. Either way the clinch breaks; leave it the safe way with **Stand Up / Separate**.
+**The Clinch** (the *Clinch* card, 1 energy): tie up with your opponent. Inside, you can throw **short inside strikes** (the **Uppercut**, **Heavy Hook**, **Body Shot**, and **Cutting Elbow** are legal here — long-range jabs, kicks and the Head Kick are not), shoot a **takedown** (→ top), or hit a **flying submission**. The clinch is the only place to throw a flying **Guillotine / Triangle / Armbar** (the D'Arce and Kimura need the ground). A flying submission takes the fight to the mat: if it **lands** you ride it down into **top control** (and keep your turn); if it's fully **defended** (Submission Defense) you over-commit and get **swept under — the defender takes top, you land on the bottom, and your turn ends** (the scramble is theirs — they carry that top control into their own turn, just like a landed takedown). Either way the clinch breaks; leave it the safe way with **Stand Up / Separate**.
 
 ---
 
@@ -117,7 +117,7 @@ A downed fighter can't throw standup strikes — from the bottom they can throw 
 
 **Damage depends on position:** from **dominant top control** a submission deals its **base + Grappling**; thrown **off the top** (from the clinch or off your back) it deals **base damage only** — no Grappling. The position is the reward.
 
-- **Flying submissions** — Guillotine, Triangle, Armbar — can be hit from the **clinch (flying), top, or bottom**. A flying one thrown from the clinch takes the fight to the ground: if it lands you end up on top; if it's fully defended (Submission Defense) you get swept under — the defender takes top and you land on the bottom. (Throwing a flying submission is a real gamble on position.)
+- **Flying submissions** — Guillotine, Triangle, Armbar — can be hit from the **clinch (flying), top, or bottom**. A flying one thrown from the clinch takes the fight to the ground: if it lands you end up on top (and keep your turn); if it's fully defended (Submission Defense) you get swept under — the defender takes top, you land on the bottom, and **your turn ends** (they keep that top control into their turn). (Throwing a flying submission is a real gamble on position.)
   - **Armbar** is the exception: it adds **Grappling from any position** — base + Grappling even off the top. A finish you can complete anywhere.
   - **Triangle** is a guard weapon: off the top it does base **+2** when locked from your **back** (bottom).
 - **Ground submissions** — Kimura, D'Arce — need the fight **on the ground** (top or bottom). They are **not** flying submissions: you can't hit them from the clinch.
@@ -222,7 +222,7 @@ When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a s
 | D'Arce Choke | ground (top/bottom) | 7 | 4 | 1 | no clinch |
 | Rear Naked Choke | top only | 8 | 4 | 1 | |
 
-**Escapes** — Stand Up / Separate (energy 2, ×3, ground or clinch → neutral), Reversal (energy 3, ×2, bottom → top)
+**Escapes** — Stand Up / Separate (energy 2, ×3, **bottom or clinch** → neutral; from **top** you stand up **free** — no card needed), Reversal (energy 3, ×2, bottom → top)
 
 **Reactions**
 | Card | Answers | Effect | Energy | Copies |
@@ -251,6 +251,8 @@ On Medium and up it also **answers a flying submission thrown from the clinch** 
 ## Implementation (digital)
 
 Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
+
+*Version 4.9.4 — Flying-sub turn fix + Stand-Up clarity + UI cleanup. **Bug fix:** a flying submission that's **defended and swept** now **ends the attacker's turn**. Before, the sweep handed the defender top control on the *attacker's* turn, so the attacker just stood back up before the defender could use it ("it said sweeps on top, but the positions didn't update"). Now the defender keeps that top control into their own turn — exactly like a landed takedown. A flying sub that **lands** still keeps the attacker's turn. **Stand Up / Separate is no longer playable from top control** — top already has the free Stand Up (no card, no energy), so playing the card there only wasted a card + 2 energy; it stays essential for escaping the **bottom** and breaking the **clinch**. **UI:** the Hand/Deck/Roster counters moved into each fighter's box (top = opponent, bottom = you), and the now-redundant "N Fighters" and "CORNER: N" labels were removed (the bar by each name still shows fighters remaining). **Position status** (Standing / Top Control / Bottom / Clinch) moved out of the center box into a **per-fighter badge** that reflects each fighter's actual state and **persists regardless of whose turn it is** (the two sides mirror: one Top ⇄ the other Bottom), replacing the old single center indicator that only showed the current player's view; dead CSS from the removed/old elements was stripped. Shuffle verified genuinely random (Fisher–Yates) — repeated same-card draws are situational cards (Stand Up needs the ground, Reversal the bottom, reactions only fire on defense) piling up while your strikes/takedowns get played, not a shuffle fault. One ruleset for digital and physical.*
 
 *Version 4.9.3 — Deck-frequency rebalance (counts only — no card power, damage, energy, or position rules changed). Reweighted four cards to fix answer-to-attack proportionality without resizing the 74-card deck: **Ground & Pound 2 → 3** (reward establishing top control), **Block 4 → 3** (the weakest strike answer — only −3, and dead vs Power Cross — was over-represented), **Stuff 3 → 2** (takedown defense was ~1:1 with takedown attacks, so shots got stuffed too often and choked the grappling game), **Submission Defense 2 → 3** (submissions are the deadliest attack and had only two answers). Net: deck still 74; reactions 18 → 17 (~23% of the deck); takedown answers 6 → 5 (~1:1.2 vs takedowns); submission answers 2 → 3 (~1:2.7 vs submissions). Power-rarity curve untouched. One ruleset for digital and physical.*
 

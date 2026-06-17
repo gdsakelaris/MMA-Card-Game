@@ -82,7 +82,7 @@
                 { id: 'tech_choke',    name: 'Rear Naked Choke',   type: 'technique', subtype: 'submission', subPosition: 'dominant', energy: 4, damage: 8, copies: 1, effect: 'Submission (TOP control only): 8 + Grappling. Stopped by Submission Defense.' },
 
                 // === ESCAPES (change ground position; reliable) ===
-                { id: 'tech_standup',  name: 'Stand Up / Separate',type: 'technique', subtype: 'escape', escapeType: 'standup',  energy: 2, copies: 3, effect: 'On the ground OR in the clinch: get back to a neutral standing position (stand up / break the clinch).' },
+                { id: 'tech_standup',  name: 'Stand Up / Separate',type: 'technique', subtype: 'escape', escapeType: 'standup',  energy: 2, copies: 3, effect: 'From the bottom or the clinch: get back to a neutral standing position. (From top control you stand up for free — no card needed.)' },
                 { id: 'tech_reversal', name: 'Reversal',           type: 'technique', subtype: 'escape', escapeType: 'reversal', energy: 3, copies: 2, effect: 'From the bottom: sweep and reverse to top control.' },
 
                 // === REACTIONS (played in response to an attack — bank energy to use) ===
