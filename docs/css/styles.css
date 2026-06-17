@@ -138,7 +138,7 @@
             gap: 10px;
             margin-bottom: 8px;
             justify-content: center;
-            align-items: flex-start;
+            align-items: stretch; /* feed stretches to the active card's height */
         }
         /* Spacer pushes content right */
         .fighter-zone::before { content: ''; flex: 1 1 0; }
@@ -724,16 +724,18 @@
             pointer-events: none;
         }
         .inline-action-feed { /* per-side inline feed */
-            margin-top: 4px;
             display: flex;
             flex-direction: column;
+            justify-content: flex-end; /* newest message sits at the card's bottom edge */
             align-items: stretch;
             gap: 2px;
             min-height: 20px;
             flex: 1 1 0; /* match spacer flex to center the card */
             pointer-events: none;
             width: 100%;
-            max-height: 90px; /* cap height so it doesn't push roster down */
+            /* No fixed cap: align-items:stretch on .fighter-zone sizes this to the
+               active fighter card, so messages fill it and never spill past the
+               card's bottom. overflow:hidden clips cleanly if they ever exceed it. */
             overflow: hidden;
         }
         .action-item {
@@ -751,7 +753,7 @@
             line-height: 1.2;
             flex-shrink: 0;
         }
-        /* Keep only the 4 most recent messages (remove older ones from DOM in game.js) */
+        /* Keep only the 6 most recent messages (remove older ones from DOM in game.js) */
         /* Messages are colored by CORNER only — one blue theme for the player, one red for the
            opponent (no per-move-type colors). 'ko' just bolds the line. */
         .action-item.player {

@@ -1112,8 +1112,9 @@
             // Append to bottom so newest is at bottom
             feed.appendChild(item);
 
-            // Keep only the 4 most recent messages (remove from top) so the feed stays compact
-            while (feed.children.length > 4) {
+            // Keep only the 6 most recent messages (remove from top). The feed stretches to the
+            // active fighter card's height, which fits ~6 one-line messages without clipping.
+            while (feed.children.length > 6) {
                 feed.removeChild(feed.firstChild);
             }
         }
