@@ -133,6 +133,20 @@ Three **borderline / watch** items, none recommended for change now:
 1-energy strikes are ~2× more energy-efficient than the 4-energy ones — that's an *energy-cost*
 balance question, not a *frequency* one.
 
+**Pass 2 (v4.9.7) — re-audit after signature abilities (Lever 4).**
+Result: **the curve still holds — no copy changes.** Key principle: **frequency is a property of the
+shared 74-card deck; abilities are a property of fighters.** Both players use identical decks and draw
+3 random fighters, so a card's copies must track its *average* value across all 20 fighters, not any
+one fighter's synergy. Measured (via `calc*` with every fighter as attacker): each card's value spread
+is dominated by the **Striking/Grappling stat (~4-point swing)**, while abilities add only **~+2** and
+only for a **minority** of fighters (strike abilities reach 6/20, takedowns 3/20, subs 2/20, leg-kick &
+clinch 1/20 each). No card's deck-wide average moves enough to cross a rarity tier, so the v4.9.3 copy
+curve is unchanged. New **synergy / watch** items (build-arounds for one fighter — NOT copy changes):
+the **Clinch + clinch-strike** package (Ankalaev's Cage Pressure), **top submissions** (Oliveira +2,
+Pantoja chip), and **Leg Kick** (Gaethje −2). **Forward note:** if the game ever moves to per-fighter
+decks or drafting (asymmetric decks), frequency becomes a real per-fighter lever and these synergies
+*would* justify build-around copy tuning — under the current shared-deck / random-draw model they don't.
+
 ## When to re-run
 
 - After adding/altering any card effect, energy, or damage.

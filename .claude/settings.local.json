@@ -41,7 +41,8 @@
       "Bash(git --no-pager diff docs/js/game.js)",
       "Bash(node _abil.js)",
       "Bash(node _ank.js)",
-      "Bash(rm -f _ank.js)"
+      "Bash(rm -f _ank.js)",
+      "Bash(node _audit.js)"
     ],
     "deny": [],
     "ask": [],
