@@ -31,7 +31,10 @@
       "Bash(git --no-pager diff HEAD -- \"MMA Card Game Rules.md\" docs/js/cards.js docs/js/game.js)",
       "Bash(node _audit_test.js)",
       "Bash(echo \"exit: $?\")",
-      "Bash(git --no-pager diff --stat HEAD -- docs/ \"MMA Card Game Rules.md\")"
+      "Bash(git --no-pager diff --stat HEAD -- docs/ \"MMA Card Game Rules.md\")",
+      "PowerShell(node _audit_test.js; \"exit: $LASTEXITCODE\"; Remove-Item _audit_test.js -Force)",
+      "Bash(git --no-pager log --oneline -3)",
+      "Bash(git --no-pager status --short)"
     ],
     "deny": [],
     "ask": [],
