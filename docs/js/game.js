@@ -1464,5 +1464,23 @@
             return cardElement;
         }
 
-        // Start the game when page loads
-        window.onload = initGame;
+        // Start the game as soon as the DOM is ready.
+        // NOTE: do NOT use window.onload here — that waits for ALL resources,
+        // including the async AdSense script and web fonts. On mobile (slow
+        // connections or ad/content blockers) that event can fire very late or
+        // not at all, which left the game frozen in 'setup' with no fighter
+        // selection. DOMContentLoaded fires as soon as the HTML + these inline
+        // scripts are parsed, independent of ads/fonts/images.
+        function bootGame() {
+            try {
+                initGame();
+            } catch (err) {
+                console.error('Game failed to start:', err);
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bootGame, { once: true });
+        } else {
+            // DOM already parsed (script at end of body) — start immediately.
+            bootGame();
+        }

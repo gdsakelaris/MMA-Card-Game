@@ -536,6 +536,8 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal.active {
@@ -874,9 +876,21 @@
             }
 
             .area-header {
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: wrap;
                 align-items: center;
-                gap: 5px;
+                justify-content: center;
+                gap: 6px 10px;
+                margin-left: 0; /* base rule shifts it 30px right — undo on mobile */
+            }
+
+            /* The desktop spacer that pushes the active card right isn't needed
+               in the mobile single-column layout and just adds dead space. */
+            .fighter-zone::before { display: none; }
+
+            .fighters-remaining {
+                width: 100%;
+                max-width: 100%;
             }
 
             .player-name {
@@ -984,20 +998,24 @@
             }
 
             .action-buttons {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 8px;
                 width: 100%;
             }
 
             .btn {
-                padding: 10px 16px;
+                padding: 12px 14px;
                 font-size: 0.85em;
-                width: 100%;
+                flex: 1;
                 box-sizing: border-box;
             }
 
             .modal {
-                padding: 10px;
+                padding: 12px 10px;
+                /* Top-align + scroll so a modal taller than the screen (discard
+                   preview, reaction grid) stays fully reachable instead of having
+                   its top/bottom clipped off-screen. */
+                align-items: flex-start;
             }
 
             .modal-content {
@@ -1006,6 +1024,7 @@
                 width: 95%;
                 margin: 0 auto;
                 box-sizing: border-box;
+                max-height: none;
             }
 
             .modal-content h2 {
@@ -1062,8 +1081,13 @@
                 width: 85%;
                 max-width: 200px;
                 min-width: 140px;
-                height: 180px;
+                height: 120px;
                 font-size: 0.75em;
+            }
+
+            /* Tighten the vertical rhythm so the single column isn't endless */
+            .fighter-zone {
+                margin-bottom: 4px;
             }
         }
 

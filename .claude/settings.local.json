@@ -20,7 +20,8 @@
       "Bash(grep -n \"Regular strikes \\(not Ground and Pound\\) reset\\\\|Fight returns to standing\\\\|} else if \\(card.subtype === 'defense'\\) {\\\\|target.defenseBuff = { amount, type }\" js/game.js)",
       "Bash(node _verify.js)",
       "Bash(node -e ' *)",
-      "Bash(awk '-F'\\\\''|,' '{print $2, $NF}')"
+      "Bash(awk '-F'\\\\''|,' '{print $2, $NF}')",
+      "Bash(node --check docs/js/game.js)"
     ],
     "deny": [],
     "ask": [],

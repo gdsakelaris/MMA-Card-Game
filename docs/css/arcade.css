@@ -341,4 +341,9 @@ body::after {
 @media screen and (max-width: 768px) {
     .hand-area { grid-template-columns: repeat(3, 1fr); }
     .roster-card { width: 96px; }
+
+    /* Tighten vertical rhythm so the single mobile column isn't endless */
+    .roster-zone { margin: 4px 0; }
+    .roster-label { margin-top: 4px; }
+    .count-bar { margin-top: 6px; font-size: 0.68em; gap: 8px; }
 }
