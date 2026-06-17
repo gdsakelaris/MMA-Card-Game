@@ -714,13 +714,22 @@
                     defenderName, 'ko', 'card-technique');
                 defender.activeFighter = null;
 
-                // Reset position/clinch/spacing when a fighter is finished (a fresh fight starts)
+                // Reset position/clinch/spacing when a fighter is finished (a fresh fight starts).
+                // skipNextTurn (Spinning Back Fist stagger) lives on the player STATE, not the fighter
+                // object, so it must be cleared by hand — otherwise a fighter who is staggered and then
+                // KO'd would pass the stagger to the REPLACEMENT fighter (a fresh fighter is never
+                // staggered). This also prevents a rare race where a bleeding+staggered fighter killed
+                // by the start-of-turn bleed tick still fires the skip-to-opponent logic.
+                // (Bleed/leg-damage status lives on the fighter object, which is discarded here, so a
+                // fresh fighter is naturally clean of those.)
                 gameState.player.positionalAdvantage = false;
                 gameState.opponent.positionalAdvantage = false;
                 gameState.player.inClinch = false;
                 gameState.opponent.inClinch = false;
                 gameState.player.cantGrappleNextTurn = false;
                 gameState.opponent.cantGrappleNextTurn = false;
+                gameState.player.skipNextTurn = false;
+                gameState.opponent.skipNextTurn = false;
 
                 floatTextOverFighter(defenderName, isSub ? 'TAP' : 'KO', 'damage');
 
