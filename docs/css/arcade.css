@@ -118,15 +118,13 @@ body::after {
     text-align: center;
     font-family: var(--arcade-ui);
     font-size: 0.72em;
+    font-weight: bold;
     letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 6px;
-    color: #8aa;
+    color: var(--neon-gold);
+    text-shadow: 0 0 6px rgba(255,204,0,0.5);
 }
-.position-badge.pos-top    { color: var(--neon-green); text-shadow: 0 0 8px rgba(81,255,144,0.5); }
-.position-badge.pos-bottom { color: var(--neon-red);   text-shadow: 0 0 8px rgba(255,45,45,0.5); }
-.position-badge.pos-clinch { color: var(--neon-gold);  text-shadow: 0 0 8px rgba(255,204,0,0.5); }
-.position-badge.pos-standing { color: #8aa; }
 @keyframes turnPulse {
     0%, 100% { text-shadow: 0 0 8px var(--neon-cyan), 0 0 18px rgba(0,225,255,0.5); }
     50% { text-shadow: 0 0 14px var(--neon-cyan), 0 0 30px rgba(0,225,255,0.9); }
