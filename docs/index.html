@@ -36,9 +36,7 @@
                     <span class="player-name">OPP</span>
                     <div class="health-bar">
                         <div class="health-bar-bg">
-                            <div class="health-bar-fill" id="opponentHealthBar" style="width: 100%;">
-                                <span id="opponentHealth">3 Fighters</span>
-                            </div>
+                            <div class="health-bar-fill" id="opponentHealthBar" style="width: 100%;"></div>
                         </div>
                     </div>
                     <div class="stat-box">
@@ -47,11 +45,13 @@
                     </div>
                 </div>
 
-                <div class="fighters-remaining" id="opponentFightersRemaining">3 Fighters</div>
                 <div class="fighter-zone" id="opponentFighterZone">
-                    <div class="empty-slot">No Active Fighter</div>
+                    <div class="fighters-label-wrapper">
+                        <div class="fighters-remaining" id="opponentFightersRemaining">3 Fighters</div>
+                        <div class="empty-slot">No Active Fighter</div>
+                    </div>
                 </div>
-                <div class="roster-label">Roster (corner): <span id="opponentRosterCount">3</span></div>
+                <div class="roster-label">CORNER: <span id="opponentRosterCount">3</span></div>
                 <div class="roster-zone" id="opponentRoster"></div>
                 <!-- per-side inline action feed will render inside fighter zone -->
 
@@ -86,9 +86,7 @@
                     <span class="player-name">YOU</span>
                     <div class="health-bar">
                         <div class="health-bar-bg">
-                            <div class="health-bar-fill" id="playerHealthBar" style="width: 100%;">
-                                <span id="playerHealth">3 Fighters</span>
-                            </div>
+                            <div class="health-bar-fill" id="playerHealthBar" style="width: 100%;"></div>
                         </div>
                     </div>
                     <div class="stat-box">
@@ -97,11 +95,13 @@
                     </div>
                 </div>
 
-                <div class="fighters-remaining" id="playerFightersRemaining">3 Fighters</div>
                 <div class="fighter-zone" id="playerFighterZone">
-                    <div class="empty-slot">No Active Fighter</div>
+                    <div class="fighters-label-wrapper">
+                        <div class="fighters-remaining" id="playerFightersRemaining">3 Fighters</div>
+                        <div class="empty-slot">No Active Fighter</div>
+                    </div>
                 </div>
-                <div class="roster-label">Your Roster <span class="roster-hint">(click to deploy when no active fighter)</span></div>
+                <div class="roster-label">CORNER: <span id="playerRosterCount2">3</span></div>
                 <div class="roster-zone" id="playerRoster"></div>
                 <!-- per-side inline action feed will render inside fighter zone -->
                 <div class="hand-area" id="playerHand">

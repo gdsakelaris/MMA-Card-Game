@@ -1143,7 +1143,6 @@
 
             // Update player stats
             document.getElementById('playerEnergy').textContent = `${gameState.player.energy}/${gameState.player.maxEnergy}`;
-            document.getElementById('playerHealth').textContent = fighterLabel(fightersLeft('player'));
             document.getElementById('playerHealthBar').style.width = `${(fightersLeft('player') / CONFIG.rosterSize) * 100}%`;
             document.getElementById('playerFightersRemaining').textContent = fighterLabel(fightersLeft('player'));
             document.getElementById('playerDeckCount').textContent = gameState.player.deck.length;
@@ -1152,7 +1151,6 @@
 
             // Update opponent stats
             document.getElementById('opponentEnergy').textContent = `${gameState.opponent.energy}/${gameState.opponent.maxEnergy}`;
-            document.getElementById('opponentHealth').textContent = fighterLabel(fightersLeft('opponent'));
             document.getElementById('opponentHealthBar').style.width = `${(fightersLeft('opponent') / CONFIG.rosterSize) * 100}%`;
             document.getElementById('opponentFightersRemaining').textContent = fighterLabel(fightersLeft('opponent'));
             document.getElementById('opponentHandCount').textContent = gameState.opponent.hand.length;

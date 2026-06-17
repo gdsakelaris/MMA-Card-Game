@@ -90,10 +90,11 @@
 
         .area-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 8px;
-            gap: 10px;
+            margin-left: 30px;
+            gap: 8px;
         }
 
         .player-name {
@@ -133,18 +134,6 @@
             color: #000;
         }
 
-        .fighters-remaining {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 180px;
-            margin: 0 auto 4px auto;
-            font-size: 0.9em;
-            color: #999;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
         .fighter-zone {
             display: flex;
             gap: 10px;
@@ -152,9 +141,28 @@
             justify-content: center;
             align-items: flex-start;
         }
-        /* Center the active fighter card: an empty left spacer mirrors the action feed (flex:1) on
-           the right, so the card sits dead-center while its notifications stay just to its right. */
+        /* Spacer pushes content right */
         .fighter-zone::before { content: ''; flex: 1 1 0; }
+
+        /* Stack label above card vertically, as a flex column */
+        .fighters-label-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex: 0 0 auto;
+        }
+
+        .fighters-remaining {
+            width: 240px;
+            font-size: 0.9em;
+            color: #999;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
         .fighter-zone > .card,
         .fighter-zone > .empty-slot { flex: 0 0 auto; }
 
