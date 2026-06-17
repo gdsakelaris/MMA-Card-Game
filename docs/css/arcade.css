@@ -131,13 +131,17 @@ body::after {
     margin-top: 7px;
     padding-top: 6px;
     border-top: 1px solid rgba(255,255,255,0.12);
-    font-family: var(--arcade-ui);
-    font-size: 0.6em;
+    /* Description text uses the readable body font (Rajdhani), NOT Orbitron — in Orbitron
+       the parentheses render as thin vertical strokes that read as "l" from a distance. */
+    font-family: 'Rajdhani', 'Arial', sans-serif;
+    font-size: 0.65em;
     line-height: 1.35;
     text-align: center;
     color: #d6deea;
 }
 .fighter-signature .sig-name {
+    /* The ability NAME has no parentheses, so it keeps the arcade (Orbitron) title look. */
+    font-family: var(--arcade-ui);
     color: var(--neon-gold);
     font-weight: bold;
     text-shadow: 0 0 5px rgba(255,204,0,0.4);

@@ -493,7 +493,7 @@
                     const comboTag = comboApplied > 0 ? ` [combo +${comboApplied}]` : '';
                     showAction(`${card.name}: ${damage} damage!${comboTag}`, player, 'damage', cardTypeClass);
                     floatTextOverFighter(defenderName, `-${damage}`, 'damage');
-                    if (strikeCombo >= 1) floatTextOverFighter(player, `COMBO x${strikeCombo + 1}`, 'info');
+                    if (comboApplied > 0) floatTextOverFighter(player, `COMBO x${strikeCombo + 1}`, 'info');
                 }
 
                 // On-hit effects only on a clean (undefended) landing hit

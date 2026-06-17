@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.9.7)
+# MMA WARRIORS — Card Game Rules (v4.9.8)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -280,6 +280,8 @@ On Medium and up it also **answers a flying submission thrown from the clinch** 
 ## Implementation (digital)
 
 Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
+
+*Version 4.9.8 — Full-game audit pass (clean) + combo-display fix. Re-read every module against real-world MMA logic, gameplay execution, all 36 card texts, deck frequencies, and the 20 signature abilities; verified with a 127-check faithful-DOM harness (deck = 74 / 67-tech / 7-corner / 17-reaction ≈ 23%; base + skill formulas; submission damage by position incl. Armbar/Triangle/guard; combo; the full position-legality matrix; reactions by attack type; knockdown delivered-power incl. Pereira's 7-threshold, combo exclusion, and Holloway immunity; flying-sub sweep + turn-end; KO position/stagger resets; Power Cross ignoresReduce; counter-KO; and every one of the 20 abilities firing in `calc*` and in resolution). **No logic bug found; MMA logic sound; all card texts accurate; deck frequencies match the rubric (re-confirmed for the signature-ability era).** The only change: the floating "COMBO x" popup now appears only when the combo bonus actually applies (gated on the applied bonus, matching the damage tag) — so attacking **Ciryl Gane** (Footwork nullifies combos) no longer shows a phantom "COMBO" that does nothing. Pure display fix — no mechanic, card, position, or balance change. One ruleset for digital and physical.*
 
 *Version 4.9.7 — Ankalaev ability swap + privacy tidy. Replaced Ankalaev's "Never Finished" (survive-a-KO) with **Cage Pressure** — his strikes in the clinch deal **+2** — a better fit for his cage-control / dirty-boxing game (and he's been finished in real life, so the old one didn't ring true). This also removes the last effect that needed a physical token: **every ability is now automatic**. (The survive-once hook is left in the engine as an available template — see the effect-key list in cards.js.) Removed the "Back to Game" button from the privacy page (it opens in a new tab, so the game tab is never lost). One ruleset for digital and physical.*
 
