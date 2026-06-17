@@ -38,7 +38,10 @@
       "Bash(node -e \"console.log\\('node ok', process.version\\)\")",
       "Bash(node _audit_harness.js)",
       "Bash(node .audit/harness.js)",
-      "Bash(git --no-pager diff docs/js/game.js)"
+      "Bash(git --no-pager diff docs/js/game.js)",
+      "Bash(node _abil.js)",
+      "Bash(node _ank.js)",
+      "Bash(rm -f _ank.js)"
     ],
     "deny": [],
     "ask": [],

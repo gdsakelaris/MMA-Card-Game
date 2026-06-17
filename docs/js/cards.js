@@ -33,27 +33,34 @@
              counter       reaction: counter damage dealt to the attacker
            ===================================================================== */
         const cardDatabase = {
+            // Each fighter has ONE signature ability — a data-driven passive read by the engine via
+            // sig(fighter, key) in combat.js. To add a fighter, copy a line and pick a signature; the
+            // hooks already exist. Effect keys: comboStep, firstStrikeBonus, strikeBonusWhenHurt, clinchStrikeBonus,
+            // healWhenHurt, comboCarry, negatesCombo, incomingStrikeReduction, knockdownThreshold,
+            // cannotBeKnockedDown, cannotBeStaggered, surviveKOOnce, takedownNoReverse, takedownImpactBonus,
+            // takedownDrainBonus, energyDrainBonus, energyDrainImmune, energyPerTurn, legDamageBonus,
+            // subBonusAnywhere, subChipWhenDefended, blockBottomSubs.
             fighters: [
-                { id: 'fighter_1',  name: 'Ilia Topuria',          type: 'fighter', striking: 5, grappling: 4, hp: 26, maxHp: 26, style: 'Balanced' },
-                { id: 'fighter_2',  name: 'Islam Makhachev',       type: 'fighter', striking: 3, grappling: 5, hp: 28, maxHp: 28, style: 'Grappler' },
-                { id: 'fighter_3',  name: 'Merab Dvalishvili',     type: 'fighter', striking: 3, grappling: 5, hp: 32, maxHp: 32, style: 'Grappler' },
-                { id: 'fighter_4',  name: 'Khamzat Chimaev',       type: 'fighter', striking: 4, grappling: 5, hp: 28, maxHp: 28, style: 'Grappler' },
-                { id: 'fighter_5',  name: 'Alexandre Pantoja',     type: 'fighter', striking: 3, grappling: 5, hp: 25, maxHp: 25, style: 'Grappler' },
-                { id: 'fighter_6',  name: 'Alex Pereira',          type: 'fighter', striking: 5, grappling: 1, hp: 22, maxHp: 22, style: 'Striker' },
-                { id: 'fighter_7',  name: 'Alexander Volkanovski', type: 'fighter', striking: 4, grappling: 4, hp: 30, maxHp: 30, style: 'Balanced' },
-                { id: 'fighter_8',  name: 'Jack Della Maddalena',  type: 'fighter', striking: 5, grappling: 2, hp: 25, maxHp: 25, style: 'Striker' },
-                { id: 'fighter_9',  name: 'Tom Aspinall',          type: 'fighter', striking: 5, grappling: 4, hp: 27, maxHp: 27, style: 'Balanced' },
-                { id: 'fighter_10', name: 'Dricus Du Plessis',     type: 'fighter', striking: 4, grappling: 4, hp: 28, maxHp: 28, style: 'Balanced' },
-                { id: 'fighter_11', name: 'Magomed Ankalaev',      type: 'fighter', striking: 4, grappling: 4, hp: 28, maxHp: 28, style: 'Balanced' },
-                { id: 'fighter_12', name: 'Max Holloway',          type: 'fighter', striking: 5, grappling: 3, hp: 32, maxHp: 32, style: 'Striker' },
-                { id: 'fighter_13', name: 'Belal Muhammad',        type: 'fighter', striking: 3, grappling: 5, hp: 30, maxHp: 30, style: 'Grappler' },
-                { id: 'fighter_14', name: 'Arman Tsarukyan',       type: 'fighter', striking: 4, grappling: 4, hp: 26, maxHp: 26, style: 'Balanced' },
-                { id: 'fighter_15', name: 'Charles Oliveira',      type: 'fighter', striking: 4, grappling: 5, hp: 25, maxHp: 25, style: 'Grappler' },
-                { id: 'fighter_16', name: 'Petr Yan',              type: 'fighter', striking: 5, grappling: 3, hp: 28, maxHp: 28, style: 'Striker' },
-                { id: 'fighter_17', name: 'Justin Gaethje',        type: 'fighter', striking: 5, grappling: 2, hp: 25, maxHp: 25, style: 'Striker' },
-                { id: 'fighter_18', name: 'Sean Strickland',       type: 'fighter', striking: 4, grappling: 3, hp: 32, maxHp: 32, style: 'Striker' },
-                { id: 'fighter_19', name: 'Joshua Van',            type: 'fighter', striking: 4, grappling: 3, hp: 29, maxHp: 29, style: 'Striker' },
-                { id: 'fighter_20', name: 'Ciryl Gane',            type: 'fighter', striking: 5, grappling: 2, hp: 26, maxHp: 26, style: 'Striker' }
+                { id: 'fighter_1',  name: 'Ilia Topuria',          type: 'fighter', striking: 5, grappling: 4, hp: 26, maxHp: 26, style: 'Balanced', signature: { name: 'Combination Boxing', text: 'Your strike combos build faster: +2 per prior strike this turn (not +1).', comboStep: 2 } },
+                { id: 'fighter_2',  name: 'Islam Makhachev',       type: 'fighter', striking: 3, grappling: 5, hp: 28, maxHp: 28, style: 'Grappler', signature: { name: 'Suffocating Pressure', text: 'Your landed takedowns drain 2 energy, not 1 (smothering top pressure).', takedownDrainBonus: 1 } },
+                { id: 'fighter_3',  name: 'Merab Dvalishvili',     type: 'fighter', striking: 3, grappling: 5, hp: 32, maxHp: 32, style: 'Grappler', signature: { name: 'Cardio Machine', text: 'Immune to energy drain — body shots and scrambles can\'t sap your energy.', energyDrainImmune: true } },
+                { id: 'fighter_4',  name: 'Khamzat Chimaev',       type: 'fighter', striking: 4, grappling: 5, hp: 28, maxHp: 28, style: 'Grappler', signature: { name: 'Chain Wrestling', text: 'Your takedowns can\'t be reversed — a Counter Takedown only stuffs them.', takedownNoReverse: true } },
+                { id: 'fighter_5',  name: 'Alexandre Pantoja',     type: 'fighter', striking: 3, grappling: 5, hp: 25, maxHp: 25, style: 'Grappler', signature: { name: 'Submission Hunter', text: 'Even a defended submission still grinds 2 damage.', subChipWhenDefended: 2 } },
+                { id: 'fighter_6',  name: 'Alex Pereira',          type: 'fighter', striking: 5, grappling: 1, hp: 22, maxHp: 22, style: 'Striker', signature: { name: 'Stone Hands', text: 'Your power strikes knock down at 7 delivered power, not 8.', knockdownThreshold: 7 } },
+                { id: 'fighter_7',  name: 'Alexander Volkanovski', type: 'fighter', striking: 4, grappling: 4, hp: 30, maxHp: 30, style: 'Balanced', signature: { name: 'Championship Rounds', text: 'At half HP or below, your strikes deal +2.', strikeBonusWhenHurt: 2 } },
+                { id: 'fighter_8',  name: 'Jack Della Maddalena',  type: 'fighter', striking: 5, grappling: 2, hp: 25, maxHp: 25, style: 'Striker', signature: { name: 'Resilience', text: 'At the start of your turn, if you\'re at half HP or below, heal 2.', healWhenHurt: 2 } },
+                { id: 'fighter_9',  name: 'Tom Aspinall',          type: 'fighter', striking: 5, grappling: 4, hp: 27, maxHp: 27, style: 'Balanced', signature: { name: 'Fast Hands', text: 'Your first strike each turn deals +2 (blinding speed).', firstStrikeBonus: 2 } },
+                { id: 'fighter_10', name: 'Dricus Du Plessis',     type: 'fighter', striking: 4, grappling: 4, hp: 28, maxHp: 28, style: 'Balanced', signature: { name: 'Relentless Pace', text: 'You carry momentum — each turn starts at combo +1 (first strike gets the bonus).', comboCarry: 1 } },
+                { id: 'fighter_11', name: 'Magomed Ankalaev',      type: 'fighter', striking: 4, grappling: 4, hp: 28, maxHp: 28, style: 'Balanced', signature: { name: 'Cage Pressure', text: 'Your strikes in the clinch deal +2 (knees and elbows on the cage).', clinchStrikeBonus: 2 } },
+                { id: 'fighter_12', name: 'Max Holloway',          type: 'fighter', striking: 5, grappling: 3, hp: 32, maxHp: 32, style: 'Striker', signature: { name: 'Granite Chin', text: 'Can\'t be knocked down or staggered (still KO-able by HP).', cannotBeKnockedDown: true, cannotBeStaggered: true } },
+                { id: 'fighter_13', name: 'Belal Muhammad',        type: 'fighter', striking: 3, grappling: 5, hp: 30, maxHp: 30, style: 'Grappler', signature: { name: 'Smothering Top', text: 'While you hold top control, the opponent can\'t submit off their back.', blockBottomSubs: true } },
+                { id: 'fighter_14', name: 'Arman Tsarukyan',       type: 'fighter', striking: 4, grappling: 4, hp: 26, maxHp: 26, style: 'Balanced', signature: { name: 'Explosive', text: 'Your takedowns hit +2 impact (explosive shots).', takedownImpactBonus: 2 } },
+                { id: 'fighter_15', name: 'Charles Oliveira',      type: 'fighter', striking: 4, grappling: 5, hp: 25, maxHp: 25, style: 'Grappler', signature: { name: 'Submission Wizard', text: 'Your submissions deal +2 from ANY position — they finish from anywhere.', subBonusAnywhere: 2 } },
+                { id: 'fighter_16', name: 'Petr Yan',              type: 'fighter', striking: 5, grappling: 3, hp: 28, maxHp: 28, style: 'Striker', signature: { name: 'Body Work', text: 'Your Body Shots sap 2 extra energy (4 total).', energyDrainBonus: 2 } },
+                { id: 'fighter_17', name: 'Justin Gaethje',        type: 'fighter', striking: 5, grappling: 2, hp: 25, maxHp: 25, style: 'Striker', signature: { name: 'Leg Kicks From Hell', text: 'Your Leg Kicks stack -2 to all their strikes, not -1.', legDamageBonus: 1 } },
+                { id: 'fighter_18', name: 'Sean Strickland',       type: 'fighter', striking: 4, grappling: 3, hp: 32, maxHp: 32, style: 'Striker', signature: { name: 'Philly Shell', text: 'Strikes against you deal 1 less (that shell defense).', incomingStrikeReduction: 1 } },
+                { id: 'fighter_19', name: 'Joshua Van',            type: 'fighter', striking: 4, grappling: 3, hp: 29, maxHp: 29, style: 'Striker', signature: { name: 'Iron Cardio', text: 'Gain +1 extra energy at the start of each of your turns.', energyPerTurn: 1 } },
+                { id: 'fighter_20', name: 'Ciryl Gane',            type: 'fighter', striking: 5, grappling: 2, hp: 26, maxHp: 26, style: 'Striker', signature: { name: 'Footwork', text: 'Opponents can\'t build combos on you — their combo bonus is nullified.', negatesCombo: true } }
             ],
             techniques: [
                 // === STANDUP STRIKES (damage = base + Striking, only from neutral) ===

@@ -13,9 +13,18 @@
            only by playing a reaction card.
            ===================================================================== */
 
-        // Each prior strike this turn adds a flat step to the next strike.
-        function comboBonus(priorStrikes) {
-            return (priorStrikes || 0) * CONFIG.comboStrikeStep;
+        // Signature ability lookup — the ONE place fighter ability data is read. Returns the value
+        // for `key` on this fighter's signature, or undefined if the fighter has no such ability.
+        // (Safe on null/undefined fighters.)
+        function sig(fighter, key) {
+            return (fighter && fighter.signature) ? fighter.signature[key] : undefined;
+        }
+
+        // Each prior strike this turn adds a flat step to the next strike. Topuria's Combination
+        // Boxing (comboStep) raises that step.
+        function comboBonus(priorStrikes, fighter) {
+            const step = sig(fighter, 'comboStep') || CONFIG.comboStrikeStep;
+            return (priorStrikes || 0) * step;
         }
 
         // Standup strikes scale with Striking; Ground & Pound (card.skill === 'grappling')
@@ -23,12 +32,23 @@
         function calcStrikeDamage(card, atkState, defState) {
             const atk = atkState.activeFighter;
             if (!atk) return card.damage;
+            const def = defState && defState.activeFighter;
             const usesGrappling = card.skill === 'grappling';
             const skill = usesGrappling ? atk.grappling : atk.striking;
             const trainingBonus = usesGrappling ? 0 : (atk.strikingBonus || 0);
             // Accumulated leg damage (from the opponent's Leg Kicks) saps ALL of your strikes.
             const legDmg = (atk.status && atk.status.legDamage) || 0;
-            const dmg = card.damage + skill + trainingBonus + comboBonus(atkState.comboStrikes) - legDmg;
+            // Gane's Footwork nullifies the attacker's combo bonus against him.
+            const combo = sig(def, 'negatesCombo') ? 0 : comboBonus(atkState.comboStrikes, atk);
+            // Signature strike bonuses: Aspinall's first strike of the turn, Volkanovski hurt-and-dangerous,
+            // Ankalaev's Cage Pressure (clinch strikes only).
+            let bonus = 0;
+            if (sig(atk, 'firstStrikeBonus') && (atkState.comboStrikes || 0) === 0) bonus += sig(atk, 'firstStrikeBonus');
+            if (sig(atk, 'strikeBonusWhenHurt') && atk.hp <= atk.maxHp / 2) bonus += sig(atk, 'strikeBonusWhenHurt');
+            if (sig(atk, 'clinchStrikeBonus') && atkState.inClinch) bonus += sig(atk, 'clinchStrikeBonus');
+            // Strickland's Philly Shell softens every strike he eats.
+            const reduction = sig(def, 'incomingStrikeReduction') || 0;
+            const dmg = card.damage + skill + trainingBonus + combo + bonus - legDmg - reduction;
             return Math.max(1, dmg);
         }
 
@@ -44,6 +64,7 @@
             let dmg = card.damage;
             if (fromTop || card.addsGrapplingOffTop) dmg += atk.grappling; // Grappling only counts from the top
             if (card.guardBonus && fromBottom) dmg += card.guardBonus;     // Triangle: +2 off your back (guard)
+            dmg += sig(atk, 'subBonusAnywhere') || 0;                      // Oliveira: +2 from any position
             return Math.max(1, dmg);
         }
 
@@ -51,7 +72,8 @@
         function calcTakedownImpact(card, atkState, defState) {
             const atk = atkState.activeFighter;
             if (!atk) return card.damage;
-            return Math.max(card.damage, card.damage + atk.grappling);
+            const bonus = sig(atk, 'takedownImpactBonus') || 0; // Arman: explosive shots
+            return Math.max(card.damage, card.damage + atk.grappling + bonus);
         }
 
         // Position rules — the single source of truth for what a technique can do from where.
@@ -78,6 +100,8 @@
                 case 'grappling':
                     return !grounded;                                // takedowns: from open standing or clinch (reversals handle bottom)
                 case 'submission':
+                    // Belal's Smothering Top: a fighter under his control can't work submissions off their back.
+                    if (onBottom && sig(foeState.activeFighter, 'blockBottomSubs')) return false;
                     if (card.subPosition === 'dominant') return onTop; // Rear Naked Choke: top control only
                     if (card.subPosition === 'ground') return grounded; // Kimura / D'Arce: top or bottom, NOT the clinch
                     return inClinch || grounded;                     // 'any' (flying) subs: clinch, top, or bottom

@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.9.5)
+# MMA WARRIORS — Card Game Rules (v4.9.7)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -33,7 +33,7 @@ Each fighter has just three numbers:
 - **Grappling (1–5)** — added to takedown impact, Ground & Pound, and submissions
 - **HP (~22–32)** — the fighter's health; at 0 they're KO'd
 
-There is **no Defense stat** and **no stamina/fatigue tracking** — you defend by playing reaction cards. A fighter's "style" (Striker / Grappler / Balanced) is just flavor; the numbers tell the story.
+There is **no Defense stat** and **no stamina/fatigue tracking** — you defend by playing reaction cards. A fighter's "style" (Striker / Grappler / Balanced) is flavor, but each fighter also has **one signature ability** (below) that does change how they play.
 
 Examples:
 
@@ -43,6 +43,35 @@ Examples:
 | Islam Makhachev (Grappler) | 3 | 5 | 28 |
 | Alexander Volkanovski (Balanced) | 4 | 4 | 30 |
 | Charles Oliveira (Grappler) | 4 | 5 | 25 |
+
+---
+
+## Signature abilities
+
+Each of the **20 fighters** has **one always-on passive**, printed on their card (in the active-fighter box and on the deploy screen). It hooks into a system the game already uses — **no new tracking at all** for physical play; every ability is automatic. The opponent's ability is visible when they deploy, so you read the matchup.
+
+| Fighter | Ability | Effect |
+|---|---|---|
+| Ilia Topuria | Combination Boxing | Strike combo builds **+2** per prior strike (not +1) |
+| Islam Makhachev | Suffocating Pressure | Your landed takedowns drain **2** energy, not 1 |
+| Merab Dvalishvili | Cardio Machine | **Immune to energy drain** (body shots / scrambles) |
+| Khamzat Chimaev | Chain Wrestling | Your takedowns **can't be reversed** (Counter Takedown only stuffs) |
+| Alexandre Pantoja | Submission Hunter | Even a **defended** submission still grinds **2** |
+| Alex Pereira | Stone Hands | Your power strikes knock down at **7** delivered power, not 8 |
+| Alexander Volkanovski | Championship Rounds | At **½ HP or below**, your strikes deal **+2** |
+| Jack Della Maddalena | Resilience | At turn start, if at ½ HP or below, **heal 2** |
+| Tom Aspinall | Fast Hands | Your **first strike** each turn deals **+2** |
+| Dricus Du Plessis | Relentless Pace | You start each turn at **combo +1** (first strike gets the bonus) |
+| Magomed Ankalaev | Cage Pressure | Your strikes **in the clinch** deal **+2** (knees & elbows on the cage) |
+| Max Holloway | Granite Chin | **Can't be knocked down or staggered** (still KO-able by HP) |
+| Belal Muhammad | Smothering Top | While you hold top, opponent **can't submit off their back** |
+| Arman Tsarukyan | Explosive | Your takedowns hit **+2** impact |
+| Charles Oliveira | Submission Wizard | Your submissions deal **+2 from any position** |
+| Petr Yan | Body Work | Your Body Shots sap **2 extra** energy (4 total) |
+| Justin Gaethje | Leg Kicks From Hell | Your Leg Kicks stack **−2** to all their strikes, not −1 |
+| Sean Strickland | Philly Shell | Strikes against you deal **1 less** |
+| Joshua Van | Iron Cardio | **+1 extra energy** at the start of each of your turns |
+| Ciryl Gane | Footwork | Opponents **can't build combos** on you (their combo bonus is nullified) |
 
 ---
 
@@ -251,6 +280,10 @@ On Medium and up it also **answers a flying submission thrown from the clinch** 
 ## Implementation (digital)
 
 Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
+
+*Version 4.9.7 — Ankalaev ability swap + privacy tidy. Replaced Ankalaev's "Never Finished" (survive-a-KO) with **Cage Pressure** — his strikes in the clinch deal **+2** — a better fit for his cage-control / dirty-boxing game (and he's been finished in real life, so the old one didn't ring true). This also removes the last effect that needed a physical token: **every ability is now automatic**. (The survive-once hook is left in the engine as an available template — see the effect-key list in cards.js.) Removed the "Back to Game" button from the privacy page (it opens in a new tab, so the game tab is never lost). One ruleset for digital and physical.*
+
+*Version 4.9.6 — Signature abilities (Lever 4). Every one of the 20 fighters now has **one always-on passive** (see the Signature abilities section) — read by the engine via a single `sig(fighter, key)` lookup so the data is the spec and future fighters are a one-line add. Abilities are shown **in the active-fighter box** and on the deploy screen. They hook into existing systems (combo, knockdown, energy drain, positions, the reaction window, KO) — the only new tracking is one token for Ankalaev's once-per-fight survival; everything else is automatic, and damage-affecting ones flow through the same `calc*` functions so the on-card damage preview already reflects them. The deck-frequency rubric should be re-run now that abilities change a few cards' effective value (e.g. Oliveira's submissions, Gaethje's leg kicks). Verified with a 34-check ability harness + 8-check regression. One ruleset for digital and physical.*
 
 *Version 4.9.5 — Roster expansion. Added 5 fighters (now **20**): Petr Yan (STR 5 / GRP 3 / HP 28), Justin Gaethje (5 / 2 / 25), Sean Strickland (4 / 3 / 32), Joshua Van (4 / 3 / 29), Ciryl Gane (5 / 2 / 26) — all primarily strikers. You still draw 3 into your Roster. (Signature fighter abilities remain unbuilt — design proposed, on hold.) One ruleset for digital and physical.*
 

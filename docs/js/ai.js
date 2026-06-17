@@ -75,8 +75,9 @@
                 // Knockdown: a clean 8+ POWER strike hands us top control + a ground follow-up.
                 // Gate on the shot's OWN power (base + Striking, minus the combo bonus) — the same
                 // value the real knockdown rule uses, so the AI doesn't over-credit a combo-padded hit.
-                const knockdownPower = dmg - comboBonus(me.comboStrikes);
-                if (card.canKnockdown && knockdownPower >= CONFIG.knockdownThreshold && !me.positionalAdvantage && !foe.positionalAdvantage) s += 6;
+                const knockdownPower = dmg - comboBonus(me.comboStrikes, me.activeFighter);
+                const kThreshold = sig(me.activeFighter, 'knockdownThreshold') || CONFIG.knockdownThreshold;
+                if (card.canKnockdown && knockdownPower >= kThreshold && !me.positionalAdvantage && !foe.positionalAdvantage && !sig(def, 'cannotBeKnockedDown')) s += 6;
                 if (card.energyDrain) s += Math.min(card.energyDrain, foe.energy); // body shot denies their reactions
                 if (card.onHitStatus && card.onHitStatus.type === 'legDamage') s += 2; // compounding leg damage
                 if (card.onHitSpacing && def.grappling >= 4) s += 3;  // teep shuts down a wrestler's shot

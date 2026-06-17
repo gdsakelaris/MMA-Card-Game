@@ -113,6 +113,7 @@
                         <div class="card-stat"><span class="card-stat-label">Grappling:</span><span class="card-stat-value">${f.grappling}</span></div>
                         <div class="card-stat"><span class="card-stat-label">HP:</span><span class="card-stat-value">${f.hp}/${f.maxHp}</span></div>
                     </div>
+                    ${f.signature ? `<div class="fighter-signature"><span class="sig-name">★ ${f.signature.name}</span> — ${f.signature.text}</div>` : ''}
                 `;
                 el.onclick = () => onPick(f.uniqueId);
                 grid.appendChild(el);
@@ -479,6 +480,8 @@
                     return;
                 }
                 const strikeCombo = attacker.comboStrikes || 0;
+                // The combo bonus actually applied (0 if the defender's Footwork nullifies it).
+                const comboApplied = sig(defender.activeFighter, 'negatesCombo') ? 0 : comboBonus(strikeCombo, attacker.activeFighter);
                 let damage = calcStrikeDamage(card, attacker, defender);
 
                 const struck = applyIncomingReaction(damage, attacker, defender, player, card);
@@ -487,7 +490,7 @@
                 if (damage > 0 && defender.activeFighter) {
                     defender.activeFighter.hp -= damage;
                     attacker.comboStrikes = strikeCombo + 1; // only a strike that LANDS builds the combo
-                    const comboTag = strikeCombo > 0 ? ` [combo +${comboBonus(strikeCombo)}]` : '';
+                    const comboTag = comboApplied > 0 ? ` [combo +${comboApplied}]` : '';
                     showAction(`${card.name}: ${damage} damage!${comboTag}`, player, 'damage', cardTypeClass);
                     floatTextOverFighter(defenderName, `-${damage}`, 'damage');
                     if (strikeCombo >= 1) floatTextOverFighter(player, `COMBO x${strikeCombo + 1}`, 'info');
@@ -503,14 +506,17 @@
                     // Leg Kick — stacking leg damage saps ALL of their future strikes.
                     if (card.onHitStatus && card.onHitStatus.type === 'legDamage') {
                         defender.activeFighter.status = defender.activeFighter.status || {};
-                        defender.activeFighter.status.legDamage = (defender.activeFighter.status.legDamage || 0) + card.onHitStatus.amount;
+                        const legAmt = card.onHitStatus.amount + (sig(attacker.activeFighter, 'legDamageBonus') || 0); // Gaethje: -2 per hit
+                        defender.activeFighter.status.legDamage = (defender.activeFighter.status.legDamage || 0) + legAmt;
                         showAction(`Leg chopped — -${defender.activeFighter.status.legDamage} to their strikes`, player, 'advantage', cardTypeClass);
                         floatTextOverFighter(defenderName, 'LEG DMG', 'info');
                     }
                     // Body Shot — saps cardio (energy).
                     if (card.energyDrain) {
-                        const drained = Math.min(card.energyDrain, defender.energy);
-                        defender.energy = Math.max(0, defender.energy - card.energyDrain);
+                        let drainAmt = card.energyDrain + (sig(attacker.activeFighter, 'energyDrainBonus') || 0); // Yan: +2
+                        if (sig(defender.activeFighter, 'energyDrainImmune')) drainAmt = 0;                       // Merab: immune
+                        const drained = Math.min(drainAmt, defender.energy);
+                        defender.energy = Math.max(0, defender.energy - drainAmt);
                         if (drained > 0) {
                             showAction(`To the body! -${drained} energy (gassed)`, player, 'advantage', cardTypeClass);
                             floatTextOverFighter(defenderName, `-${drained}⚡`, 'info');
@@ -530,7 +536,7 @@
                         showAction(`${attacker.activeFighter.name} kicks free — back to neutral!`, player, 'advantage', cardTypeClass);
                         floatTextOverFighter(player, 'SEPARATE', 'info');
                     }
-                    if (card.id === 'tech_spinning') {
+                    if (card.id === 'tech_spinning' && !sig(defender.activeFighter, 'cannotBeStaggered')) {
                         defender.skipNextTurn = true;
                         showAction('Staggered! Opponent skips their next turn.', player, 'advantage', cardTypeClass);
                         floatTextOverFighter(defenderName, 'STAGGERED', 'info');
@@ -543,10 +549,12 @@
                 // soften a Power Cross, so that one still drops them at 8+. Only a POWER strike
                 // (canKnockdown) qualifies, and the combo bonus is excluded: a knockdown reflects the
                 // weight of the single shot (base + Striking + training - leg damage), not rhythm.
-                const knockdownPower = damage - comboBonus(strikeCombo);
+                const knockdownPower = damage - comboApplied;
+                const knockdownThreshold = sig(attacker.activeFighter, 'knockdownThreshold') || CONFIG.knockdownThreshold; // Pereira: 7
                 if (damage > 0 && defender.activeFighter && defender.activeFighter.hp > 0
                     && card.canKnockdown
-                    && knockdownPower >= CONFIG.knockdownThreshold
+                    && knockdownPower >= knockdownThreshold
+                    && !sig(defender.activeFighter, 'cannotBeKnockedDown')   // Holloway: immune
                     && !attacker.positionalAdvantage && !defender.positionalAdvantage) {
                     attacker.positionalAdvantage = true;
                     defender.positionalAdvantage = false;
@@ -566,10 +574,11 @@
                 if (defender.takedownReaction) {
                     const r = defender.takedownReaction;
                     defender.takedownReaction = null;
-                    if (r.mitigation === 'reverse') {
+                    if (r.mitigation === 'reverse' && !sig(attacker.activeFighter, 'takedownNoReverse')) {
                         // Counter Takedown — the defender reverses and takes top control.
                         // The scramble hits the mat, so the clinch breaks for both fighters
                         // (otherwise a clinch-shot takedown leaves them "clinched AND grounded").
+                        // (Chimaev's Chain Wrestling can't be reversed — it falls through to a stuff.)
                         defender.positionalAdvantage = true;
                         attacker.positionalAdvantage = false;
                         attacker.inClinch = false;
@@ -600,9 +609,11 @@
                 showAction(`${attacker.activeFighter.name} takes them down! Impact: ${impact}`, player, 'damage', cardTypeClass);
                 floatTextOverFighter(defenderName, `-${impact}`, 'damage');
                 // The scramble saps cardio — a downed fighter has less in the tank to defend.
-                if (CONFIG.takedownEnergyDrain && defender.energy > 0) {
-                    const drained = Math.min(CONFIG.takedownEnergyDrain, defender.energy);
-                    defender.energy = Math.max(0, defender.energy - CONFIG.takedownEnergyDrain);
+                let tdDrain = CONFIG.takedownEnergyDrain + (sig(attacker.activeFighter, 'takedownDrainBonus') || 0); // Makhachev: +1
+                if (sig(defender.activeFighter, 'energyDrainImmune')) tdDrain = 0;                                  // Merab: immune
+                if (tdDrain && defender.energy > 0) {
+                    const drained = Math.min(tdDrain, defender.energy);
+                    defender.energy = Math.max(0, defender.energy - tdDrain);
                     if (drained > 0) floatTextOverFighter(defenderName, `-${drained}⚡`, 'info');
                 }
                 checkFighterKO(defender, defenderName);
@@ -626,6 +637,17 @@
                     const posTag = attacker.positionalAdvantage ? ' locked in' : (defender.positionalAdvantage ? ' from bottom' : ' (flying)');
                     showAction(`${card.name}${posTag}: ${damage} damage!`, player, 'damage', cardTypeClass);
                     floatTextOverFighter(defenderName, `-${damage}`, 'damage');
+                }
+
+                // Pantoja's Submission Hunter: even a fully defended lock still grinds chip damage.
+                if (subbed.defended && defender.activeFighter && defender.activeFighter.hp > 0) {
+                    const chip = sig(attacker.activeFighter, 'subChipWhenDefended') || 0;
+                    if (chip > 0) {
+                        defender.activeFighter.hp -= chip;
+                        showAction(`${card.name} defended — but still grinds ${chip} (submission hunter)`, player, 'damage', cardTypeClass);
+                        floatTextOverFighter(defenderName, `-${chip}`, 'damage');
+                        checkFighterKO(defender, defenderName, 'submission');
+                    }
                 }
 
                 // Committing to a flying submission from the clinch takes the fight to the mat —
@@ -713,6 +735,16 @@
         }
 
         function checkFighterKO(defender, defenderName, finishType = 'ko') {
+            const f = defender.activeFighter;
+            if (!f) return; // already finished (e.g. a chip + the end-of-branch check both fire)
+            // Ankalaev's Never Finished — once per fight, a finishing blow leaves him at 1 HP instead.
+            if (f.hp <= 0 && sig(f, 'surviveKOOnce') && !f._survivedKO) {
+                f._survivedKO = true;
+                f.hp = 1;
+                showAction(`${f.name} refuses to go down — survives at 1 HP!`, defenderName, 'advantage', 'card-technique');
+                floatTextOverFighter(defenderName, 'SURVIVES!', 'info');
+                return;
+            }
             if (defender.activeFighter.hp <= 0) {
                 // Finish flavor depends on what ended it: a submission is a TAP-OUT, everything
                 // else (strikes, slams, bleed) is a KO.
@@ -769,8 +801,8 @@
             gameState.currentPlayer = 'player';
             gameState.phase = 'energy';
 
-            // Fresh turn — combo momentum resets.
-            gameState.player.comboStrikes = 0;
+            // Fresh turn — combo momentum resets (Du Plessis carries +1: comboCarry).
+            gameState.player.comboStrikes = sig(gameState.player.activeFighter, 'comboCarry') || 0;
             gameState.player.forceTurnEnd = false;
             // The spacing we put on the opponent has now covered their turn — clear it.
             gameState.opponent.cantGrappleNextTurn = false;
@@ -780,6 +812,16 @@
                 gameState.player.energy = CONFIG.energyStart; // fixed first-turn energy
             } else {
                 gameState.player.energy = Math.min(gameState.player.maxEnergy, gameState.player.energy + CONFIG.energyGain);
+            }
+            // Joshua Van's Iron Cardio — extra energy each turn.
+            const pEpt = sig(gameState.player.activeFighter, 'energyPerTurn') || 0;
+            if (pEpt) gameState.player.energy = Math.min(gameState.player.maxEnergy, gameState.player.energy + pEpt);
+
+            // JDM's Resilience — recover when hurt at the start of your turn.
+            const pf = gameState.player.activeFighter;
+            if (pf && sig(pf, 'healWhenHurt') && pf.hp > 0 && pf.hp <= pf.maxHp / 2) {
+                const heal = Math.min(pf.maxHp - pf.hp, sig(pf, 'healWhenHurt'));
+                if (heal > 0) { pf.hp += heal; showAction(`Resilience: recovered ${heal} HP`, 'player', '', ''); floatTextOverFighter('player', `+${heal}`, 'heal'); }
             }
 
             // Start-of-turn status effects (e.g., Bleed)
@@ -860,19 +902,29 @@
             gameState.phase = 'energy';
             gameState.turn++;
 
-            // Fresh turn — combo momentum resets.
-            gameState.opponent.comboStrikes = 0;
+            // Fresh turn — combo momentum resets (Du Plessis carries +1: comboCarry).
+            gameState.opponent.comboStrikes = sig(gameState.opponent.activeFighter, 'comboCarry') || 0;
             gameState.opponent.forceTurnEnd = false;
             // The spacing the opponent put on us has now covered our turn — clear it.
             gameState.player.cantGrappleNextTurn = false;
 
             addLog(`--- Turn ${gameState.turn}: Opponent's Turn ---`, 'opponent');
-            
+
             // Energy phase
             if (gameState.turn === 2) {
                 gameState.opponent.energy = CONFIG.energyStart; // fixed first opponent turn energy
             } else {
                 gameState.opponent.energy = Math.min(gameState.opponent.maxEnergy, gameState.opponent.energy + CONFIG.energyGain);
+            }
+            // Joshua Van's Iron Cardio — extra energy each turn.
+            const oEpt = sig(gameState.opponent.activeFighter, 'energyPerTurn') || 0;
+            if (oEpt) gameState.opponent.energy = Math.min(gameState.opponent.maxEnergy, gameState.opponent.energy + oEpt);
+
+            // JDM's Resilience — recover when hurt at the start of your turn.
+            const of = gameState.opponent.activeFighter;
+            if (of && sig(of, 'healWhenHurt') && of.hp > 0 && of.hp <= of.maxHp / 2) {
+                const heal = Math.min(of.maxHp - of.hp, sig(of, 'healWhenHurt'));
+                if (heal > 0) { of.hp += heal; showAction(`Resilience: recovered ${heal} HP`, 'opponent', '', ''); floatTextOverFighter('opponent', `+${heal}`, 'heal'); }
             }
 
             // Start-of-turn status effects for opponent
@@ -1404,6 +1456,7 @@
                 <div class="stamina-bar-bg">
                     <div class="stamina-bar-fill" style="width: ${staminaPercent}%"></div>
                 </div>
+                ${fighter.signature ? `<div class="fighter-signature"><span class="sig-name">★ ${fighter.signature.name}</span> — ${fighter.signature.text}</div>` : ''}
             `;
 
             return card;
