@@ -1,4 +1,4 @@
-# MMA WARRIORS — Card Game Rules (v4.9.8)
+# MMA WARRIORS — Card Game Rules (v5.0)
 
 A 1v1 MMA card game you can play **online or with a physical deck**. The two share **one ruleset** — the digital version is just the auto-calculator. Everything is designed so a person can do the math in their head: **damage = a card's base + one fighter skill.** The only randomness is the shuffle.
 
@@ -14,7 +14,7 @@ Be the **last team standing**: KO your opponent's fighters until they have **non
 
 Each player has TWO piles:
 
-- A **Fighter pile** — your 20 fighters (these are your "player cards"). Shuffle it and **draw 3 into your Roster** at the start; that's your team for the match.
+- A **Fighter pile** — your 20 fighters (these are your "player cards"). Shuffle it and build a **Roster of 3** at the start — **one Striker, one Grappler, and one Balanced** (a random one of each style); that's your team for the match, so you always have access to all three approaches.
 - A **Play deck** of 74 cards — techniques + corners (copies vary by power; strong cards are rarer — see the card list).
   - **67 Techniques** — strikes, takedowns, the clinch, submissions, escapes, and reactions
   - **7 Corner cards** (Master Coach ×1, Intense Training ×2, Ringside Medic ×2, Second Wind ×2)
@@ -33,7 +33,7 @@ Each fighter has just three numbers:
 - **Grappling (1–5)** — added to takedown impact, Ground & Pound, and submissions
 - **HP (~22–32)** — the fighter's health; at 0 they're KO'd
 
-There is **no Defense stat** and **no stamina/fatigue tracking** — you defend by playing reaction cards. A fighter's "style" (Striker / Grappler / Balanced) is flavor, but each fighter also has **one signature ability** (below) that does change how they play.
+There is **no Defense stat** and **no stamina/fatigue tracking** — you defend by playing reaction cards. A fighter's **style** (Striker / Grappler / Balanced) now does real work — each style has a built-in **type trait** (next section) — and on top of that every fighter has **one signature ability** that's unique to them.
 
 Examples:
 
@@ -43,6 +43,20 @@ Examples:
 | Islam Makhachev (Grappler) | 3 | 5 | 28 |
 | Alexander Volkanovski (Balanced) | 4 | 4 | 30 |
 | Charles Oliveira (Grappler) | 4 | 5 | 25 |
+
+---
+
+## Fighter styles (type matchups)
+
+Every fighter is one of three **styles**, and each style is **durable against the phase that threatens it most** — so the three check each other instead of one simply beating another. (Your **team is always one of each** — see Resources.)
+
+| Style | Type trait | What it checks |
+|---|---|---|
+| **Striker** | **Sprawl-and-Brawl** — takedowns don't drain their energy, and **Stand Up costs 1 less** (2 → 1). | You can put a striker down, but you can't *keep* them there — they scramble back up cheaply. Checks a grappler's control. |
+| **Grappler** | **Relentless Takedowns** — their takedowns cost **1 less energy** (Single Leg 2→1, Double Leg 3→2, Suplex 4→3). | They shoot cheap and often, out-attritioning your Stuff/Sprawl cards to drag the fight to the ground where they win. Checks a striker's keep-it-standing game. |
+| **Balanced** | **In the Pocket** — **+2** to their strikes **in the clinch**. | No glaring hole anywhere, and they own the transition zone where neither specialist is at home. |
+
+So a Striker vs Grappler fight becomes a battle over *where it happens*: the grappler keeps shooting cheap takedowns to drag it to the mat, while the striker pops back up cheaply (and isn't drained) to get back to range. The trait is **always on** (no tracking) and is shown on the fighter's card under the signature. Signatures stack on top of it (e.g. Ankalaev is Balanced **and** has Cage Pressure, so his clinch strikes get +2 from style **and** +2 from his signature — +4 total).
 
 ---
 
@@ -77,7 +91,7 @@ Each of the **20 fighters** has **one always-on passive**, printed on their card
 
 ## Resources
 
-- **Roster ("player cards")**: your 3 drawn fighters, in their own zone — they do **not** count toward your hand. Deploy one to fight; when it's KO'd, deploy another from the roster. **When your last fighter is KO'd, you lose** — there's no separate health pool, just your three fighters. (The bar by your name simply shows fighters remaining.)
+- **Roster ("player cards")**: your team of 3 (one of each style), in their own zone — they do **not** count toward your hand. Deploy one to fight; when it's KO'd, deploy another from the roster. You may also **switch fighters mid-fight** from a neutral standing position (see below). **When your last fighter is KO'd, you lose** — there's no separate health pool, just your three fighters. (The bar by your name simply shows fighters remaining.)
 - **Energy**: start at **4**, gain **+2** at the start of each later turn, cap **10**. Unspent energy stays available to play **reactions** on the opponent's turn.
 - **Hand**: your playable cards (techniques + corners) — limit **12** (shown as two rows of six). You draw **6 cards** at the start. Fighters are never in your hand; they live in the roster.
 
@@ -87,7 +101,7 @@ Each of the **20 fighters** has **one always-on passive**, printed on their card
 
 1. **Energy** — gain +2 (turn 1 is a fixed 4). Apply any start-of-turn effects (Bleed). Your strike-combo counter resets.
 2. **Draw** — draw 1 card from your play deck (techniques/corners only) — or skip.
-3. **Main** — deploy a fighter from your roster if you have none active, then play any cards you can afford.
+3. **Main** — deploy a fighter from your roster if you have none active, then play any cards you can afford. (From a neutral stance you may instead **switch fighters** — that uses your whole turn.)
 4. **End** — discard down to 12, pass.
 
 ---
@@ -139,6 +153,18 @@ A downed fighter can't throw standup strikes — from the bottom they can throw 
 **Free Stand Up (dominant top only)** — whenever you **hold top control**, you may **Stand Up for free at any time** on your turn (no card, no energy) to reset to neutral. The fighter in control decides whether the fight stays on the ground, so disengaging costs them nothing — but it also **surrenders the position** (top control = cheap Ground & Pound and full-damage submissions), so you only do it to get back to striking range. The fighter on the **bottom still has to spend a card** (Stand Up / Reversal) to get up. This favors control, keeps strikers viable after a reversal, and breaks any ground stalemate.
 
 **The clinch has no free exit.** Unlike top control, the clinch is a contested 50/50 — neither fighter dominates — so there's no free break. To leave the clinch you must **play Stand Up / Separate** (the card), shoot a **takedown** (→ top), or hit a **flying submission** (→ top). Tying up is a real commitment, which is the point.
+
+---
+
+## Switching fighters (tag in)
+
+On your turn you can **tag in a teammate from your roster** — to fix a bad style matchup or to pull a hurt fighter out of the fire and save them for later. But it's a deliberate, costly play, not an escape hatch:
+
+- **Only from a fully neutral standing position.** You can't switch off your back, out of the clinch, or while you hold top control — you can't tag out of a bad spot.
+- **It costs your whole turn.** Switching *is* your action; the fresh fighter can't also act, and your opponent gets a free turn on them.
+- **No bench healing.** The fighter you pull keeps **all** their damage, bleed, and leg damage — switching changes the matchup, it doesn't reset HP. A tagged-out fighter can be brought back later (still hurt).
+
+That makes it a genuine decision: surrender a neutral start and a turn to bring in the right tool, or to bank a wounded fighter's remaining life. (The AI does the same — it tags in a healthier teammate when its fighter is badly hurt.)
 
 ---
 
@@ -273,13 +299,17 @@ When a fighter hits 0 HP they're finished — by **submission (tap-out)** if a s
 
 The AI scores every legal action and plays the best one, with difficulty tiers: **Easy** (random), **Medium** (greedy), **Hard** (best play, banks energy to react, escapes when grounded, values control), **Nightmare** (Hard +1 Striking/Grappling).
 
-On Medium and up it also **answers a flying submission thrown from the clinch** even when the damage is low — defending it (a free Submission Defense) sweeps the attacker under and hands the defender top control, so the positional swing is worth the card.
+On Medium and up it also **answers a flying submission thrown from the clinch** even when the damage is low — defending it (a free Submission Defense) sweeps the attacker under and hands the defender top control, so the positional swing is worth the card. It will also **switch fighters** (from neutral) when its active fighter is badly hurt and a clearly healthier teammate is on the bench.
 
 ---
 
 ## Implementation (digital)
 
 Split into modules: `config.js` (tunable constants), `cards.js` (data), `combat.js` (the shared `base + skill` formulas and position rules), `ai.js` (decision engine), `reactions.js` (the reaction window), `game.js` (state, flow, UI). All balance numbers live in `config.js`.
+
+*Version 5.0 — Style matchups, fixed-archetype teams, and mid-fight switching (three new strategic levers). (1) **Fighter styles now matter** — each archetype has an always-on **type trait** that makes it durable against the phase that threatens it most, so the three check each other: **Striker** (Sprawl-and-Brawl — takedowns don't drain them and Stand Up costs 1 less, so you can't keep them down), **Grappler** (Relentless Takedowns — takedowns cost 1 less energy, so they out-shoot your takedown defense and drag it to the ground), **Balanced** (In the Pocket — +2 to clinch strikes; no hole, owns the transition). Traits are automatic, shown on the fighter card, and **stack** with signatures. (2) **Teams are always 1 Striker / 1 Grappler / 1 Balanced** (a random one of each) — both players always have all three approaches, which makes the matchup and switching games fair. (3) **Mid-fight switching** — tag in a teammate, but only from a fully neutral stance, at the cost of your whole turn, and the benched fighter keeps all their damage (no healing) — a real tactical retreat, not an escape hatch (AI switches too, when badly hurt with a healthier bench). Implemented via a pure `actionEnergyCost()` helper (the Striker's cheaper Stand Up + the Grappler's cheaper takedowns, routed through every cost check so the printed cost always equals what's charged) plus small hooks in `calcStrikeDamage` (Balanced +2 clinch) and the takedown resolution (Striker takes no energy drain); verified with a faithful-DOM harness (forced-roster invariants over 40 draws; all three traits incl. range/clinch/GnP gating and signature stacking; the Stand-Up discount end-to-end; switch gating + bench-HP persistence + turn-cost + AI heuristic; **plus full regression of the deck, the position matrix, all 20 signatures, knockdowns, reactions, the flying-sub sweep, and KO resets** — all pass, nothing regressed). One ruleset for digital and physical.*
+
+*Version 4.9.9 — Full-game audit pass + discard-modal turn-flow fix. Re-read every module against real-world MMA logic, gameplay execution, all 36 card texts, deck frequencies, and the 20 signature abilities; rebuilt the faithful-DOM harness to **141 checks** (deck = 74 / 67-tech / 7-corner / 17-reaction ≈ 23%; all base + skill formulas; submission damage by position incl. Armbar/Triangle/guard; combo escalation; the full position-legality matrix; reactions by attack type; knockdown delivered-power incl. Pereira's 7-threshold, combo exclusion, combo-padded-below-threshold, and Holloway immunity; Power Cross `ignoresReduce` vs Block; Slip/Sprawl counters; Counter Takedown reverse; flying-sub lands-vs-defended sweep + turn-end; Upkick/bleed/stagger; energy cap; every one of the 20 abilities firing in `calc*` and in resolution; **plus integration flows** that drive the real turn functions — `initGame`, KO→replacement deploy, empty-roster game-over, bleed-tick KO, stagger-skip, and a full opponent AI turn — all without throwing). **No logic bug found; MMA logic sound; all card texts accurate; deck frequencies match the rubric.** **Fix:** drawing into a full 12-card hand from a position with no legal play no longer lets the turn auto-end out from under the open discard prompt — the auto-end is deferred until you pick a card to discard, then re-checked (a rare edge that could otherwise leave the discard modal lingering into the opponent's turn). Also corrected a stale code comment that named Power Cross as a knockdown shot (only Head Kick and Heavy Hook knock down — Power Cross lost that flag in v4.9). No rule, card, position, or balance change.*
 
 *Version 4.9.8 — Full-game audit pass (clean) + combo-display fix. Re-read every module against real-world MMA logic, gameplay execution, all 36 card texts, deck frequencies, and the 20 signature abilities; verified with a 127-check faithful-DOM harness (deck = 74 / 67-tech / 7-corner / 17-reaction ≈ 23%; base + skill formulas; submission damage by position incl. Armbar/Triangle/guard; combo; the full position-legality matrix; reactions by attack type; knockdown delivered-power incl. Pereira's 7-threshold, combo exclusion, and Holloway immunity; flying-sub sweep + turn-end; KO position/stagger resets; Power Cross ignoresReduce; counter-KO; and every one of the 20 abilities firing in `calc*` and in resolution). **No logic bug found; MMA logic sound; all card texts accurate; deck frequencies match the rubric (re-confirmed for the signature-ability era).** The only change: the floating "COMBO x" popup now appears only when the combo bonus actually applies (gated on the applied bonus, matching the damage tag) — so attacking **Ciryl Gane** (Footwork nullifies combos) no longer shows a phantom "COMBO" that does nothing. Pure display fix — no mechanic, card, position, or balance change. One ruleset for digital and physical.*
 

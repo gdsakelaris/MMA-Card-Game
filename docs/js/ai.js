@@ -17,7 +17,7 @@
 
         // Is this card legally playable by the AI right now? (energy + fighters + position rules)
         function aiCanPlay(card, me, foe) {
-            if (card.energy > me.energy) return false;
+            if (actionEnergyCost(card, me) > me.energy) return false;
             if (card.type === 'corner') return true;
             if (card.type !== 'technique') return false;
             if (card.subtype === 'defense') return false; // reaction-only, never played proactively
@@ -144,6 +144,21 @@
             return 0;
         }
 
+        // Should the AI tag in a fresh fighter? Only when the active one is badly hurt (<35% HP) AND a
+        // benched teammate is clearly healthier (>= half HP and at least 8 HP more) — switching costs the
+        // whole turn, so it's a deliberate retreat, not a reflex. Returns the fighter to bring in, or null.
+        // (canSwitch enforces the neutral-only / has-bench gating; defined in game.js, in scope here.)
+        function aiShouldSwitch(me, foe) {
+            if (!canSwitch('opponent')) return null;
+            const cur = me.activeFighter;
+            if (!cur || cur.hp > cur.maxHp * 0.35) return null;
+            let best = null;
+            me.roster.forEach(f => {
+                if (f.hp >= f.maxHp * 0.5 && f.hp >= cur.hp + 8 && (!best || f.hp > best.hp)) best = f;
+            });
+            return best;
+        }
+
         // Choose the single best action, or null to end the turn.
         // `reserve` keeps energy banked for reactions; lethal plays (score >= 100) ignore it.
         function aiChooseAction(me, foe, reserve) {
@@ -152,7 +167,7 @@
                 .filter(c => (c.type === 'corner' || c.type === 'technique') && aiCanPlay(c, me, foe))
                 .map(c => ({ card: c, score: aiScoreAction(c, me, foe) }))
                 .filter(x => x.score > 0)
-                .filter(x => x.score >= 100 || x.card.energy <= me.energy - reserve)
+                .filter(x => x.score >= 100 || actionEnergyCost(x.card, me) <= me.energy - reserve)
                 .sort((a, b) => b.score - a.score);
             return ranked.length ? ranked[0] : null;
         }

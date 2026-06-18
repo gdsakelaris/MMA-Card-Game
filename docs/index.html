@@ -59,6 +59,7 @@
                 <div class="action-buttons">
                     <button class="btn btn-primary" id="drawCardBtn" onclick="drawCard()">Draw Card</button>
                     <button class="btn btn-primary" id="standUpBtn" onclick="playerStandUpFree()" style="display:none;">Stand Up</button>
+                    <button class="btn btn-primary" id="switchBtn" onclick="playerSwitchFighter()" style="display:none;">Switch Fighter</button>
                     <button class="btn btn-primary" id="endTurnBtn" onclick="endTurn()" disabled>End Turn</button>
                 </div>
                 <div class="difficulty-control">
@@ -116,6 +117,7 @@
             <h2>Choose Your Fighter</h2>
             <p>Select one fighter to enter the arena.</p>
             <div class="select-grid" id="selectFighterGrid"></div>
+            <button class="btn btn-primary" id="selectFighterCancel" style="display:none;margin-top:14px;" onclick="closeFighterSelect()">Cancel</button>
         </div>
     </div>
 

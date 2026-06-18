@@ -48,7 +48,13 @@
             if (sig(atk, 'clinchStrikeBonus') && atkState.inClinch) bonus += sig(atk, 'clinchStrikeBonus');
             // Strickland's Philly Shell softens every strike he eats.
             const reduction = sig(def, 'incomingStrikeReduction') || 0;
-            const dmg = card.damage + skill + trainingBonus + combo + bonus - legDmg - reduction;
+            // Fighter STYLE trait in the damage math: a BALANCED fighter deals +2 inside the clinch
+            // (In the Pocket — the transition zone is their home). The Striker's Sprawl-and-Brawl and the
+            // Grappler's relentless takedowns are NOT damage effects — they live in the takedown resolution
+            // and in actionEnergyCost (cheaper Stand Up / cheaper takedowns), not here.
+            let styleAdj = 0;
+            if (atk.style === 'Balanced' && atkState.inClinch && !usesGrappling) styleAdj += 2;
+            const dmg = card.damage + skill + trainingBonus + combo + bonus - legDmg - reduction + styleAdj;
             return Math.max(1, dmg);
         }
 
@@ -116,4 +122,20 @@
                 default:
                     return true;                                     // corner cards, etc.
             }
+        }
+
+        // The energy a card actually costs to play right now. Usually just card.energy, but two STYLE
+        // traits discount it: a Striker's Sprawl-and-Brawl makes the Stand Up escape cost 1 less (they
+        // scramble back to their feet), and a Grappler's Relentless Takedowns make takedowns cost 1 less
+        // (cheap, repeatable level changes). Pure; routed through every cost check (play, affordability,
+        // the AI, and the live card badge) so the printed cost always equals what's charged. A discounted
+        // card floors at 1; 0-cost cards (Second Wind, reactions) never match a discount, so they stay 0.
+        function actionEnergyCost(card, meState) {
+            const cost = card.energy || 0;
+            const me = meState && meState.activeFighter;
+            if (!me) return cost;
+            let discount = 0;
+            if (me.style === 'Striker' && card.subtype === 'escape' && card.escapeType === 'standup') discount = 1;
+            if (me.style === 'Grappler' && card.subtype === 'grappling') discount = 1; // takedowns
+            return discount ? Math.max(1, cost - discount) : cost;
         }

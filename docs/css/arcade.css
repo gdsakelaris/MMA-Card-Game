@@ -147,6 +147,25 @@ body::after {
     text-shadow: 0 0 5px rgba(255,204,0,0.4);
     white-space: nowrap;
 }
+/* The STYLE trait line (type-matchup passive) — same layout as the signature, but a cyan accent so the
+   two ability lines read as distinct (gold = unique signature, cyan = archetype trait). */
+.fighter-style {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px dashed rgba(255,255,255,0.10);
+    font-family: 'Rajdhani', 'Arial', sans-serif;
+    font-size: 0.62em;
+    line-height: 1.3;
+    text-align: center;
+    color: #c2ccd9;
+}
+.fighter-style .sig-name {
+    font-family: var(--arcade-ui);
+    color: var(--neon-cyan);
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0,225,255,0.4);
+    white-space: nowrap;
+}
 @keyframes turnPulse {
     0%, 100% { text-shadow: 0 0 8px var(--neon-cyan), 0 0 18px rgba(0,225,255,0.5); }
     50% { text-shadow: 0 0 14px var(--neon-cyan), 0 0 30px rgba(0,225,255,0.9); }

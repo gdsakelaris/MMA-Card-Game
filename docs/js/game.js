@@ -97,10 +97,18 @@
             }, fighters[0]);
         }
 
-        // Shared modal: pick one fighter from the player's roster.
-        function showFighterChoiceModal(onPick) {
+        // Shared modal: pick one fighter from the player's roster. `opts` lets the switch flow retitle it
+        // and show a Cancel button (opening/replacement selection must pick, so they leave opts empty).
+        function showFighterChoiceModal(onPick, opts) {
+            opts = opts || {};
             const modal = document.getElementById('selectFighterModal');
             const grid = document.getElementById('selectFighterGrid');
+            const titleEl = modal.querySelector('h2');
+            const subEl = modal.querySelector('p');
+            if (titleEl) titleEl.textContent = opts.title || 'Choose Your Fighter';
+            if (subEl) subEl.textContent = opts.subtitle || 'Select one fighter to enter the arena.';
+            const cancel = document.getElementById('selectFighterCancel');
+            if (cancel) cancel.style.display = opts.allowCancel ? '' : 'none';
             grid.innerHTML = '';
             gameState.player.roster.forEach(f => {
                 const el = document.createElement('div');
@@ -114,6 +122,7 @@
                         <div class="card-stat"><span class="card-stat-label">HP:</span><span class="card-stat-value">${f.hp}/${f.maxHp}</span></div>
                     </div>
                     ${f.signature ? `<div class="fighter-signature"><span class="sig-name">★ ${f.signature.name}</span> — ${f.signature.text}</div>` : ''}
+                    ${f.style ? `<div class="fighter-style"><span class="sig-name">🥋 ${f.style}</span> — ${styleTraitText(f.style)}</div>` : ''}
                 `;
                 el.onclick = () => onPick(f.uniqueId);
                 grid.appendChild(el);
@@ -205,10 +214,21 @@
             shuffle(gameState[player].fighterDeck);
         }
 
-        // Draw n fighters from the fighter pile into the roster ("player cards").
+        // Draw a roster of fighters from the (shuffled) fighter pile. Every team is built ONE of each
+        // archetype — a Balanced, a Striker, and a Grappler — so both players always have access to all
+        // three styles (and the style-matchup game below is fair). WHICH striker/grappler/balanced you
+        // get is still random (the pile is shuffled, so findIndex picks a random one of that style).
+        // If a style somehow runs out (it won't with the current 8/6/6 roster), top up with any fighter.
         function drawRoster(player, n) {
-            for (let i = 0; i < n && gameState[player].fighterDeck.length > 0; i++) {
-                gameState[player].roster.push(gameState[player].fighterDeck.pop());
+            const deck = gameState[player].fighterDeck;
+            const wanted = ['Balanced', 'Striker', 'Grappler'];
+            wanted.forEach(style => {
+                if (gameState[player].roster.length >= n) return;
+                const idx = deck.findIndex(f => f.style === style);
+                if (idx >= 0) gameState[player].roster.push(deck.splice(idx, 1)[0]);
+            });
+            while (gameState[player].roster.length < n && deck.length > 0) {
+                gameState[player].roster.push(deck.pop());
             }
         }
 
@@ -319,6 +339,8 @@
             pendingDrawnCard = null;
 
             updateUI();
+            // The auto-end was deferred while the discard modal was open — re-check now that it's resolved.
+            maybeAutoEndTurn();
         }
 
         function drawCard() {
@@ -374,8 +396,9 @@
                     return;
                 }
 
-                if (card.energy > gameState.player.energy) {
-                    addLog(`Not enough energy! Need ${card.energy}, have ${gameState.player.energy}`);
+                const techCost = actionEnergyCost(card, gameState.player);
+                if (techCost > gameState.player.energy) {
+                    addLog(`Not enough energy! Need ${techCost}, have ${gameState.player.energy}`);
                     return;
                 }
 
@@ -425,7 +448,7 @@
                 return;
             }
 
-            attacker.energy -= card.energy;
+            attacker.energy -= actionEnergyCost(card, attacker);
             attacker.hand = attacker.hand.filter(c => c.uniqueId !== card.uniqueId);
 
             const finish = function () { updateUI(); onComplete(); };
@@ -545,10 +568,10 @@
 
                 // Knockdown — about DELIVERED power, not merely whether a card was thrown. A negate
                 // (Parry / Slip / Check Kick) zeroes the damage, so there's no knockdown; a Block only
-                // prevents it if it actually brings the shot below the threshold — and a Block can't
-                // soften a Power Cross, so that one still drops them at 8+. Only a POWER strike
-                // (canKnockdown) qualifies, and the combo bonus is excluded: a knockdown reflects the
-                // weight of the single shot (base + Striking + training - leg damage), not rhythm.
+                // prevents it if its -3 actually brings the shot below the threshold. Only a POWER strike
+                // (canKnockdown — currently Head Kick and Heavy Hook) qualifies, and the combo bonus is
+                // excluded: a knockdown reflects the weight of the single shot (base + Striking + training
+                // - leg damage), not rhythm.
                 const knockdownPower = damage - comboApplied;
                 const knockdownThreshold = sig(attacker.activeFighter, 'knockdownThreshold') || CONFIG.knockdownThreshold; // Pereira: 7
                 if (damage > 0 && defender.activeFighter && defender.activeFighter.hp > 0
@@ -611,6 +634,7 @@
                 // The scramble saps cardio — a downed fighter has less in the tank to defend.
                 let tdDrain = CONFIG.takedownEnergyDrain + (sig(attacker.activeFighter, 'takedownDrainBonus') || 0); // Makhachev: +1
                 if (sig(defender.activeFighter, 'energyDrainImmune')) tdDrain = 0;                                  // Merab: immune
+                if (defender.activeFighter.style === 'Striker') tdDrain = 0;                                        // Striker: Sprawl-and-Brawl — takedowns don't drain them
                 if (tdDrain && defender.energy > 0) {
                     const drained = Math.min(tdDrain, defender.energy);
                     defender.energy = Math.max(0, defender.energy - tdDrain);
@@ -1009,6 +1033,14 @@
                 return;
             }
 
+            // Tactical retreat: if the active fighter is badly hurt and a much healthier teammate is
+            // available (and we're at a neutral standing position), tag them in. Switching ends the
+            // turn, so it's only worth it when the current fighter is in real trouble.
+            const swTarget = aiShouldSwitch(me, foe);
+            if (swTarget) {
+                if (swapInFighter('opponent', swTarget.uniqueId)) { updateUI(); endOpponentTurn(); return; }
+            }
+
             // On Hard/Nightmare, bank energy to keep a defensive reaction available.
             const hard = gameState.difficulty === 'hard' || gameState.difficulty === 'nightmare';
             const hasReaction = me.hand.some(c => c.subtype === 'defense');
@@ -1211,9 +1243,9 @@
             // Append to bottom so newest is at bottom
             feed.appendChild(item);
 
-            // Keep only the 6 most recent messages (remove from top). The feed stretches to the
-            // active fighter card's height, which fits ~6 one-line messages without clipping.
-            while (feed.children.length > 6) {
+            // Keep only the 10 most recent messages (remove from top). The active fighter card is now
+            // taller (it shows the signature AND the style trait), so the feed fits ~10 one-line messages.
+            while (feed.children.length > 10) {
                 feed.removeChild(feed.firstChild);
             }
         }
@@ -1287,6 +1319,14 @@
                 standBtn.textContent = 'Stand Up';
             }
 
+            // Switch Fighter — available only from a fully neutral standing position on your main phase
+            // (it uses your whole turn; your current fighter keeps their damage).
+            const switchBtn = document.getElementById('switchBtn');
+            if (switchBtn) {
+                const canSw = gameState.currentPlayer === 'player' && gameState.phase === 'main' && canSwitch('player');
+                switchBtn.style.display = canSw ? '' : 'none';
+            }
+
             // Render fighters, rosters, and hand
             renderFighter('player');
             renderFighter('opponent');
@@ -1335,7 +1375,7 @@
             // Techniques (position-gated; defense cards are reactions, excluded by the helper)
             const hasTechnique = p.hand.some(c => {
                 if (c.type !== 'technique') return false;
-                if (c.energy > p.energy) return false;
+                if (actionEnergyCost(c, p) > p.energy) return false;
                 if (!p.activeFighter || !o.activeFighter) return false;
                 return isTechniquePositionLegal(c, p, o);
             });
@@ -1369,12 +1409,59 @@
             }
         }
 
+        // ===== MID-FIGHT SWITCH (tag in a teammate) =====
+        // You may tap in a fresh fighter, but only as a deliberate, costly choice — NOT as an escape
+        // hatch from a bad spot. So: ONLY from a fully neutral standing position (you can't switch off
+        // the bottom, out of the clinch, or while holding top control), and it COSTS YOUR WHOLE TURN.
+        // The fighter you pull keeps ALL their damage and status (no bench healing) — switching changes
+        // the matchup, it doesn't reset HP. This makes it a real tactical decision: spend a turn and
+        // surrender a neutral start to fix a matchup or preserve a hurt fighter for later.
+        function canSwitch(side) {
+            const me = gameState[side];
+            const foe = side === 'player' ? gameState.opponent : gameState.player;
+            return !!me.activeFighter && me.roster.length > 0
+                && !me.positionalAdvantage && !foe.positionalAdvantage && !me.inClinch;
+        }
+
+        function swapInFighter(side, uniqueId) {
+            const me = gameState[side];
+            const incoming = me.roster.find(f => f.uniqueId === uniqueId);
+            if (!incoming || !me.activeFighter || incoming.uniqueId === me.activeFighter.uniqueId) return false;
+            const outgoing = me.activeFighter;
+            me.roster.push(outgoing);     // benched — keeps its current HP / bleed / leg damage
+            me.activeFighter = null;
+            deployFighter(side, uniqueId); // removes incoming from the roster, sets it active
+            showAction(`${outgoing.name} tags out — ${incoming.name} steps in!`, side, '', 'card-fighter');
+            return true;
+        }
+
+        function playerSwitchFighter() {
+            if (gameState.currentPlayer !== 'player' || gameState.phase !== 'main' || !canSwitch('player')) return;
+            showFighterChoiceModal(doPlayerSwitch, {
+                title: 'Switch Fighter',
+                subtitle: 'Tag in a teammate. This uses your whole turn, and your current fighter keeps their damage.',
+                allowCancel: true
+            });
+        }
+
+        function doPlayerSwitch(uniqueId) {
+            closeFighterSelect();
+            if (!canSwitch('player')) { updateUI(); return; }
+            if (swapInFighter('player', uniqueId)) {
+                updateUI();
+                endTurn(true); // switching is your whole turn
+            }
+        }
+
         // End the player's turn automatically if no actions are left.
         // A dominant (top) fighter can ALWAYS stand up for free, so that counts as an available
         // action — don't force-end their turn out from under that choice. (The clinch has no free
         // exit, so a clinched player with no plays simply ends their turn.)
         function maybeAutoEndTurn() {
             if (gameState.currentPlayer !== 'player' || gameState.phase !== 'main') return;
+            // A discard choice is open (you drew into a full hand) — don't end the turn out from under
+            // the modal. selectCardToDiscard() re-checks once you've chosen, so the auto-end isn't lost.
+            if (pendingDrawnCard) return;
             // A defended flying submission swept YOU under — your turn ends; the opponent keeps the top
             // control they earned (you'll escape on your next turn, like any takedown).
             if (gameState.player.forceTurnEnd) { gameState.player.forceTurnEnd = false; endTurn(true); return; }
@@ -1457,6 +1544,7 @@
                     <div class="stamina-bar-fill" style="width: ${staminaPercent}%"></div>
                 </div>
                 ${fighter.signature ? `<div class="fighter-signature"><span class="sig-name">★ ${fighter.signature.name}</span> — ${fighter.signature.text}</div>` : ''}
+                ${fighter.style ? `<div class="fighter-style"><span class="sig-name">🥋 ${fighter.style}</span> — ${styleTraitText(fighter.style)}</div>` : ''}
             `;
 
             return card;
@@ -1529,6 +1617,15 @@
             }
         }
 
+        // One-line description of a fighter STYLE's passive trait (the type-matchup layer). Shown under
+        // the signature on the active-fighter box and the deploy/switch screens so players read it.
+        function styleTraitText(style) {
+            if (style === 'Striker')  return 'Sprawl-and-Brawl — can\'t be drained by takedowns; Stand Up costs 1 less.';
+            if (style === 'Grappler') return 'Relentless Takedowns — your takedowns cost 1 less energy.';
+            if (style === 'Balanced') return 'In the Pocket — +2 to strikes in the clinch.';
+            return '';
+        }
+
         function createHandCard(card) {
             const cardElement = document.createElement('div');
             cardElement.className = 'card';
@@ -1552,7 +1649,7 @@
             } else if (card.type === 'technique') {
                 // Enough energy, an active fighter, and legal from the current position
                 // (defense/reaction cards are never "playable" on your own turn).
-                canPlay = card.energy <= gameState.player.energy
+                canPlay = actionEnergyCost(card, gameState.player) <= gameState.player.energy
                     && !!gameState.player.activeFighter
                     && card.subtype !== 'defense'
                     && isTechniquePositionLegal(card, gameState.player, gameState.opponent);
@@ -1595,7 +1692,7 @@
                 `;
             } else if (card.type === 'technique') {
                 cardElement.innerHTML = `
-                    <div class="card-energy">${card.energy}</div>
+                    <div class="card-energy">${actionEnergyCost(card, gameState.player)}</div>
                     <div class="card-header">${card.name}</div>
                     <div class="card-type">${cardTypeLabel(card)}</div>
                     ${techniqueStatsHTML(card)}

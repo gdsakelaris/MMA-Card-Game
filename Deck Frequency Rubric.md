@@ -147,6 +147,17 @@ Pantoja chip), and **Leg Kick** (Gaethje −2). **Forward note:** if the game ev
 decks or drafting (asymmetric decks), frequency becomes a real per-fighter lever and these synergies
 *would* justify build-around copy tuning — under the current shared-deck / random-draw model they don't.
 
+**Pass 3 (v5.0) — re-audit after style type-traits + forced 1/1/1 teams + mid-fight switching.**
+Result: **no copy changes.** Same principle as Pass 2 — copies track a card's *average* value across the shared
+74-card deck, and the new effects are **per-fighter style traits**, not per-card. Two cards shift effective cost for
+one style only: **Stand Up** (2→1 for **Strikers**) and **takedowns** (Single Leg/Double Leg/Suplex, −1 for
+**Grapplers**). But with forced 1/1/1 teams exactly one of your three fighters is each style, so each card's
+*deck-wide average* cost barely moves — nowhere near a tier change; Stand Up stays **3** and the takedown copies hold
+(3/2/1). Forced 1/1/1 affects the *fighter pile*, not the play deck, so it's out of scope here.
+**Synergy/watch (not copy changes):** cheaper takedowns make a **Grappler**'s Single/Double Leg very efficient —
+watch that takedown spam doesn't overwhelm the 5 takedown answers in playtest; if it does, that's a copy lever
+(bump Stuff/Sprawl) or an energy lever, not a tier mis-read.
+
 ## When to re-run
 
 - After adding/altering any card effect, energy, or damage.

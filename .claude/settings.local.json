@@ -43,7 +43,12 @@
       "Bash(node _ank.js)",
       "Bash(rm -f _ank.js)",
       "Bash(node _audit.js)",
-      "Bash(node harness.js)"
+      "Bash(node harness.js)",
+      "Bash(git --no-pager diff -- docs/js/cards.js docs/js/game.js)",
+      "Bash(git --no-pager diff -- .claude/settings.local.json)",
+      "Bash(git --no-pager diff --stat -- docs/ \"MMA Card Game Rules.md\" \"Deck Frequency Rubric.md\")",
+      "Bash(git --no-pager diff -- docs/js/combat.js docs/js/ai.js)",
+      "Bash(git --no-pager diff -- docs/js/game.js)"
     ],
     "deny": [],
     "ask": [],
